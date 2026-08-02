@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# actual life — Ali's 21st Birthday Wrapped
 
-## Getting Started
+A Spotify-Wrapped-style birthday site for Ali: cinematic story chapters, an *actual life (2005–2026)* album by friends, and on-demand friend memory pages.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| URL | What it is |
+|-----|------------|
+| `/` | Main Wrapped story deck |
+| `/album` | Tracklist — tap a name to open that friend |
+| `/album/[friend]` | Friend message + submit a memory |
+| `/api/wrapped?mock=true` | Mock Wrapped JSON (no Spotify needed) |
+| `/api/memories` | List / submit friend memories |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Spotify (optional)
 
-## Learn More
+Live listening stats need a Spotify Developer app. Copy env and follow setup:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cp .env.example .env.local
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See [BACKEND_SETUP.md](./BACKEND_SETUP.md) for Client ID, secret, redirect URI, and OAuth flow.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Without credentials, the site falls back to `?mock=true` automatically.
 
-## Deploy on Vercel
+## Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js (App Router) + React
+- Framer Motion transitions
+- API routes: Spotify OAuth, `/api/wrapped`, `/api/memories`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+
+- Friend names are anonymized in the UI as Friend 1, Friend 2, … (Ali stays named).
+- Submitted memories are stored in `data/submitted-memories.json` locally (gitignored; not durable on serverless without a real DB).
+- Edit curated chapter copy in `data/wrappedChapters.js` and memories in `data/memories.js`.
