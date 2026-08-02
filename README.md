@@ -2,6 +2,25 @@
 
 A Spotify-Wrapped-style birthday site for Ali: cinematic story chapters, an *actual life (2005–2026)* album by friends, and on-demand friend memory pages.
 
+## Get all files (clone the repo)
+
+```bash
+git clone git@github.com:tishagangar7/actual-life-21.git
+cd actual-life-21
+```
+
+Or with HTTPS:
+
+```bash
+git clone https://github.com/tishagangar7/actual-life-21.git
+cd actual-life-21
+```
+
+If you’re a collaborator and don’t have access yet, ask the owner to invite you, then accept the email invite from GitHub before cloning.
+
+In **VS Code**: `Cmd+Shift+P` → **Git: Clone** → paste  
+`https://github.com/tishagangar7/actual-life-21.git` → open the folder when prompted.
+
 ## Run locally
 
 ```bash
