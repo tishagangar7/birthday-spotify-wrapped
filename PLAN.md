@@ -179,6 +179,8 @@ cd actual-life-21 && npm install && npm run dev
 
 **https://www.figma.com/design/3MPOLutTIDGqGWxnl7V7Db**
 
+Invite friends via Figma **Share** (can edit) so they can change frames. Also linked from the [README](./README.md).
+
 | Section | What’s there |
 |---------|----------------|
 | Spotify Wrapped 2026 | Original 20 phone chapters — copy updated for flags, searches, miles, talking, screen time, stories, achievements |

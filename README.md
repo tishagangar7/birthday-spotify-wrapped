@@ -2,7 +2,19 @@
 
 A Spotify-Wrapped-style birthday site for Ali: cinematic story chapters, an *actual life (2005–2026)* album by friends, and on-demand friend memory pages.
 
-**Live site:** [https://birthday-spotify-wrapped.vercel.app](https://birthday-spotify-wrapped.vercel.app)
+## Links (share with friends)
+
+| What | Link |
+|------|------|
+| **Live site** | [birthday-spotify-wrapped.vercel.app](https://birthday-spotify-wrapped.vercel.app) |
+| **GitHub repo** | [github.com/tishagangar7/birthday-spotify-wrapped](https://github.com/tishagangar7/birthday-spotify-wrapped) |
+| **Figma (edit designs)** | [figma.com/design/3MPOLutTIDGqGWxnl7V7Db](https://www.figma.com/design/3MPOLutTIDGqGWxnl7V7Db) |
+| **Plan / chapter map** | [PLAN.md](./PLAN.md) |
+
+To let friends **edit**:
+- **Figma** — invite them in Figma (Share → add email → can edit)
+- **GitHub** — add them as collaborators (`Settings → Collaborators`) so they can push code / PRs
+- **Content in code** — edit `data/wrappedChapters.js`, `data/memories.js`, and photos in `public/photos/ali/`
 
 ## Plan
 
