@@ -1,13 +1,7 @@
 /**
- * Curated, hand-written content for the "[Ali] Wrapped" narrative chapters —
- * a cinematic recap of who he is, not just what he streamed. Unlike
- * `data/memories.js` (per-friend memories) this file is pure editorial copy
- * for the Wrapped story deck (see components/chapters/*.jsx + app/page.js).
- *
- * Everything here is placeholder content written to feel specific rather than
- * generic — swap in real details (his actual dream car, real quotes people
- * say about him, real running stats, etc.) whenever they're ready. Nothing in
- * this file is fetched from an API; it ships with the app.
+ * Curated content for Ali's 21st Birthday Wrapped.
+ * Edit freely — nothing here is API-fetched. Interactive chapters (quiz,
+ * runner, cologne) read from the exports below.
  */
 
 export const soundtrackChapter = {
@@ -33,31 +27,69 @@ export const carChapter = {
   funnyOpinion: "will die on the hill that roundabouts are more efficient than stop signs",
 };
 
+/** Chipotle-style personality build — also feeds the optional bowl builder. */
 export const personalityTraits = [
-  { label: "chronically late", detail: "but always brings a good excuse" },
-  { label: "will fight you over aux privileges", detail: "and win" },
-  { label: "remembers everyone's coffee order", detail: "since the year you met him" },
-  { label: "unreasonably competitive at board games", detail: "monopoly is not safe" },
-  { label: "shows up when it actually matters", detail: "every single time" },
+  { label: "base", detail: "effortless charm" },
+  { label: "protein", detail: "big loyalty energy" },
+  { label: "toppings", detail: "greek mythology deep cuts" },
+  { label: "salsa", detail: "extra hot confidence" },
+  { label: "side", detail: "chronically late (small)" },
+];
+
+/** Standalone "your stats" cards — not Spotify minutes. */
+export const personalStats = [
+  {
+    id: "chipotle",
+    kicker: "your stats · chipotle",
+    big: "∞",
+    isNumber: false,
+    caption: "spent these many minutes at chipotle. the line is part of his personality now.",
+    accent: "wrapped-accent-orange",
+  },
+  {
+    id: "mythology",
+    kicker: "your stats · greek mythology",
+    big: "12h",
+    isNumber: false,
+    caption:
+      "every night listening to greek mythology — then spent the same amount of time explaining it to the three of us.",
+    accent: "wrapped-accent-purple",
+  },
+  {
+    id: "mo",
+    kicker: "your stats · communications",
+    big: "2h+",
+    isNumber: false,
+    caption: "at least 2 hours every day trying to communicate to mo. a full-time unpaid internship.",
+    accent: "wrapped-accent-pink",
+  },
 ];
 
 export const milesChapter = {
   miles: 412,
-  comparison: "that's roughly a straight line from here to the coast and back.",
-  motivationalNote: "half of it run before 7am, out of pure spite for snooze buttons.",
+  comparison: "drag ALI through the obstacles — then we reveal how far he's actually gone.",
+  motivationalNote: "whoop recovery score pending. sauna time does not count as cardio (he disagrees).",
 };
 
+/** Mini-runner: obstacles Ali dodges / hits while sliding. */
+export const runnerObstacles = [
+  { id: "sauna", label: "sauna", at: 18 },
+  { id: "chipotle", label: "chipotle line", at: 38 },
+  { id: "morongo", label: "morongo", at: 58 },
+  { id: "mo", label: "texting mo", at: 78 },
+];
+
 export const talkingChapter = {
-  minutes: 214_500,
-  comparison: "enough to explain the plot of every movie he's ever half-watched, twice.",
-  joke: "and he'll still say \"quick story\" before starting a 20 minute one.",
+  minutes: 12 * 60 * 365,
+  comparison: "twelve hours a night of mythology, times three captive friends who did not ask for this lecture series.",
+  joke: "and he'll still say \"ok but hermes is underrated\" before starting another hour.",
 };
 
 export const recurringStories = [
-  { title: "the airport story", quote: "\"we made the gate with four minutes to spare\"", tellCount: 47 },
-  { title: "the group chat incident", quote: "\"i'm not saying who did it but it was madhav\"", tellCount: 33 },
-  { title: "the disposable camera reveal", quote: "\"i forgot we even took that photo\"", tellCount: 21 },
-  { title: "the one about the flight home", quote: "\"you had to be there\"", tellCount: 18 },
+  { title: "the mythology TED talk", quote: "\"ok but let me just explain the titanomachy real quick\"", tellCount: 47 },
+  { title: "the mo dispatch", quote: "\"has he responded yet\" — every day", tellCount: 39 },
+  { title: "the chipotle pilgrimage", quote: "\"i'm already in line\"", tellCount: 31 },
+  { title: "the sauna disappearance", quote: "\"he's still in there\"", tellCount: 28 },
 ];
 
 export const heartMessages = [
@@ -66,12 +98,12 @@ export const heartMessages = [
     message: "he has shown up for every single person in this archive at least once — usually at 2am, usually without being asked.",
   },
   {
-    from: "zain",
-    message: "the most generous person i know with his time, his car, and his last slice of pizza.",
+    from: "friend",
+    message: "the most generous person we know with his time, his car, and his last slice of pizza.",
   },
   {
-    from: "sara",
-    message: "he remembers the small things — the exact way you take your coffee, the thing you mentioned once in passing. that's rare.",
+    from: "friend",
+    message: "he remembers the small things — and somehow also every greek god's family tree.",
   },
 ];
 
@@ -80,53 +112,119 @@ export const finalSlide = {
   body: "every chapter in this archive exists because he's the kind of person people want to remember things about. happy 21st.",
 };
 
-// ---- Bonus chapters ----
-
 export const startingLineup = [
-  { position: "captain", name: "zain", note: "day-one friend, still starting every lineup" },
-  { position: "point guard", name: "sara", note: "runs the group chat like a full-time job" },
-  { position: "wildcard", name: "madhav", note: "responsible for at least 40% of the chaos" },
-  { position: "bench (but clutch)", name: "tisha", note: "shows up right when it counts" },
+  { position: "captain", name: "friend 1", note: "day-one friend, still starting every lineup" },
+  { position: "point guard", name: "friend 2", note: "runs the group chat like a full-time job" },
+  { position: "wildcard", name: "friend 3", note: "responsible for at least 40% of the chaos" },
+  { position: "bench (but clutch)", name: "friend 4", note: "shows up right when it counts" },
 ];
 
 export const achievements = [
-  { title: "Group Chat MVP", detail: "sent the most voice notes no one asked for" },
-  { title: "Perfect Attendance", detail: "showed up to every birthday since 2014" },
-  { title: "Speedrun Any Room", detail: "makes new friends before the appetizers arrive" },
-  { title: "Aux Cord Veteran", detail: "500+ hours logged behind the wheel and the wheel of fortune (the playlist)" },
-  { title: "Night Owl", detail: "unlocked for texting back fastest between 1–3am" },
+  { title: "Mythology Professor (unpaid)", detail: "12h nightly lectures, attendance mandatory" },
+  { title: "Chipotle Frequent Flyer", detail: "minutes logged: uncountable" },
+  { title: "Mo Whisperer", detail: "2h/day communications attempt streak" },
+  { title: "Sauna Endurance", detail: "unlocked for staying until someone goes looking" },
+  { title: "Home Game Hero", detail: "won quite a bit at home poker" },
 ];
 
 export const screenTime = {
-  hoursPerDay: 6.4,
-  mostUsedApp: "notes app (all drafts, no sent messages)",
-  funnyNote: "reports his screen time is \"down 12% this week\" every single week.",
+  hoursPerDay: 12,
+  mostUsedApp: "greek mythology podcasts + whatever mo is on",
+  funnyNote: "half of it is \"research,\" half of it is explaining the research.",
 };
 
 export const topSearches = [
-  "is it normal to text this much",
-  "best 24 hour diners near me",
-  "how to fix aux cord static",
-  "why do we say \"one more episode\" and mean four",
-  "gas station open right now",
+  "how to speak persian",
+  "10 ways to kill a bona",
+  "how to snort addy",
+  "what to do if the girl u like doesnt shave her armpits",
+  "is it normal to spend 2 hrs in the sauna",
+  "how to increase whoop recovery score",
 ];
 
 export const redFlags = [
-  { flag: "double texts within 30 seconds", context: "and somehow it's never annoying" },
-  { flag: "will not admit he's lost", context: "the GPS says otherwise" },
-  { flag: "\"five more minutes\" means forty", context: "every single time, no exceptions" },
+  { flag: "never takes public transport", context: "uber is a personality trait" },
+  { flag: "chronically late", context: "the invite said 7; he heard 8:30" },
+  { flag: "can't get out of the sauna", context: "send a search party after 90 minutes" },
 ];
 
 export const greenFlags = [
-  { flag: "remembers your order without asking", context: "every time, no matter how long it's been" },
-  { flag: "first to offer his jacket", context: "even when he's the one who's cold" },
-  { flag: "actually listens", context: "asks the follow-up question three weeks later" },
+  { flag: "makes the best ground beef and potato", context: "non-negotiable. bring a plate." },
+  { flag: "will explain any myth until you get it", context: "whether you asked or not" },
+  { flag: "shows up for the people he loves", context: "even when he's late" },
 ];
 
 export const predictions = [
-  "finally gets that porsche (probably a toy one first)",
-  "starts a podcast, quits after two episodes, we still hype it up",
-  "somehow gets even better at remembering everyone's order",
+  "finally nails a whoop recovery score he's proud of",
+  "gets out of the sauna in under two hours (once)",
+  "mo actually responds on the first try",
   "hosts a birthday even bigger than this one",
 ];
 
+/** Poker / casino money vibes. */
+export const pokerChapter = {
+  kicker: "your stats · the tables",
+  lostAt: "morongo",
+  lostNote: "lost quite a bit at morongo.",
+  wonAt: "home poker",
+  wonNote: "made quite a bit at home poker games.",
+  punchline: "the house always wins — unless the house is his living room.",
+};
+
+/** Guess the cologne — bottle shape tease, answer on reveal. */
+export const cologneChapter = {
+  kicker: "bonus · guess the cologne",
+  prompt: "guess the cologne from the bottle shape.",
+  hint: "silhouette only. no cheating.",
+  answer: "TBD — swap in the real bottle name",
+  bottleNote: "tall / rectangular / suspiciously expensive-looking.",
+};
+
+/**
+ * How well do you know Ali — "said by Ali" vs "someone else".
+ * `saidByAli: true` means Ali said it.
+ */
+export const aliOrElseQuiz = [
+  {
+    quote: "ok but let me just finish this one thought about hermes",
+    saidByAli: true,
+  },
+  {
+    quote: "he's still in the sauna",
+    saidByAli: false,
+  },
+  {
+    quote: "i'm already in the chipotle line",
+    saidByAli: true,
+  },
+  {
+    quote: "has mo responded yet",
+    saidByAli: true,
+  },
+  {
+    quote: "never again at morongo",
+    saidByAli: true,
+  },
+  {
+    quote: "he makes the best ground beef and potato",
+    saidByAli: false,
+  },
+];
+
+/**
+ * Make-your-own Chipotle bowl — TBD for full interactivity.
+ * Structure is ready; builder UI can light up later.
+ */
+export const chipotleBowl = {
+  status: "tbd",
+  kicker: "bonus · build his bowl",
+  heading: "make your own chipotle bowl",
+  note: "full builder TBD — for now, here's the default order he'd never deviate from.",
+  defaults: [
+    { step: "rice", pick: "white (obviously)" },
+    { step: "beans", pick: "black" },
+    { step: "protein", pick: "whatever's closest to ground beef energy" },
+    { step: "toppings", pick: "everything. no, literally everything." },
+    { step: "salsa", pick: "hot, then mild on the side for \"balance\"" },
+  ],
+};

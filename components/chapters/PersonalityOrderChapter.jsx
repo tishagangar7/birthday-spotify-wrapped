@@ -13,9 +13,9 @@ export default function PersonalityOrderChapter() {
     <StaggeredList
       accent="wrapped-accent-purple"
       kicker="chapter three · most ordered personality trait"
-      heading="his order, built to spec:"
+      heading="his chipotle order, built to spec:"
       items={items}
-      footer="extra everything. no substitutions."
+      footer="extra everything. no substitutions. bowl builder TBD."
     />
   );
 }

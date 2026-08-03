@@ -6,19 +6,24 @@ import { memories } from "../data/memories";
 import AlbumTeaserCard from "../components/AlbumTeaserCard";
 import AudioPlayer from "../components/AudioPlayer";
 import AchievementsChapter from "../components/chapters/AchievementsChapter";
+import AliOrElseQuizChapter from "../components/chapters/AliOrElseQuizChapter";
 import CarChapter from "../components/chapters/CarChapter";
 import ChapterMenu from "../components/chapters/ChapterMenu";
+import ChipotleBowlChapter from "../components/chapters/ChipotleBowlChapter";
+import CologneChapter from "../components/chapters/CologneChapter";
 import CreditsCard from "../components/chapters/CreditsCard";
 import FavoriteArtistCard from "../components/chapters/FavoriteArtistCard";
 import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
 import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
 import HeartSizeChapter from "../components/chapters/HeartSizeChapter";
-import MilesChapter from "../components/chapters/MilesChapter";
 import MusicMomentCard from "../components/chapters/MusicMomentCard";
 import PersonalityOrderChapter from "../components/chapters/PersonalityOrderChapter";
+import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
+import PokerChapter from "../components/chapters/PokerChapter";
 import PredictionsChapter from "../components/chapters/PredictionsChapter";
 import RedFlagsChapter from "../components/chapters/RedFlagsChapter";
+import RunnerMilesChapter from "../components/chapters/RunnerMilesChapter";
 import ScreenTimeChapter from "../components/chapters/ScreenTimeChapter";
 import StartingLineupChapter from "../components/chapters/StartingLineupChapter";
 import StoriesChapter from "../components/chapters/StoriesChapter";
@@ -43,17 +48,24 @@ import { getDisplayNames } from "../lib/anonymizeNames";
 const CHAPTER_TOC = [
   { id: "chapter-1-artist", title: "Your Soundtrack", subtitle: "fred again.. + real spotify data" },
   { id: "chapter-2-car", title: "Main Character Vehicle", subtitle: "his dream car" },
+  { id: "stat-chipotle", title: "Chipotle Minutes", subtitle: "your stats" },
+  { id: "stat-mythology", title: "Greek Mythology Hours", subtitle: "your stats" },
+  { id: "stat-mo", title: "Communicating to Mo", subtitle: "your stats" },
+  { id: "bonus-cologne", title: "Guess the Cologne", subtitle: "bottle shape only" },
   { id: "bonus-achievements", title: "Achievements Unlocked", subtitle: "bonus chapter" },
-  { id: "chapter-3-order", title: "Most Ordered Personality Trait", subtitle: "built to spec" },
-  { id: "bonus-screentime", title: "Screen Time: It's Complicated", subtitle: "bonus chapter" },
-  { id: "chapter-4-miles", title: "Miles This Year", subtitle: "on the run" },
-  { id: "chapter-5-talking", title: "Minutes Spent Talking", subtitle: "an exaggeration, probably" },
-  { id: "bonus-topsearches", title: "Top Searches", subtitle: "bonus chapter" },
+  { id: "chapter-3-order", title: "Most Ordered Personality Trait", subtitle: "chipotle build" },
+  { id: "bonus-bowl", title: "Make Your Own Chipotle Bowl", subtitle: "TBD builder" },
+  { id: "bonus-screentime", title: "Screen Time: It's Complicated", subtitle: "mythology nights" },
+  { id: "chapter-4-miles", title: "Miles This Year", subtitle: "slide ALI past obstacles" },
+  { id: "bonus-poker", title: "Morongo vs Home Poker", subtitle: "your stats" },
+  { id: "chapter-5-talking", title: "Minutes Spent Talking", subtitle: "mythology lectures" },
+  { id: "bonus-quiz", title: "How Well Do You Know Ali", subtitle: "said by ali or someone else" },
+  { id: "bonus-topsearches", title: "Top Searches", subtitle: "the real ones" },
   { id: "chapter-6-stories", title: "Stories Told More Than Once", subtitle: "the classics" },
   { id: "bonus-timeline", title: "Glow Up Timeline", subtitle: "the real archive, in order" },
   { id: "bonus-lineup", title: "Your Starting Lineup", subtitle: "bonus chapter" },
   { id: "bonus-redflags", title: "Red Flags (But We Love Him Anyway)", subtitle: "bonus chapter" },
-  { id: "bonus-greenflags", title: "Green Flags", subtitle: "bonus chapter" },
+  { id: "bonus-greenflags", title: "Green Flags", subtitle: "ground beef & potato" },
   { id: "chapter-7-heart", title: "Heart Size: Off the Charts", subtitle: "the emotional turn" },
   { id: "bonus-predictions", title: "Bonus: Predictions for 22", subtitle: "closing thoughts" },
   { id: "chapter-8-final", title: "Final Slide", subtitle: "the reveal" },
@@ -109,11 +121,18 @@ export default function Home() {
       { id: "chapter-1-moment", content: <MusicMomentCard /> },
 
       { id: "chapter-2-car", content: <CarChapter /> },
+      { id: "stat-chipotle", content: <PersonalStatsChapter statId="chipotle" /> },
+      { id: "stat-mythology", content: <PersonalStatsChapter statId="mythology" /> },
+      { id: "stat-mo", content: <PersonalStatsChapter statId="mo" /> },
+      { id: "bonus-cologne", content: <CologneChapter /> },
       { id: "bonus-achievements", content: <AchievementsChapter /> },
       { id: "chapter-3-order", content: <PersonalityOrderChapter /> },
+      { id: "bonus-bowl", content: <ChipotleBowlChapter /> },
       { id: "bonus-screentime", content: <ScreenTimeChapter /> },
-      { id: "chapter-4-miles", content: <MilesChapter /> },
+      { id: "chapter-4-miles", content: <RunnerMilesChapter /> },
+      { id: "bonus-poker", content: <PokerChapter /> },
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
+      { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },
       { id: "bonus-topsearches", content: <TopSearchesChapter /> },
       { id: "chapter-6-stories", content: <StoriesChapter /> },
       {

@@ -2,6 +2,10 @@
 
 A Spotify-Wrapped-style birthday site for Ali: cinematic story chapters, an *actual life (2005–2026)* album by friends, and on-demand friend memory pages.
 
+## Plan
+
+See **[PLAN.md](./PLAN.md)** for the full creative + technical plan (chapter map, content brief, done vs left).
+
 ## Get all files (clone the repo)
 
 ```bash
