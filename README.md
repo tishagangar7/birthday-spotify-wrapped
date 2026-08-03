@@ -2,6 +2,8 @@
 
 A Spotify-Wrapped-style birthday site for Ali: cinematic story chapters, an *actual life (2005–2026)* album by friends, and on-demand friend memory pages.
 
+**Live site:** [https://birthday-spotify-wrapped.vercel.app](https://birthday-spotify-wrapped.vercel.app)
+
 ## Plan
 
 See **[PLAN.md](./PLAN.md)** for the full creative + technical plan (chapter map, content brief, done vs left).
@@ -9,21 +11,21 @@ See **[PLAN.md](./PLAN.md)** for the full creative + technical plan (chapter map
 ## Get all files (clone the repo)
 
 ```bash
-git clone git@github.com:tishagangar7/actual-life-21.git
-cd actual-life-21
+git clone git@github.com:tishagangar7/birthday-spotify-wrapped.git
+cd birthday-spotify-wrapped
 ```
 
 Or with HTTPS:
 
 ```bash
-git clone https://github.com/tishagangar7/actual-life-21.git
-cd actual-life-21
+git clone https://github.com/tishagangar7/birthday-spotify-wrapped.git
+cd birthday-spotify-wrapped
 ```
 
 If you’re a collaborator and don’t have access yet, ask the owner to invite you, then accept the email invite from GitHub before cloning.
 
 In **VS Code**: `Cmd+Shift+P` → **Git: Clone** → paste  
-`https://github.com/tishagangar7/actual-life-21.git` → open the folder when prompted.
+`https://github.com/tishagangar7/birthday-spotify-wrapped.git` → open the folder when prompted.
 
 ## Run locally
 
