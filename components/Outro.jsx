@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import MediaFrame from "./MediaFrame";
 import SectionTransition from "./SectionTransition";
+import WrappedButton from "./WrappedButton";
 
 export default function Outro({ finale }) {
   const [archiveOpen, setArchiveOpen] = useState(false);
@@ -37,25 +38,25 @@ export default function Outro({ finale }) {
             <p className="continues">actual life continues.</p>
           </motion.div>
         ) : (
-          <motion.button
+          <motion.div
             key="add-memory"
-            type="button"
-            className="add-memory"
-            onClick={() => setArchiveOpen(true)}
+            className="wrapped-cta-row"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0.01 : 0.6, delay: reduceMotion ? 0 : 0.3 }}
           >
-            + add to actual life
-          </motion.button>
+            <WrappedButton variant="primary" onClick={() => setArchiveOpen(true)}>
+              + add to actual life
+            </WrappedButton>
+          </motion.div>
         )}
       </AnimatePresence>
 
       <footer className="site-footer">
-        <a href="https://open.spotify.com/" target="_blank" rel="noreferrer">
+        <WrappedButton variant="ghost" href="https://open.spotify.com/" external>
           continue listening →
-        </a>
+        </WrappedButton>
         <span>actual life / ali / 2005—2026</span>
       </footer>
     </SectionTransition>

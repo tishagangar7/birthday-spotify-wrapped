@@ -1,8 +1,9 @@
-// Exact gradient stops pulled from the Figma "Album Page" design (fileKey
-// 3MPOLutTIDGqGWxnl7V7Db) — one dominant diagonal gradient per track, cycling
-// through 10 combinations across the full tracklist. No real image assets
-// needed; this is the site's generative "cover art" language applied to the
-// album/friend pages.
+"use client";
+
+import Image from "next/image";
+
+// Exact gradient stops pulled from the Figma "Album Page" design — fallback
+// when no photo is provided. Real Ali photos take priority via `src`.
 const TRACK_GRADIENTS = [
   "linear-gradient(135deg, rgb(240, 69, 163) 14.286%, rgb(30, 215, 96) 85.714%)",
   "linear-gradient(135deg, rgb(74, 61, 191) 14.286%, rgb(33, 82, 158) 85.714%)",
@@ -18,18 +19,31 @@ const TRACK_GRADIENTS = [
 
 const HERO_GRADIENT = "linear-gradient(135deg, rgb(217, 89, 140) 14.286%, rgb(102, 51, 128) 50%, rgb(30, 215, 96) 85.714%)";
 
-/**
- * Generative gradient "cover art" — no real image asset needed. `variant="hero"`
- * renders the main album-cover gradient (pink → purple → green); otherwise a
- * track's `index` picks one of ten Figma-matched diagonal gradients so every
- * row in the tracklist reads as its own distinct "cover".
- */
-export default function AlbumCoverArt({ index = 0, size = "hero", label, variant = "track" }) {
+const SIZE_PX = {
+  thumb: 56,
+  medium: 220,
+  hero: 360,
+};
+
+export default function AlbumCoverArt({ index = 0, size = "hero", label, variant = "track", src }) {
   const gradient = variant === "hero" ? HERO_GRADIENT : TRACK_GRADIENTS[index % TRACK_GRADIENTS.length];
+  const dim = SIZE_PX[size] ?? SIZE_PX.hero;
 
   return (
-    <div className={`album-cover album-cover-${size}`} style={{ backgroundImage: gradient }} aria-hidden={label ? undefined : "true"}>
-      {size === "thumb" ? (
+    <div
+      className={`album-cover album-cover-${size}${src ? " album-cover-photo" : ""}`}
+      style={src ? undefined : { backgroundImage: gradient }}
+      aria-hidden={label ? undefined : "true"}
+    >
+      {src ? (
+        <Image
+          src={src}
+          alt={label || ""}
+          fill
+          sizes={`${dim}px`}
+          className="album-cover-image"
+        />
+      ) : size === "thumb" ? (
         <svg className="album-cover-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <rect x="1" y="1" width="22" height="22" rx="4" stroke="rgba(255,255,255,0.55)" strokeWidth="1.6" />
           <circle cx="8" cy="8.5" r="2.1" fill="rgba(255,255,255,0.55)" />

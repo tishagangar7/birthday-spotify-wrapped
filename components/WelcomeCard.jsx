@@ -1,18 +1,38 @@
 "use client";
 
 import SectionTransition from "./SectionTransition";
+import WrappedButton from "./WrappedButton";
+import { useStoryDeckNav } from "./StoryDeckContext";
 
-export default function WelcomeCard() {
+/** Figma frame: 01 Intro — ALI'S 21ST WRAPPED (replaces old actual-life cover) */
+export default function WelcomeCard({ onStart }) {
+  const nav = useStoryDeckNav();
+
   return (
     <SectionTransition className="welcome-card wrapped-accent-green" variant="rise">
-      <span className="spotify-wordmark">
+      <span className="wrapped-kicker">ali’s</span>
+      <h1 className="welcome-title welcome-title-figma">
+        <span className="welcome-21st">21st</span>
+        <span className="welcome-wrapped">wrapped</span>
+      </h1>
+      <p className="welcome-sub">
+        not a recap of what he listened to — a cinematic recap of who he is.
+      </p>
+      <div className="wrapped-cta-row">
+        <WrappedButton
+          variant="primary"
+          onClick={() => {
+            onStart?.();
+            nav?.goToId("credits-opening");
+          }}
+        >
+          start wrapped
+        </WrappedButton>
+      </div>
+      <span className="spotify-wordmark welcome-wordmark">
         <span className="spotify-dot" aria-hidden="true" />
         spotify
       </span>
-      <span className="wrapped-kicker">ali’s</span>
-      <h1 className="welcome-title">2026 wrapped</h1>
-      <p className="welcome-sub">21 years, one archive, way too many songs.</p>
-      <p className="welcome-hint">tap or swipe to continue →</p>
     </SectionTransition>
   );
 }

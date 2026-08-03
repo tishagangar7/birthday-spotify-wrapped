@@ -1,18 +1,44 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Grain from "../../../components/Grain";
 import MediaFrame from "../../../components/MediaFrame";
 import MemoryForm from "../../../components/MemoryForm";
+import MemoryLyrics, { splitLyricLines } from "../../../components/MemoryLyrics";
 import NowPlayingBar from "../../../components/NowPlayingBar";
 import VoiceNote from "../../../components/VoiceNote";
+import useMemoriesData from "../../../components/useMemoriesData";
 import { findTrackBySlug } from "../../../data/tracklist";
 import { getDisplayName } from "../../../lib/anonymizeNames";
 
 export default function FriendPage() {
   const params = useParams();
   const track = findTrackBySlug(params?.friend);
+  const submitted = useMemoriesData();
+  const [activeLine, setActiveLine] = useState(0);
+  const [localMemories, setLocalMemories] = useState([]);
+
+  const displayName = track ? getDisplayName(track.person) : "";
+
+  const trackLines = useMemo(() => splitLyricLines(track?.message), [track?.message]);
+
+  const friendMemories = useMemo(() => {
+    const fromApi = (submitted.memories || []).filter((memory) => {
+      const name = String(memory.friendName || "").toLowerCase();
+      return name.includes(String(track?.person || "").toLowerCase()) || name.length > 0;
+    });
+    return [...localMemories, ...fromApi];
+  }, [submitted.memories, localMemories, track?.person]);
+
+  useEffect(() => {
+    if (!trackLines.length) return undefined;
+    const id = window.setInterval(() => {
+      setActiveLine((current) => (current + 1) % trackLines.length);
+    }, 2200);
+    return () => window.clearInterval(id);
+  }, [trackLines.length]);
 
   if (!track) {
     return (
@@ -26,7 +52,6 @@ export default function FriendPage() {
   }
 
   const trackNumber = String(track.trackNumber).padStart(2, "0");
-  const displayName = getDisplayName(track.person);
 
   return (
     <div className="page-scroll friend-page">
@@ -51,7 +76,21 @@ export default function FriendPage() {
           </div>
         ) : null}
 
-        <p className="friend-message">{track.message}</p>
+        <MemoryLyrics
+          credit={`lyrics · ${displayName}`}
+          lines={trackLines}
+          activeIndex={activeLine}
+        />
+
+        {friendMemories.slice(0, 4).map((memory) => (
+          <MemoryLyrics
+            key={memory.id || `${memory.friendName}-${memory.message?.slice(0, 12)}`}
+            credit={`lyrics by ${memory.friendName}`}
+            lines={splitLyricLines(memory.message)}
+            activeIndex={0}
+          />
+        ))}
+
         {track.voiceNote ? <VoiceNote src={track.voiceNote} person={displayName} /> : null}
       </div>
 
@@ -59,8 +98,16 @@ export default function FriendPage() {
         <NowPlayingBar trackTitle={track.nowPlaying} duration={track.duration} />
 
         <section className="friend-form-section">
-          <h2 className="friend-form-heading">Add your own memory</h2>
-          <MemoryForm />
+          <h2 className="friend-form-heading">add your verse</h2>
+          <MemoryForm
+            friendName=""
+            onSubmitted={(entry) => {
+              setLocalMemories((prev) => [
+                { id: `local-${Date.now()}`, friendName: entry.friendName, message: entry.message },
+                ...prev,
+              ]);
+            }}
+          />
         </section>
       </div>
 

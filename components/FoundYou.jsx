@@ -4,9 +4,12 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { foundYouPhotos } from "../data/memories";
 import SectionTransition from "./SectionTransition";
+import WrappedButton from "./WrappedButton";
+import { useStoryDeckNav } from "./StoryDeckContext";
 
 export default function FoundYou() {
   const reduceMotion = useReducedMotion();
+  const nav = useStoryDeckNav();
 
   return (
     <SectionTransition className="found-you" variant="fade">
@@ -43,6 +46,12 @@ export default function FoundYou() {
       >
         21 years. somehow all of us ended up here.
       </motion.p>
+
+      <div className="wrapped-cta-row found-skip">
+        <WrappedButton variant="ghost" onClick={() => nav?.goToId("chapter-7-heart")}>
+          skip to the end
+        </WrappedButton>
+      </div>
     </SectionTransition>
   );
 }

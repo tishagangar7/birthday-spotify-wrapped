@@ -2,6 +2,7 @@
 
 import { getDisplayName } from "../lib/anonymizeNames";
 import SectionTransition from "./SectionTransition";
+import WrappedButton from "./WrappedButton";
 
 // Each stat type gets one dominant accent gradient, per the Figma design system.
 // Only the stats actually used in the "Your Soundtrack" chapter (see
@@ -28,14 +29,21 @@ function StatShell({ kicker, badge, children }) {
 function SourceBadge({ source, needsAuth }) {
   if (!source) return null;
   return (
-    <span className={`wrapped-badge ${source === "spotify" ? "is-live" : "is-preview"}`}>
-      {source === "spotify" ? "spotify · live" : "spotify · preview"}
+    <div className="wrapped-source-actions">
+      <span className={`wrapped-badge ${source === "spotify" ? "is-live" : "is-preview"}`}>
+        {source === "spotify" ? "spotify · live" : "spotify · preview"}
+      </span>
       {needsAuth ? (
-        <a className="wrapped-connect" href="/api/auth/spotify/login">
-          connect real data →
-        </a>
+        <div className="wrapped-cta-row">
+          <WrappedButton variant="primary" href="/api/auth/spotify/login">
+            connect spotify
+          </WrappedButton>
+          <WrappedButton variant="ghost" className="wrapped-btn-compact">
+            use our version
+          </WrappedButton>
+        </div>
       ) : null}
-    </span>
+    </div>
   );
 }
 

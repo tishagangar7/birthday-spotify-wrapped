@@ -216,15 +216,15 @@ export const aliOrElseQuiz = [
  * Structure is ready; builder UI can light up later.
  */
 export const chipotleBowl = {
-  status: "tbd",
+  status: "ready",
   kicker: "bonus · build his bowl",
   heading: "make your own chipotle bowl",
-  note: "full builder TBD — for now, here's the default order he'd never deviate from.",
+  note: "tap each line to cycle options, then lock it in.",
   defaults: [
     { step: "rice", pick: "white (obviously)" },
     { step: "beans", pick: "black" },
-    { step: "protein", pick: "whatever's closest to ground beef energy" },
-    { step: "toppings", pick: "everything. no, literally everything." },
-    { step: "salsa", pick: "hot, then mild on the side for \"balance\"" },
+    { step: "protein", pick: "ground beef energy" },
+    { step: "toppings", pick: "everything" },
+    { step: "salsa", pick: "hot + mild on the side" },
   ],
 };

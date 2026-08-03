@@ -1,14 +1,10 @@
-const photos = [
-  "https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1520857014576-2c4f4c972b57?auto=format&fit=crop&w=1800&q=85",
-];
+const PHOTO_COUNT = 49;
+
+/** Real Ali camera roll — drop more files in /public/photos/ali as ali-XX.jpg */
+export const photos = Array.from({ length: PHOTO_COUNT }, (_, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  return `/photos/ali/ali-${n}.jpg`;
+});
 
 const people = [
   ["tisha", "before any of us knew what we were doing"],
@@ -85,11 +81,14 @@ const dates = [
 const mediaFor = (index, layout) => {
   const count = layout === "contact" || layout === "chaos" || layout === "found" ? 6 : layout === "split" || layout === "overlap" ? 2 : 1;
 
-  return Array.from({ length: count }, (_, offset) => ({
-    src: photos[(index + offset * 2) % photos.length],
-    alt: `placeholder memory ${index + 1}, frame ${offset + 1}`,
-    filename: `IMG_${String(4821 + index * 37 + offset).padStart(4, "0")}.JPG`,
-  }));
+  return Array.from({ length: count }, (_, offset) => {
+    const photoIndex = (index * 2 + offset) % photos.length;
+    return {
+      src: photos[photoIndex],
+      alt: `ali — archive frame ${photoIndex + 1}`,
+      filename: `ALI_${String(photoIndex + 1).padStart(4, "0")}.JPG`,
+    };
+  });
 };
 
 export const memories = people.map(([person, subtitle], index) => {
@@ -108,17 +107,16 @@ export const memories = people.map(([person, subtitle], index) => {
     media: mediaFor(index, layout),
     message:
       index === 20
-        ? "these were the first 21 years."
-        : "a placeholder from the archive. replace this with the words only you would know how to write.",
+        ? "these were the first 21 years.\nthanks for letting us be in them.\nhappy 21st, ali."
+        : "a placeholder from the archive.\nreplace this with the words\nonly you would know how to write.",
     voiceNote: "",
     song: "",
     layout,
   };
 });
 
-export const foundYouPhotos = Array.from({ length: 10 }, (_, index) => ({
-  src: photos[index % photos.length],
-  alt: `ali with friend, placeholder ${index + 1}`,
+export const foundYouPhotos = Array.from({ length: 12 }, (_, index) => ({
+  src: photos[(index * 3) % photos.length],
+  alt: `ali with friends, frame ${index + 1}`,
   color: ["red", "yellow", "blue"][index % 3],
 }));
-

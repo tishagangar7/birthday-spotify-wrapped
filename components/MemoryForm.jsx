@@ -1,24 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import MemoryLyrics, { splitLyricLines } from "./MemoryLyrics";
+import WrappedButton from "./WrappedButton";
 
 const NAME_MAX = 80;
 const MESSAGE_MAX = 2000;
 
 /**
- * Lets a friend submit their own memory/message for Ali from their track page.
- * Wired to the now-live `POST /api/memories`:
- *   body: { friendName, message } (both required, trimmed, within length limits)
- *   201 -> { memory: { id, friendName, message, submittedAt } }
- *   400 -> { error: "invalid_json" | "validation_error", message, fieldErrors? }
- *   500 -> { error: "storage_error", message }
+ * Write a memory like Spotify lyrics — line breaks become lyric lines.
+ * Same POST /api/memories contract as before.
  */
-export default function MemoryForm({ friendName }) {
+export default function MemoryForm({ friendName, onSubmitted }) {
   const [nameValue, setNameValue] = useState(friendName || "");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | sending | done | error
+  const [status, setStatus] = useState("idle");
   const [fieldErrors, setFieldErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [activeLine, setActiveLine] = useState(0);
+
+  const previewLines = useMemo(() => {
+    const lines = splitLyricLines(message);
+    return lines.length ? lines : ["start writing…", "press enter for a new line"];
+  }, [message]);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -52,6 +56,7 @@ export default function MemoryForm({ friendName }) {
 
       if (response.status === 201) {
         setStatus("done");
+        onSubmitted?.({ friendName: trimmedName, message: trimmedMessage });
         return;
       }
 
@@ -73,19 +78,30 @@ export default function MemoryForm({ friendName }) {
   };
 
   if (status === "done") {
-    return <p className="memory-form-thanks">added to the archive. thank you, {nameValue || friendName}.</p>;
+    return (
+      <div className="memory-lyrics-done">
+        <MemoryLyrics
+          credit={`lyrics by ${nameValue || friendName}`}
+          lines={splitLyricLines(message)}
+          activeIndex={0}
+        />
+        <p className="memory-form-thanks">added to the track. thank you.</p>
+      </div>
+    );
   }
 
   return (
-    <form className="memory-form" onSubmit={submit} noValidate>
+    <form className="memory-lyrics-form" onSubmit={submit} noValidate>
+      <p className="memory-lyrics-form-kicker">write it like lyrics</p>
+
       <label className="sr-only" htmlFor="memory-name">
         your name
       </label>
       <input
         id="memory-name"
         type="text"
-        className="memory-form-input memory-form-name"
-        placeholder="Your name"
+        className="memory-lyrics-name"
+        placeholder="featuring… (your name)"
         value={nameValue}
         maxLength={NAME_MAX}
         onChange={(event) => setNameValue(event.target.value)}
@@ -93,26 +109,42 @@ export default function MemoryForm({ friendName }) {
       />
       {fieldErrors.friendName ? <p className="memory-form-error">{fieldErrors.friendName}</p> : null}
 
+      <MemoryLyrics
+        credit={nameValue.trim() ? `feat. ${nameValue.trim()}` : "feat. you"}
+        lines={previewLines}
+        activeIndex={Math.min(activeLine, Math.max(previewLines.length - 1, 0))}
+      />
+
       <label className="sr-only" htmlFor="memory-message">
-        your message
+        your memory as lyrics
       </label>
       <textarea
         id="memory-message"
-        className="memory-form-input"
-        rows={3}
+        className="memory-lyrics-composer"
+        rows={5}
         maxLength={MESSAGE_MAX}
-        placeholder="Write your message…"
+        placeholder={"line one\nline two\nline three"}
         value={message}
-        onChange={(event) => setMessage(event.target.value)}
+        onChange={(event) => {
+          const next = event.target.value;
+          setMessage(next);
+          const lines = splitLyricLines(next);
+          setActiveLine(Math.max(lines.length - 1, 0));
+        }}
+        onSelect={(event) => {
+          const before = event.currentTarget.value.slice(0, event.currentTarget.selectionStart);
+          setActiveLine(before.split(/\n+/).filter(Boolean).length - 1);
+        }}
         aria-invalid={fieldErrors.message ? "true" : undefined}
       />
       {fieldErrors.message ? <p className="memory-form-error">{fieldErrors.message}</p> : null}
-
       {errorMessage ? <p className="memory-form-error memory-form-error-general">{errorMessage}</p> : null}
 
-      <button type="submit" className="memory-form-submit" disabled={status === "sending"}>
-        {status === "sending" ? "sending…" : "Add to the archive"}
-      </button>
+      <p className="memory-lyrics-hint">press enter for a new lyric line</p>
+
+      <WrappedButton type="submit" variant="primary" disabled={status === "sending"}>
+        {status === "sending" ? "saving…" : "add lyrics to the archive"}
+      </WrappedButton>
     </form>
   );
 }

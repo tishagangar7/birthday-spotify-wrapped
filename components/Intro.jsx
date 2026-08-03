@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import WrappedButton from "./WrappedButton";
 
 export default function Intro({ onEnter }) {
   const reduceMotion = useReducedMotion();
@@ -26,10 +27,9 @@ export default function Intro({ onEnter }) {
           the people who were there
         </p>
       </motion.div>
-      <button type="button" onClick={onEnter} className="enter-button">
+      <WrappedButton variant="ghost" className="enter-button" onClick={onEnter}>
         [ enter ]
-      </button>
+      </WrappedButton>
     </motion.div>
   );
 }
-

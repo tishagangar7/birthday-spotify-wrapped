@@ -1,19 +1,27 @@
 "use client";
 
-import Link from "next/link";
-import AlbumCoverArt from "./AlbumCoverArt";
 import SectionTransition from "./SectionTransition";
+import WrappedButton from "./WrappedButton";
+import { useStoryDeckNav } from "./StoryDeckContext";
 
+/** End-of-Wrapped curtain before the Actual Life album. */
 export default function AlbumTeaserCard() {
+  const nav = useStoryDeckNav();
+
   return (
     <SectionTransition className="welcome-card album-teaser wrapped-accent-pink" variant="rise">
-      <AlbumCoverArt variant="hero" size="medium" />
-      <span className="wrapped-kicker">the full album</span>
-      <h2 className="welcome-title album-teaser-title">actual life (2005–2026)</h2>
-      <p className="welcome-sub">fred again.. · ali remix — every friend gets a track. tap in to hear from them.</p>
-      <Link href="/album" className="album-teaser-link">
-        open the tracklist →
-      </Link>
+      <span className="wrapped-kicker">one more thing</span>
+      <h2 className="welcome-title album-teaser-title">
+        we curated a special playlist for you.
+      </h2>
+      <p className="welcome-sub">
+        actual life (2005–2026) — every friend gets a track.
+      </p>
+      <div className="wrapped-cta-row">
+        <WrappedButton variant="primary" onClick={() => nav?.goToId("album-playlist")}>
+          play the playlist
+        </WrappedButton>
+      </div>
     </SectionTransition>
   );
 }

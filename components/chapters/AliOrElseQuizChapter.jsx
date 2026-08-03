@@ -2,11 +2,9 @@
 
 import { useMemo, useState } from "react";
 import SectionTransition from "../SectionTransition";
+import WrappedButton from "../WrappedButton";
 import { aliOrElseQuiz } from "../../data/wrappedChapters";
 
-/**
- * "How well do you know Ali" — was this said by Ali, or someone else?
- */
 export default function AliOrElseQuizChapter() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -22,8 +20,7 @@ export default function AliOrElseQuizChapter() {
     return correct ? "correct." : `nope — ${item.saidByAli ? "ali" : "someone else"}.`;
   }, [picked, item]);
 
-  function choose(choice, e) {
-    e.stopPropagation();
+  function choose(choice) {
     if (picked !== null || done) return;
     const correct = choice === (item.saidByAli ? "ali" : "else");
     setPicked(choice);
@@ -40,7 +37,7 @@ export default function AliOrElseQuizChapter() {
   }
 
   return (
-    <SectionTransition className="wrapped-card wrapped-accent-green" variant="rise">
+    <SectionTransition className="wrapped-card wrapped-accent-green story-no-nav" variant="rise">
       <span className="wrapped-kicker">bonus · how well do you know ali</span>
       <div className="wrapped-body">
         {done ? (
@@ -63,15 +60,15 @@ export default function AliOrElseQuizChapter() {
             <p className="wrapped-caption" style={{ opacity: 0.6 }}>
               {index + 1} / {total}
             </p>
-            <div className="quiz-actions">
-              <button type="button" className="quiz-btn" onClick={(e) => choose("ali", e)} disabled={picked !== null}>
+            <div className="wrapped-cta-row quiz-actions">
+              <WrappedButton variant="primary" onClick={() => choose("ali")} disabled={picked !== null}>
                 ali
-              </button>
-              <button type="button" className="quiz-btn" onClick={(e) => choose("else", e)} disabled={picked !== null}>
+              </WrappedButton>
+              <WrappedButton variant="ghost" onClick={() => choose("else")} disabled={picked !== null}>
                 someone else
-              </button>
+              </WrappedButton>
             </div>
-            {feedback && <p className="wrapped-caption">{feedback}</p>}
+            {feedback ? <p className="wrapped-caption">{feedback}</p> : null}
           </>
         )}
       </div>
