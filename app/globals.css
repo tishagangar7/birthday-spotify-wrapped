@@ -3636,6 +3636,10 @@ input[type="range"]::-webkit-slider-thumb {
   overflow: hidden;
 }
 
+.loved-clips-chapter .wrapped-kicker {
+  color: color-mix(in srgb, var(--wrapped-teal) 70%, var(--paper));
+}
+
 .loved-clips-header {
   flex-shrink: 0;
   width: 100%;
@@ -3688,7 +3692,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: max-content;
   min-height: 100%;
   padding-inline: max(1rem, calc(50% - min(31vw, 120px)));
-  padding-block: 0.5rem 0.25rem;
+  padding-block: 1.1rem 0.75rem;
 }
 
 .loved-clips-slide {

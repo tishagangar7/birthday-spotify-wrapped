@@ -307,19 +307,16 @@ export const lovedClips = [
     id: "clip-2",
     type: "video",
     src: "/videos/loved-clips/clip-2.mp4",
-    caption: "clip two",
   },
   {
     id: "clip-3",
     type: "video",
     src: "/videos/loved-clips/clip-3.mp4",
-    caption: "clip three",
   },
   {
     id: "clip-4",
     type: "video",
     src: "/videos/loved-clips/clip-4.mp4",
-    caption: "clip four",
   },
 ];
 
