@@ -28,6 +28,9 @@ export const topArtists = [
     slug: "fred-again",
     image: "/photos/artists/fred-again.jpg",
     label: "Artist",
+    video: "/videos/artists/fred-again.mp4",
+    videoTitle: "now playing: floor",
+    videoCaption: "one of the best memories. can't wait for more.",
   },
   {
     rank: 2,
@@ -36,6 +39,8 @@ export const topArtists = [
     image: "/photos/artists/subtronics.jpg",
     label: "Artist",
     video: "/videos/artists/subtronics.mp4",
+    videoTitle: "now playing: crystallized",
+    videoCaption: "can't wait to hear all about this day from u.",
   },
   {
     rank: 3,
@@ -43,6 +48,7 @@ export const topArtists = [
     slug: "karan-aujla",
     image: "/photos/artists/karan-aujla.jpg",
     label: "Artist",
+    comingSoon: true,
   },
 ];
 
@@ -105,10 +111,11 @@ export const personalityTraits = [
 export const personalStats = [
   {
     id: "chipotle",
+    bigStat: true,
     kicker: "your stats · chipotle",
     big: "∞",
-    isNumber: false,
-    caption: "spent these many minutes at chipotle. the line is part of his personality now.",
+    caption:
+      "spent these many minutes at chipotle this year. becoming chipotle's top customer is literally his personality.",
     accent: "wrapped-accent-orange",
   },
   {
@@ -122,9 +129,9 @@ export const personalStats = [
   },
   {
     id: "mo",
+    bigStat: true,
     kicker: "your stats · communications",
     big: "2h+",
-    isNumber: false,
     caption: "at least 2 hours every day trying to communicate to mo. a full-time unpaid internship.",
     accent: "wrapped-accent-pink",
   },
@@ -233,16 +240,64 @@ export const pokerChapter = {
   lostNote: "lost quite a bit at morongo.",
   wonAt: "home poker",
   wonNote: "made quite a bit at home poker games.",
-  punchline: "the house always wins — unless the house is his living room.",
+  punchline: "[some subtext]",
 };
 
-/** Guess the cologne — bottle shape tease, answer on reveal. */
+/** 3-round silhouette quiz — all three are Ali's; each round gets harder. */
 export const cologneChapter = {
   kicker: "bonus · guess the cologne",
-  prompt: "guess the cologne from the bottle shape.",
-  hint: "silhouette only. no cheating.",
-  answer: "TBD — swap in the real bottle name",
-  bottleNote: "tall / rectangular / suspiciously expensive-looking.",
+  prompt: "identify the bottle from the silhouette.",
+  options: [
+    {
+      id: "bleu-de-chanel",
+      name: "Bleu de Chanel",
+      silhouette: "/photos/cologne/bleu-de-chanel.png",
+    },
+    {
+      id: "baccarat-rouge-540",
+      name: "Baccarat Rouge 540",
+      silhouette: "/photos/cologne/baccarat-rouge-540.png",
+    },
+    {
+      id: "aventus",
+      name: "Creed Aventus",
+      silhouette: "/photos/cologne/aventus.png",
+    },
+  ],
+  rounds: [
+    {
+      correctId: "bleu-de-chanel",
+      difficulty: "easy",
+      hint: "distinct square. start easy.",
+      options: [
+        { id: "sauvage", name: "Dior Sauvage" },
+        { id: "bleu-de-chanel", name: "Bleu de Chanel" },
+        { id: "acqua-di-gio", name: "Acqua di Gio" },
+      ],
+    },
+    {
+      correctId: "baccarat-rouge-540",
+      difficulty: "medium",
+      hint: "sharper edges. getting trickier.",
+      options: [
+        { id: "ysl-y", name: "YSL Y" },
+        { id: "oud-wood", name: "Tom Ford Oud Wood" },
+        { id: "baccarat-rouge-540", name: "Baccarat Rouge 540" },
+      ],
+    },
+    {
+      correctId: "aventus",
+      difficulty: "hard",
+      hint: "good luck — this one's mean.",
+      options: [
+        { id: "dior-homme", name: "Dior Homme" },
+        { id: "aventus", name: "Creed Aventus" },
+        { id: "spicebomb", name: "Viktor & Rolf Spicebomb" },
+      ],
+    },
+  ],
+  wrongFeedback: "not quite — try again.",
+  correctFeedback: "yep.",
 };
 
 /**

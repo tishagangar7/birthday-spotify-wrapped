@@ -8,10 +8,13 @@ import { Volume2, X } from "lucide-react";
 import SectionTransition from "../SectionTransition";
 import { topArtists } from "../../data/wrappedChapters";
 
-function ArtistVideoModal({ artist, onClose }) {
+function ArtistModal({ artist, onClose }) {
   const videoRef = useRef(null);
   const [needsUnmute, setNeedsUnmute] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const hasVideo = Boolean(artist?.video);
+  const isComingSoon = Boolean(artist?.comingSoon);
+  const isOpen = Boolean(artist && (hasVideo || isComingSoon));
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +30,7 @@ function ArtistVideoModal({ artist, onClose }) {
   }, [onClose]);
 
   useEffect(() => {
-    if (!artist?.video) return undefined;
+    if (!isOpen) return undefined;
 
     const handleKey = (event) => {
       if (event.key === "Escape") close();
@@ -40,11 +43,11 @@ function ArtistVideoModal({ artist, onClose }) {
       window.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
     };
-  }, [artist?.video, close]);
+  }, [isOpen, close]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !artist?.video) return undefined;
+    if (!video || !hasVideo) return undefined;
 
     let cancelled = false;
 
@@ -69,7 +72,7 @@ function ArtistVideoModal({ artist, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [artist?.video]);
+  }, [hasVideo, artist?.video]);
 
   const handleUnmute = async () => {
     const video = videoRef.current;
@@ -84,7 +87,11 @@ function ArtistVideoModal({ artist, onClose }) {
     }
   };
 
-  if (!mounted || !artist?.video) return null;
+  if (!mounted || !isOpen) return null;
+
+  const modalTitle = hasVideo
+    ? (artist.videoTitle ?? artist.name)
+    : artist.name;
 
   return createPortal(
     <div className="artist-video-overlay" onClick={close} role="presentation">
@@ -95,32 +102,43 @@ function ArtistVideoModal({ artist, onClose }) {
         aria-labelledby="artist-video-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <button
-          type="button"
-          className="artist-video-close"
-          onClick={close}
-          aria-label="Close video"
-        >
-          <X size={22} strokeWidth={2.25} aria-hidden="true" />
-        </button>
-        <h2 id="artist-video-title" className="sr-only">
-          {artist.name} concert
-        </h2>
-        <div className="artist-video-frame">
-          <video
-            ref={videoRef}
-            className="artist-video-player"
-            src={artist.video}
-            playsInline
-            controls={needsUnmute}
-            preload="auto"
-          />
-          {needsUnmute ? (
-            <button type="button" className="artist-video-unmute" onClick={handleUnmute}>
-              <Volume2 size={18} aria-hidden="true" />
-              Tap to unmute
-            </button>
-          ) : null}
+        <div className="artist-video-card">
+          <button
+            type="button"
+            className="artist-video-close"
+            onClick={close}
+            aria-label={hasVideo ? "Close video" : "Close"}
+          >
+            <X size={20} strokeWidth={2.25} aria-hidden="true" />
+          </button>
+          <h2 id="artist-video-title" className="artist-video-heading">
+            {modalTitle}
+          </h2>
+          {hasVideo ? (
+            <>
+              <div className="artist-video-frame">
+                <video
+                  ref={videoRef}
+                  className="artist-video-player"
+                  src={artist.video}
+                  playsInline
+                  controls={needsUnmute}
+                  preload="auto"
+                />
+                {needsUnmute ? (
+                  <button type="button" className="artist-video-unmute" onClick={handleUnmute}>
+                    <Volume2 size={18} aria-hidden="true" />
+                    Tap to unmute
+                  </button>
+                ) : null}
+              </div>
+              {artist.videoCaption ? (
+                <p className="artist-video-caption">{artist.videoCaption}</p>
+              ) : null}
+            </>
+          ) : (
+            <p className="artist-video-coming-soon">coming soon</p>
+          )}
         </div>
       </div>
     </div>,
@@ -131,10 +149,10 @@ function ArtistVideoModal({ artist, onClose }) {
 /** Wrapped-style top artists — horizontal Spotify portrait row, purple accent. */
 export default function TopArtistsChapter() {
   const reduceMotion = useReducedMotion();
-  const [activeVideo, setActiveVideo] = useState(null);
+  const [activeArtist, setActiveArtist] = useState(null);
 
-  const openVideo = (artist) => {
-    if (artist.video) setActiveVideo(artist);
+  const openArtist = (artist) => {
+    if (artist.video || artist.comingSoon) setActiveArtist(artist);
   };
 
   return (
@@ -152,11 +170,16 @@ export default function TopArtistsChapter() {
           <div className="top-artists-grid" role="list">
             {topArtists.map((artist, index) => {
               const hasVideo = Boolean(artist.video);
+              const isComingSoon = Boolean(artist.comingSoon);
+              const isInteractive = hasVideo || isComingSoon;
+              const isHighlighted = activeArtist
+                ? activeArtist.slug === artist.slug
+                : artist.rank === 1;
 
               return (
                 <motion.article
                   key={artist.rank}
-                  className={`top-artists-card${artist.rank === 1 ? " is-first" : ""}${hasVideo ? " has-video" : ""}`}
+                  className={`top-artists-card${isHighlighted ? " is-highlighted" : ""}${isInteractive ? " is-interactive" : ""}`}
                   role="listitem"
                   initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.94 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -167,17 +190,21 @@ export default function TopArtistsChapter() {
                   }}
                 >
                   <span
-                    className={`top-artists-rank${artist.rank === 1 ? " is-first" : ""}`}
+                    className={`top-artists-rank${isHighlighted ? " is-highlighted" : ""}`}
                     aria-hidden="true"
                   >
                     #{artist.rank}
                   </span>
-                  {hasVideo ? (
+                  {isInteractive ? (
                     <button
                       type="button"
                       className="top-artists-avatar-btn"
-                      onClick={() => openVideo(artist)}
-                      aria-label={`Play ${artist.name} concert video`}
+                      onClick={() => openArtist(artist)}
+                      aria-label={
+                        hasVideo
+                          ? `Play ${artist.name} concert video`
+                          : `Open ${artist.name}`
+                      }
                     >
                       <div className="top-artists-avatar">
                         <Image
@@ -200,11 +227,11 @@ export default function TopArtistsChapter() {
                       />
                     </div>
                   )}
-                  {hasVideo ? (
+                  {isInteractive ? (
                     <button
                       type="button"
                       className="top-artists-name-btn"
-                      onClick={() => openVideo(artist)}
+                      onClick={() => openArtist(artist)}
                     >
                       <span className="top-artists-name">{artist.name}</span>
                     </button>
@@ -218,7 +245,7 @@ export default function TopArtistsChapter() {
           </div>
         </div>
       </SectionTransition>
-      <ArtistVideoModal artist={activeVideo} onClose={() => setActiveVideo(null)} />
+      <ArtistModal artist={activeArtist} onClose={() => setActiveArtist(null)} />
     </>
   );
 }

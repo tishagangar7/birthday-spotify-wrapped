@@ -7,8 +7,7 @@ import { topSongs } from "../data/wrappedChapters";
 import AchievementsChapter from "../components/chapters/AchievementsChapter";
 import AlbumPlaylistChapter from "../components/chapters/AlbumPlaylistChapter";
 import AliOrElseQuizChapter from "../components/chapters/AliOrElseQuizChapter";
-import CarChapter from "../components/chapters/CarChapter";
-import ChipotleBowlChapter from "../components/chapters/ChipotleBowlChapter";
+import PolaroidWallChapter from "../components/chapters/PolaroidWallChapter";
 import ClosingCreditsChapter from "../components/chapters/ClosingCreditsChapter";
 import CologneChapter from "../components/chapters/CologneChapter";
 import TopArtistsChapter from "../components/chapters/TopArtistsChapter";
@@ -16,7 +15,6 @@ import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
 import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
 import HeartSizeChapter from "../components/chapters/HeartSizeChapter";
-import PersonalityOrderChapter from "../components/chapters/PersonalityOrderChapter";
 import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
 import PokerChapter from "../components/chapters/PokerChapter";
 import PredictionsChapter from "../components/chapters/PredictionsChapter";
@@ -58,9 +56,10 @@ export default function Home() {
   const playTrack = useCallback(async (song) => {
     if (!song?.src) return;
     setAudioReady(true);
-    setActiveTrack(song);
-    // Play inside the click gesture with the concrete src (autoplay-safe).
-    await audioPlayerRef.current?.play(song.src);
+    // Play inside the click gesture before React re-renders with the new track.
+    // Updating activeTrack first lets the sync effect call load() and abort play().
+    const ok = await audioPlayerRef.current?.play(song.src);
+    if (ok !== false) setActiveTrack(song);
   }, []);
 
   const selectSong = useCallback(
@@ -115,14 +114,11 @@ export default function Home() {
         ),
       },
       { id: "top-artists", content: <TopArtistsChapter /> },
-      { id: "chapter-2-car", content: <CarChapter /> },
       { id: "stat-chipotle", content: <PersonalStatsChapter statId="chipotle" /> },
-      { id: "stat-mythology", content: <PersonalStatsChapter statId="mythology" /> },
       { id: "stat-mo", content: <PersonalStatsChapter statId="mo" /> },
       { id: "bonus-cologne", content: <CologneChapter /> },
       { id: "bonus-poker", content: <PokerChapter /> },
-      { id: "chapter-3-order", content: <PersonalityOrderChapter /> },
-      { id: "bonus-bowl", content: <ChipotleBowlChapter /> },
+      { id: "bonus-polaroids", content: <PolaroidWallChapter /> },
       { id: "chapter-4-miles", content: <RunnerMilesChapter /> },
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
       { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },

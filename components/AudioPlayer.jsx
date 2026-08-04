@@ -17,6 +17,7 @@ const AudioPlayer = forwardRef(function AudioPlayer(
   ref
 ) {
   const audioRef = useRef(null);
+  const gesturePlayRef = useRef(false);
   const preferredVolume = useRef(0.72);
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -43,17 +44,19 @@ const AudioPlayer = forwardRef(function AudioPlayer(
       const target = nextSrc || song;
       if (!target) return false;
       const current = audio.dataset.trackSrc || "";
-      if (current !== target) {
-        audio.dataset.trackSrc = target;
-        audio.src = target;
-        audio.load();
-      }
+      gesturePlayRef.current = true;
       try {
+        if (current !== target) {
+          audio.dataset.trackSrc = target;
+          audio.src = target;
+        }
         await audio.play();
         return true;
       } catch {
         setPlayingState(false);
         return false;
+      } finally {
+        gesturePlayRef.current = false;
       }
     },
     pause: () => {
@@ -75,6 +78,7 @@ const AudioPlayer = forwardRef(function AudioPlayer(
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (gesturePlayRef.current) return;
     if (!song) {
       delete audio.dataset.trackSrc;
       audio.removeAttribute("src");
@@ -87,7 +91,6 @@ const AudioPlayer = forwardRef(function AudioPlayer(
     if (audio.dataset.trackSrc === song) return;
     audio.dataset.trackSrc = song;
     audio.src = song;
-    audio.load();
     setElapsed(0);
     setDuration(0);
   }, [song]);

@@ -996,7 +996,7 @@ button {
   text-transform: uppercase;
 }
 
-.top-artists-rank.is-first {
+.top-artists-rank.is-highlighted {
   color: var(--spotify-green);
 }
 
@@ -1013,7 +1013,7 @@ button {
     inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.top-artists-card.is-first .top-artists-avatar {
+.top-artists-card.is-highlighted .top-artists-avatar {
   box-shadow:
     0 0 0 3px var(--spotify-green),
     0 12px 32px rgba(29, 185, 84, 0.22),
@@ -1070,8 +1070,8 @@ button {
   }
 }
 
-.top-artists-card.has-video .top-artists-avatar-btn,
-.top-artists-card.has-video .top-artists-name-btn {
+.top-artists-card.is-interactive .top-artists-avatar-btn,
+.top-artists-card.is-interactive .top-artists-name-btn {
   cursor: pointer;
 }
 
@@ -1094,12 +1094,12 @@ button {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.top-artists-card.has-video .top-artists-avatar-btn:hover,
-.top-artists-card.has-video .top-artists-avatar-btn:focus-visible {
+.top-artists-card.is-interactive .top-artists-avatar-btn:hover,
+.top-artists-card.is-interactive .top-artists-avatar-btn:focus-visible {
   transform: scale(1.04);
 }
 
-.top-artists-card.has-video .top-artists-avatar-btn:focus-visible {
+.top-artists-card.is-interactive .top-artists-avatar-btn:focus-visible {
   outline: 2px solid var(--wrapped-purple);
   outline-offset: 4px;
 }
@@ -1109,12 +1109,12 @@ button {
   width: 100%;
 }
 
-.top-artists-card.has-video .top-artists-name-btn:hover .top-artists-name,
-.top-artists-card.has-video .top-artists-name-btn:focus-visible .top-artists-name {
+.top-artists-card.is-interactive .top-artists-name-btn:hover .top-artists-name,
+.top-artists-card.is-interactive .top-artists-name-btn:focus-visible .top-artists-name {
   color: color-mix(in srgb, var(--wrapped-purple) 55%, var(--paper));
 }
 
-.top-artists-card.has-video .top-artists-name-btn:focus-visible {
+.top-artists-card.is-interactive .top-artists-name-btn:focus-visible {
   outline: 2px solid var(--wrapped-purple);
   outline-offset: 2px;
   border-radius: 4px;
@@ -1129,32 +1129,55 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(12px, 4vw, 28px);
+  padding: clamp(16px, 5vw, 32px);
   padding-bottom: clamp(72px, 14vh, 96px);
-  background: rgba(0, 0, 0, 0.88);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(8, 8, 10, 0.52);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .artist-video-modal {
   position: relative;
-  width: min(960px, 100%);
+  width: min(720px, 100%);
   max-height: calc(100dvh - clamp(72px, 14vh, 96px) - 24px);
+}
+
+.artist-video-card {
+  position: relative;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  padding: clamp(14px, 3vw, 20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(18, 18, 22, 0.94);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.artist-video-heading {
+  margin: 0;
+  padding-right: 40px;
+  color: var(--paper);
+  font-family: var(--font-archivo), sans-serif;
+  font-size: clamp(1rem, 3.5vw, 1.25rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .artist-video-close {
   position: absolute;
-  top: -44px;
-  right: 0;
+  top: clamp(10px, 2.5vw, 14px);
+  right: clamp(10px, 2.5vw, 14px);
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--paper);
   cursor: pointer;
@@ -1171,17 +1194,17 @@ button {
 .artist-video-frame {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #000;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
 }
 
 .artist-video-player {
   display: block;
   width: 100%;
-  max-height: calc(100dvh - clamp(72px, 14vh, 96px) - 48px);
+  max-height: min(56vh, calc(100dvh - clamp(72px, 14vh, 96px) - 120px));
   vertical-align: middle;
   background: #000;
+  object-fit: contain;
 }
 
 .artist-video-unmute {
@@ -1210,6 +1233,32 @@ button {
   background: #fff;
   outline: 2px solid var(--wrapped-purple);
   outline-offset: 2px;
+}
+
+.artist-video-caption {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(0.88rem, 2.8vw, 0.98rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.artist-video-coming-soon {
+  margin: 0;
+  padding: clamp(48px, 12vw, 72px) clamp(16px, 4vw, 24px);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: lowercase;
 }
 
 .heart-chapter .wrapped-kicker {
@@ -2846,15 +2895,119 @@ input[type="range"]::-webkit-slider-thumb {
   text-decoration: none;
 }
 
+/* ---------------------------------------------------------------------- */
+/* Polaroid wall — Ali photo strip after poker                            */
+/* ---------------------------------------------------------------------- */
+
+.polaroid-wall-chapter.wrapped-card {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 4vh 14px 3vh;
+  overflow: hidden;
+}
+
+.polaroid-wall-header {
+  flex-shrink: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.polaroid-wall-subtext {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(0.9rem, 3vw, 1.05rem);
+  line-height: 1.45;
+}
+
+.polaroid-wall-scroll {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  margin-top: 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.polaroid-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 10px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 6px 2px 18px;
+}
+
+.polaroid-frame {
+  margin: 0;
+  padding: 7px 7px 18px;
+  border: none;
+  background: #f7f4ed;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.32),
+    0 1px 4px rgba(0, 0, 0, 0.18);
+  transform: rotate(var(--polaroid-rotate, 0deg));
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.polaroid-frame:hover {
+  transform: rotate(var(--polaroid-rotate, 0deg)) scale(1.02);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.38),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.polaroid-image-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #d8d4cb;
+}
+
+.polaroid-image {
+  object-fit: cover;
+}
+
+@media (min-width: 480px) {
+  .polaroid-wall-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .polaroid-wall-chapter.wrapped-card {
+    padding-top: 5vh;
+  }
+
+  .polaroid-wall-grid {
+    max-width: 760px;
+    gap: 18px 14px;
+  }
+
+  .polaroid-frame {
+    padding: 9px 9px 22px;
+  }
+}
+
 .album-playlist-chapter {
   display: flex;
   height: 100%;
   min-height: 100%;
   flex-direction: column;
-  gap: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
   padding: 5vh 18px 8vh;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--wrapped-black);
+  text-align: center;
+}
+
+.album-playlist-blurb {
+  max-width: 22rem;
 }
 
 .album-playlist-hero {
@@ -3206,45 +3359,100 @@ input[type="range"]::-webkit-slider-thumb {
   accent-color: #1ed760;
 }
 
-.cologne-bottle {
+.cologne-round-label {
+  margin-top: 0.35rem;
+  opacity: 0.65;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+}
+
+.cologne-silhouette-stage {
+  display: grid;
+  place-items: center;
+  margin: 1.1rem auto 0.65rem;
+  width: min(100%, 320px);
+  min-height: 240px;
+}
+
+.cologne-silhouette-frame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.cologne-silhouette-image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.55));
+}
+
+.cologne-round-hint {
+  opacity: 0.55;
+  font-size: 0.88rem;
+  margin-bottom: 0.25rem;
+}
+
+.cologne-options {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.85rem;
-  margin: 1.25rem auto 0.75rem;
-  background: transparent;
-  border: 0;
+  gap: 0.65rem;
+  width: min(100%, 320px);
+  margin: 1rem auto 0;
+}
+
+.cologne-option {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.72rem 1.1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
   cursor: pointer;
-  color: inherit;
-  padding: 0;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-.cologne-bottle-shape {
-  width: 72px;
-  height: 140px;
-  border-radius: 10px 10px 18px 18px;
-  background: linear-gradient(160deg, #c4c4c4 0%, #4a4a4a 45%, #1a1a1a 100%);
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.15), 0 12px 40px rgba(0, 0, 0, 0.4);
-  position: relative;
+.cologne-option:hover:not(:disabled),
+.cologne-option:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 
-.cologne-bottle-shape::before {
-  content: "";
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 18px;
-  border-radius: 4px 4px 2px 2px;
-  background: #2a2a2a;
+.cologne-option:disabled {
+  cursor: default;
 }
 
-.cologne-bottle-hint {
-  font-size: 0.95rem;
-  opacity: 0.85;
-  text-align: center;
-  max-width: 16rem;
+.cologne-option.is-correct {
+  background: rgba(30, 215, 96, 0.22);
+  border-color: #1ed760;
+}
+
+.cologne-option.is-wrong {
+  background: rgba(255, 90, 90, 0.18);
+  border-color: rgba(255, 120, 120, 0.75);
+}
+
+.cologne-feedback {
+  margin-top: 0.85rem;
+  min-height: 1.25rem;
+}
+
+.cologne-shelf {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cologne-shelf-item {
+  width: auto;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
 }
 
 .quiz-quote {
