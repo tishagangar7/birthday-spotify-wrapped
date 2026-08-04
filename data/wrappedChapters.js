@@ -302,25 +302,41 @@ export const lovedClips = [
     id: "dance",
     type: "video",
     src: "/videos/loved-clips/dance.mp4",
-    caption: "the dance",
   },
   {
     id: "clip-2",
     type: "video",
     src: "/videos/loved-clips/clip-2.mp4",
-    caption: "that one",
   },
   {
     id: "clip-3",
     type: "video",
     src: "/videos/loved-clips/clip-3.mp4",
-    caption: "core memory",
   },
   {
     id: "clip-4",
     type: "video",
     src: "/videos/loved-clips/clip-4.mp4",
-    caption: "don't skip",
+  },
+  {
+    id: "clip-5",
+    type: "video",
+    src: "/videos/loved-clips/clip-5.mp4",
+  },
+  {
+    id: "clip-6",
+    type: "video",
+    src: "/videos/loved-clips/clip-6.mp4",
+  },
+  {
+    id: "clip-7",
+    type: "video",
+    src: "/videos/loved-clips/clip-7.mp4",
+  },
+  {
+    id: "clip-8",
+    type: "video",
+    src: "/videos/loved-clips/clip-8.mp4",
   },
 ];
 

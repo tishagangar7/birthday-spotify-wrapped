@@ -23,7 +23,6 @@ import RedFlagsChapter from "../components/chapters/RedFlagsChapter";
 import RunnerMilesChapter from "../components/chapters/RunnerMilesChapter";
 import ScreenTimeChapter from "../components/chapters/ScreenTimeChapter";
 import StartingLineupChapter from "../components/chapters/StartingLineupChapter";
-import StoriesChapter from "../components/chapters/StoriesChapter";
 import TalkingMinutesChapter from "../components/chapters/TalkingMinutesChapter";
 import TopSearchesChapter from "../components/chapters/TopSearchesChapter";
 import TopSongsChapter from "../components/chapters/TopSongsChapter";
@@ -124,7 +123,6 @@ export default function Home() {
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
       { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },
       { id: "bonus-loved-clips", content: <LovedClipsChapter /> },
-      { id: "chapter-6-stories", content: <StoriesChapter /> },
       { id: "chapter-7-heart", content: <HeartSizeChapter topMemory={wrapped.data?.topMemory ?? null} /> },
       { id: "bonus-lineup", content: <StartingLineupChapter /> },
       {

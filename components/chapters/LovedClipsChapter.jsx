@@ -8,8 +8,7 @@ import SectionTransition from "../SectionTransition";
 import { lovedClips } from "../../data/wrappedChapters";
 
 /**
- * Horizontal “clips we love” filmstrip — Spotify Made For You energy.
- * Center snap = focused; videos autoplay muted+loop when active.
+ * Horizontal “clips we love” filmstrip — center snap plays, sides dim.
  */
 export default function LovedClipsChapter() {
   const reduceMotion = useReducedMotion();
@@ -19,7 +18,6 @@ export default function LovedClipsChapter() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [chapterVisible, setChapterVisible] = useState(false);
   const [muted, setMuted] = useState(true);
-  const [needsGesture, setNeedsGesture] = useState(false);
 
   const updateActiveFromScroll = useCallback(() => {
     const strip = stripRef.current;
@@ -42,15 +40,29 @@ export default function LovedClipsChapter() {
     setActiveIndex((prev) => (prev === best ? prev : best));
   }, []);
 
+  const scrollToIndex = useCallback(
+    (index) => {
+      const strip = stripRef.current;
+      const slide = strip?.querySelector(`[data-clip-slide][data-index="${index}"]`);
+      if (!strip || !slide) return;
+      const left = slide.offsetLeft - (strip.clientWidth - slide.offsetWidth) / 2;
+      strip.scrollTo({
+        left: Math.max(0, left),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+    },
+    [reduceMotion]
+  );
+
   useEffect(() => {
     const root = chapterRef.current;
     if (!root) return undefined;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setChapterVisible(entry.isIntersecting && entry.intersectionRatio >= 0.45);
+        setChapterVisible(entry.isIntersecting && entry.intersectionRatio >= 0.3);
       },
-      { threshold: [0.35, 0.45, 0.6] }
+      { threshold: [0.2, 0.3, 0.5, 0.7] }
     );
     observer.observe(root);
     return () => observer.disconnect();
@@ -67,7 +79,11 @@ export default function LovedClipsChapter() {
     };
 
     strip.addEventListener("scroll", onScroll, { passive: true });
-    updateActiveFromScroll();
+    // Center dance (cover) on first paint
+    requestAnimationFrame(() => {
+      scrollToIndex(0);
+      updateActiveFromScroll();
+    });
 
     const onResize = () => updateActiveFromScroll();
     window.addEventListener("resize", onResize);
@@ -77,7 +93,7 @@ export default function LovedClipsChapter() {
       strip.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
-  }, [updateActiveFromScroll]);
+  }, [updateActiveFromScroll, scrollToIndex]);
 
   useEffect(() => {
     lovedClips.forEach((clip, i) => {
@@ -87,61 +103,32 @@ export default function LovedClipsChapter() {
 
       const shouldPlay = chapterVisible && i === activeIndex && !reduceMotion;
       if (!shouldPlay) {
-        video.pause();
+        if (!video.paused) video.pause();
         return;
       }
 
       video.muted = muted;
       video.loop = true;
-      const play = async () => {
-        try {
-          await video.play();
-          setNeedsGesture(false);
-        } catch {
-          setNeedsGesture(true);
-        }
-      };
-      play();
+      video.playsInline = true;
+      video.play().catch(() => {
+        /* autoplay may need a tap — unmute control still works */
+      });
     });
   }, [activeIndex, muted, reduceMotion, chapterVisible]);
 
-  const handleUnmute = async () => {
-    setMuted(false);
+  const handleMuteToggle = async () => {
+    const nextMuted = !muted;
+    setMuted(nextMuted);
     const clip = lovedClips[activeIndex];
     if (clip?.type !== "video") return;
     const video = videoRefs.current[clip.id];
     if (!video) return;
-    video.muted = false;
+    video.muted = nextMuted;
     try {
       await video.play();
-      setNeedsGesture(false);
     } catch {
-      setNeedsGesture(true);
+      /* ignore */
     }
-  };
-
-  const handleMuteToggle = async () => {
-    if (muted) {
-      await handleUnmute();
-    } else {
-      setMuted(true);
-      const clip = lovedClips[activeIndex];
-      if (clip?.type === "video") {
-        const video = videoRefs.current[clip.id];
-        if (video) video.muted = true;
-      }
-    }
-  };
-
-  const scrollToIndex = (index) => {
-    const strip = stripRef.current;
-    const slide = strip?.querySelector(`[data-clip-slide][data-index="${index}"]`);
-    if (!strip || !slide) return;
-    const left = slide.offsetLeft - (strip.clientWidth - slide.offsetWidth) / 2;
-    strip.scrollTo({
-      left,
-      behavior: reduceMotion ? "auto" : "smooth",
-    });
   };
 
   const activeIsVideo = lovedClips[activeIndex]?.type === "video";
@@ -153,9 +140,7 @@ export default function LovedClipsChapter() {
       variant="fade"
     >
       <header className="loved-clips-header">
-        <span className="wrapped-kicker">bonus · clips we love</span>
-        <h2 className="loved-clips-heading">some clips we love</h2>
-        <p className="loved-clips-subtext">swipe the strip. center one stays on.</p>
+        <p className="loved-clips-heading">keep swiping</p>
       </header>
 
       <div
@@ -175,10 +160,17 @@ export default function LovedClipsChapter() {
                 className={`loved-clips-slide${isActive ? " is-active" : ""}`}
                 aria-current={isActive ? "true" : undefined}
               >
-                <button
-                  type="button"
+                <div
                   className="loved-clips-frame"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => scrollToIndex(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      scrollToIndex(index);
+                    }
+                  }}
                   aria-label={
                     clip.caption
                       ? `Focus clip: ${clip.caption}`
@@ -197,7 +189,7 @@ export default function LovedClipsChapter() {
                       playsInline
                       muted
                       loop
-                      preload={index === 0 || isActive ? "auto" : "metadata"}
+                      preload={index <= 1 || isActive ? "auto" : "metadata"}
                       aria-hidden={!isActive}
                     />
                   ) : (
@@ -210,14 +202,7 @@ export default function LovedClipsChapter() {
                       priority={index < 2}
                     />
                   )}
-                </button>
-                {clip.caption ? (
-                  <p className={`loved-clips-caption${isActive ? " is-visible" : ""}`}>
-                    {clip.caption}
-                  </p>
-                ) : (
-                  <span className="loved-clips-caption-spacer" aria-hidden="true" />
-                )}
+                </div>
               </article>
             );
           })}
@@ -244,9 +229,9 @@ export default function LovedClipsChapter() {
             type="button"
             className="loved-clips-mute"
             onClick={handleMuteToggle}
-            aria-label={muted || needsGesture ? "Unmute clip" : "Mute clip"}
+            aria-label={muted ? "Unmute clip" : "Mute clip"}
           >
-            {muted || needsGesture ? (
+            {muted ? (
               <>
                 <Volume2 size={16} aria-hidden="true" />
                 unmute

@@ -3677,6 +3677,7 @@ input[type="range"]::-webkit-slider-thumb {
   /* Half slide width so first/last can snap to center */
   scroll-padding-inline: max(1rem, calc(50% - min(31vw, 120px)));
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
 }
