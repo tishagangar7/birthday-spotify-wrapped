@@ -5,7 +5,7 @@ import { useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
 import { pokerChapter } from "../../data/wrappedChapters";
 
-const SETUP_HOLD_MS = 2300;
+const SETUP_HOLD_MS = 4000;
 /** ~1.5× prior 2.6s — ease-out 0→720 reads slower / more satisfying. */
 const COUNT_DURATION_MS = 4000;
 /** Hold a painted 0 before the first count frame (avoids 720 → mid jump). */

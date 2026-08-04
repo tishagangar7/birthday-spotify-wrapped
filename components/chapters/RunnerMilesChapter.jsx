@@ -9,26 +9,84 @@ import { milesChapter } from "../../data/wrappedChapters";
 export default function RunnerMilesChapter() {
   const reduceMotion = useReducedMotion();
   const finishingRef = useRef(false);
+  const draggingRef = useRef(false);
+  const trackRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  function onSlide(e) {
-    e.stopPropagation();
+  function finishRun() {
     if (finishingRef.current) return;
+    finishingRef.current = true;
+    setProgress(100);
 
-    const next = Number(e.target.value);
+    if (reduceMotion) {
+      setFinished(true);
+      return;
+    }
+
+    window.setTimeout(() => setFinished(true), 450);
+  }
+
+  function progressFromClientX(clientX) {
+    const el = trackRef.current;
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0) return 0;
+    // Inset so start/finish feel reachable without hugging the edges.
+    const inset = Math.min(28, rect.width * 0.06);
+    const usable = Math.max(1, rect.width - inset * 2);
+    const x = clientX - rect.left - inset;
+    return Math.max(0, Math.min(100, (x / usable) * 100));
+  }
+
+  function applyProgress(next) {
+    if (finishingRef.current) return;
     setProgress(next);
+    if (next >= 96) finishRun();
+  }
 
-    if (next >= 97) {
-      finishingRef.current = true;
-      setProgress(100);
+  function onPointerDown(e) {
+    if (finishingRef.current) return;
+    // Only primary button / touch / pen.
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    draggingRef.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    applyProgress(progressFromClientX(e.clientX));
+  }
 
-      if (reduceMotion) {
-        setFinished(true);
-        return;
-      }
+  function onPointerMove(e) {
+    if (!draggingRef.current || finishingRef.current) return;
+    e.preventDefault();
+    applyProgress(progressFromClientX(e.clientX));
+  }
 
-      window.setTimeout(() => setFinished(true), 450);
+  function onPointerUp(e) {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* already released */
+    }
+  }
+
+  function onKeyDown(e) {
+    if (finishingRef.current) return;
+    const step = e.shiftKey ? 12 : 6;
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+      e.preventDefault();
+      applyProgress(Math.min(100, progress + step));
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+      e.preventDefault();
+      applyProgress(Math.max(0, progress - step));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      applyProgress(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      finishRun();
     }
   }
 
@@ -79,7 +137,21 @@ export default function RunnerMilesChapter() {
             >
               <p className="wrapped-order-heading">drag him across</p>
 
-              <div className="runner-stage">
+              <div
+                ref={trackRef}
+                className="runner-stage"
+                role="slider"
+                tabIndex={0}
+                aria-label="Drag Ali across the track"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress)}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerUp}
+                onKeyDown={onKeyDown}
+              >
                 <div className="runner-track" aria-hidden>
                   <div className="runner-lanes" />
                   <span className="runner-start">start</span>
@@ -102,19 +174,20 @@ export default function RunnerMilesChapter() {
                     draggable={false}
                   />
                 </span>
-              </div>
 
-              <input
-                className="runner-slider"
-                type="range"
-                min={0}
-                max={100}
-                value={progress}
-                onChange={onSlide}
-                onPointerDown={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-                aria-label="Drag Ali across the track"
-              />
+                <div className="runner-scrub" aria-hidden>
+                  <div className="runner-scrub-track">
+                    <div
+                      className="runner-scrub-fill"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <span
+                    className="runner-scrub-thumb"
+                    style={{ left: `${progress}%` }}
+                  />
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

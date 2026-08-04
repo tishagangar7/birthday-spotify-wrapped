@@ -16,7 +16,8 @@ function ArtistModal({ artist, onClose }) {
   const isOpen = Boolean(artist && (hasVideo || isComingSoon));
 
   useEffect(() => {
-    setMounted(true);
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const close = useCallback(() => {

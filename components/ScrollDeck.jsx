@@ -77,6 +77,11 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
 
   useEffect(() => {
     const handleKey = (event) => {
+      // Interactive chapters (story-no-nav) capture keys first; respect that.
+      if (event.defaultPrevented) return;
+      if (event.target?.closest?.(".story-no-nav, input, textarea, select, [contenteditable='true']")) {
+        return;
+      }
       if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") {
         event.preventDefault();
         goNext();

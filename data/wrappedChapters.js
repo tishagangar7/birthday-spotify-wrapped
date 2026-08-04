@@ -145,8 +145,8 @@ export const milesChapter = {
 };
 
 export const talkingChapter = {
-  minutes: 444000,
-  minutesLabel: "444,000 K",
+  minutes: 444000000,
+  minutesLabel: "444,000,000",
   comparison: "number of minutes we spent listening to our fav yapper",
   joke: "",
   video: "/videos/talking/yapper.mp4",

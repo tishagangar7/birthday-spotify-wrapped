@@ -4,25 +4,28 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import AlbumTeaserCard from "../components/AlbumTeaserCard";
 import AudioPlayer from "../components/AudioPlayer";
 import { topSongs } from "../data/wrappedChapters";
-import AchievementsChapter from "../components/chapters/AchievementsChapter";
 import AlbumPlaylistChapter from "../components/chapters/AlbumPlaylistChapter";
 import AliOrElseQuizChapter from "../components/chapters/AliOrElseQuizChapter";
+import AliWrappedAwardsChapter from "../components/chapters/AliWrappedAwardsChapter";
 import LovedClipsChapter from "../components/chapters/LovedClipsChapter";
+import WhichAliAreYouChapter from "../components/chapters/WhichAliAreYouChapter";
 import PolaroidWallChapter from "../components/chapters/PolaroidWallChapter";
 import ClosingCreditsChapter from "../components/chapters/ClosingCreditsChapter";
 import CologneChapter from "../components/chapters/CologneChapter";
 import TopArtistsChapter from "../components/chapters/TopArtistsChapter";
 import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
+import FratPerformanceReviewChapter from "../components/chapters/FratPerformanceReviewChapter";
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
 import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
-import HeartSizeChapter from "../components/chapters/HeartSizeChapter";
+import HingeUnhingedChapter from "../components/chapters/HingeUnhingedChapter";
+import LoreIcebergChapter from "../components/chapters/LoreIcebergChapter";
+import MotivPlatinumChapter from "../components/chapters/MotivPlatinumChapter";
 import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
 import PokerChapter from "../components/chapters/PokerChapter";
 import PredictionsChapter from "../components/chapters/PredictionsChapter";
 import RedFlagsChapter from "../components/chapters/RedFlagsChapter";
 import RunnerMilesChapter from "../components/chapters/RunnerMilesChapter";
-import ScreenTimeChapter from "../components/chapters/ScreenTimeChapter";
-import StartingLineupChapter from "../components/chapters/StartingLineupChapter";
+import SocialMediaPodiumChapter from "../components/chapters/SocialMediaPodiumChapter";
 import TalkingMinutesChapter from "../components/chapters/TalkingMinutesChapter";
 import TopSearchesChapter from "../components/chapters/TopSearchesChapter";
 import TopSongsChapter from "../components/chapters/TopSongsChapter";
@@ -30,12 +33,14 @@ import Grain from "../components/Grain";
 import ScrollDeck from "../components/ScrollDeck";
 import WelcomeCard from "../components/WelcomeCard";
 import useMemoriesData from "../components/useMemoriesData";
-import useWrappedData from "../components/useWrappedData";
 import { getDisplayNames } from "../lib/anonymizeNames";
 
 /**
  * Order = Figma "Spotify Wrapped 2026" (L→R), plus New Ali Content after Ch.02.
  * Dropped the old actual-life black cover. First screen = Figma 01 Intro.
+ *
+ * Replaced: heart → iceberg, lineup → frat review, achievements → which ali,
+ * screentime → hinge. Added: motiv, social podium, awards. Enhanced: top searches.
  */
 function formatContributors(names) {
   if (!names || names.length === 0) return "his friends";
@@ -50,7 +55,6 @@ export default function Home() {
   const [activeTrack, setActiveTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioPlayerRef = useRef(null);
-  const wrapped = useWrappedData();
   const submittedMemories = useMemoriesData();
 
   const playTrack = useCallback(async (song) => {
@@ -123,26 +127,27 @@ export default function Home() {
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
       { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },
       { id: "bonus-loved-clips", content: <LovedClipsChapter /> },
-      { id: "chapter-7-heart", content: <HeartSizeChapter topMemory={wrapped.data?.topMemory ?? null} /> },
-      { id: "bonus-lineup", content: <StartingLineupChapter /> },
+      { id: "bonus-lore-iceberg", content: <LoreIcebergChapter /> },
+      { id: "bonus-frat-review", content: <FratPerformanceReviewChapter /> },
       {
         id: "bonus-timeline",
         content: <GlowUpTimelineChapter />,
       },
-      { id: "bonus-achievements", content: <AchievementsChapter /> },
-      { id: "bonus-screentime", content: <ScreenTimeChapter /> },
+      { id: "bonus-which-ali", content: <WhichAliAreYouChapter /> },
+      { id: "bonus-social-podium", content: <SocialMediaPodiumChapter /> },
+      { id: "bonus-hinge", content: <HingeUnhingedChapter /> },
+      { id: "bonus-motiv", content: <MotivPlatinumChapter /> },
       { id: "bonus-topsearches", content: <TopSearchesChapter /> },
       { id: "bonus-redflags", content: <RedFlagsChapter /> },
       { id: "bonus-greenflags", content: <GreenFlagsChapter /> },
       { id: "bonus-predictions", content: <PredictionsChapter /> },
+      { id: "bonus-awards", content: <AliWrappedAwardsChapter /> },
       { id: "chapter-8-final", content: <FinalSlideChapter /> },
       { id: "credits-closing", content: <ClosingCreditsChapter directedBy={directedBy} /> },
       { id: "album-teaser", content: <AlbumTeaserCard /> },
       { id: "album-playlist", content: <AlbumPlaylistChapter /> },
     ];
   }, [
-    wrapped.status,
-    wrapped.data,
     submittedMemories.status,
     submittedMemories.contributors,
     activeTrack,
