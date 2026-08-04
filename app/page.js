@@ -16,13 +16,9 @@ import TopArtistsChapter from "../components/chapters/TopArtistsChapter";
 import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
 import FratPerformanceReviewChapter from "../components/chapters/FratPerformanceReviewChapter";
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
-import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
-import HingeUnhingedChapter from "../components/chapters/HingeUnhingedChapter";
 import MotivPlatinumChapter from "../components/chapters/MotivPlatinumChapter";
 import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
 import PokerChapter from "../components/chapters/PokerChapter";
-import PredictionsChapter from "../components/chapters/PredictionsChapter";
-import RedFlagsChapter from "../components/chapters/RedFlagsChapter";
 import RunnerMilesChapter from "../components/chapters/RunnerMilesChapter";
 import SocialMediaPodiumChapter from "../components/chapters/SocialMediaPodiumChapter";
 import TalkingMinutesChapter from "../components/chapters/TalkingMinutesChapter";
@@ -38,7 +34,7 @@ import { getDisplayNames } from "../lib/anonymizeNames";
  * Order = Figma "Spotify Wrapped 2026" (L→R), plus New Ali Content after Ch.02.
  * Dropped the old actual-life black cover. First screen = Figma 01 Intro.
  *
- * Replaced: lineup → frat review, achievements → which ali, screentime → hinge.
+ * Replaced: lineup → frat review, achievements → which ali.
  * Added: motiv, social podium, awards. Enhanced: top searches.
  */
 function formatContributors(names) {
@@ -133,12 +129,8 @@ export default function Home() {
       },
       { id: "bonus-which-ali", content: <WhichAliAreYouChapter /> },
       { id: "bonus-social-podium", content: <SocialMediaPodiumChapter /> },
-      { id: "bonus-hinge", content: <HingeUnhingedChapter /> },
       { id: "bonus-motiv", content: <MotivPlatinumChapter /> },
       { id: "bonus-topsearches", content: <TopSearchesChapter /> },
-      { id: "bonus-redflags", content: <RedFlagsChapter /> },
-      { id: "bonus-greenflags", content: <GreenFlagsChapter /> },
-      { id: "bonus-predictions", content: <PredictionsChapter /> },
       { id: "bonus-awards", content: <AliWrappedAwardsChapter /> },
       { id: "chapter-8-final", content: <FinalSlideChapter /> },
       { id: "credits-closing", content: <ClosingCreditsChapter directedBy={directedBy} /> },
