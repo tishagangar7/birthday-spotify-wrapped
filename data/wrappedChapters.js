@@ -293,6 +293,37 @@ export const cologneChapter = {
 };
 
 /**
+ * Bonus filmstrip — clips we love.
+ * dance.mp4 is cover / first; remaining clips follow in order.
+ */
+export const lovedClips = [
+  {
+    id: "dance",
+    type: "video",
+    src: "/videos/loved-clips/dance.mp4",
+    caption: "the dance",
+  },
+  {
+    id: "clip-2",
+    type: "video",
+    src: "/videos/loved-clips/clip-2.mp4",
+    caption: "clip two",
+  },
+  {
+    id: "clip-3",
+    type: "video",
+    src: "/videos/loved-clips/clip-3.mp4",
+    caption: "clip three",
+  },
+  {
+    id: "clip-4",
+    type: "video",
+    src: "/videos/loved-clips/clip-4.mp4",
+    caption: "clip four",
+  },
+];
+
+/**
  * How well do you know Ali — who said each quote.
  * After answering: feedback + optional video + Next (no auto-advance).
  */

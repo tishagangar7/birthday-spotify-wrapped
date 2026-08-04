@@ -7,6 +7,7 @@ import { topSongs } from "../data/wrappedChapters";
 import AchievementsChapter from "../components/chapters/AchievementsChapter";
 import AlbumPlaylistChapter from "../components/chapters/AlbumPlaylistChapter";
 import AliOrElseQuizChapter from "../components/chapters/AliOrElseQuizChapter";
+import LovedClipsChapter from "../components/chapters/LovedClipsChapter";
 import PolaroidWallChapter from "../components/chapters/PolaroidWallChapter";
 import ClosingCreditsChapter from "../components/chapters/ClosingCreditsChapter";
 import CologneChapter from "../components/chapters/CologneChapter";
@@ -122,6 +123,7 @@ export default function Home() {
       { id: "chapter-4-miles", content: <RunnerMilesChapter /> },
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
       { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },
+      { id: "bonus-loved-clips", content: <LovedClipsChapter /> },
       { id: "chapter-6-stories", content: <StoriesChapter /> },
       { id: "chapter-7-heart", content: <HeartSizeChapter topMemory={wrapped.data?.topMemory ?? null} /> },
       { id: "bonus-lineup", content: <StartingLineupChapter /> },
