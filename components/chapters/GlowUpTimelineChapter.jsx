@@ -1,38 +1,74 @@
-import { getDisplayName } from "../../lib/anonymizeNames";
-import SectionTransition from "../SectionTransition";
+"use client";
 
-/**
- * Renders the real `memoryTimeline` field from `/api/wrapped` (see
- * useWrappedData in app/page.js) — a genuine chronological 2005–2026 walk
- * through data/memories.js, not curated placeholder content.
- */
-export default function GlowUpTimelineChapter({ status, timeline }) {
-  const entries = Array.isArray(timeline) ? timeline : [];
+import { useState } from "react";
+import Image from "next/image";
+import SectionTransition from "../SectionTransition";
+import { glowUpPhotos } from "../../data/wrappedChapters";
+
+/** Straight glow-up line — hover enlarges; click features a large hero. */
+export default function GlowUpTimelineChapter() {
+  const [hovered, setHovered] = useState(null);
+  const [featured, setFeatured] = useState(0);
+  const count = glowUpPhotos.length;
+  const featuredSrc = glowUpPhotos[featured];
 
   return (
-    <SectionTransition className="wrapped-card timeline-chapter wrapped-accent-teal" variant="fade">
-      <span className="wrapped-kicker">bonus · glow up timeline</span>
-      <div className="wrapped-body">
-        <p className="wrapped-caption timeline-intro">2005 → 2026, straight from the archive.</p>
-        {status === "loading" ? (
-          <p className="wrapped-loading-text">pulling up the timeline…</p>
-        ) : entries.length === 0 ? (
-          <p className="wrapped-loading-text">
-            the timeline’s empty for now — the memories coming up tell the story anyway.
-          </p>
-        ) : (
-          <ol className="timeline-list">
-            {entries.map((entry) => (
-              <li key={entry.id} className="timeline-item">
-                <span className="timeline-year">{entry.year}</span>
-                <span className="timeline-text">
-                  <span className="timeline-person">{getDisplayName(entry.person)}</span>
-                  <span className="timeline-subtitle">{entry.subtitle}</span>
+    <SectionTransition
+      className="wrapped-card timeline-chapter glowup-chapter wrapped-accent-teal story-no-nav"
+      variant="fade"
+    >
+      <header className="glowup-header">
+        <span className="wrapped-kicker">bonus · glow up timeline</span>
+        <p className="glowup-hint">hover to peek · click to feature</p>
+      </header>
+
+      <div className="glowup-hero" aria-live="polite">
+        <Image
+          src={featuredSrc}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 90vw, 380px"
+          className="glowup-hero-image"
+          priority
+        />
+      </div>
+
+      <div className="glowup-line-wrap">
+        <div className="glowup-line" aria-hidden="true" />
+
+        <div className="glowup-rail" role="list" aria-label="Glow up timeline">
+          {glowUpPhotos.map((src, index) => {
+            const isHovered = hovered === index;
+            const isHero = featured === index;
+            return (
+              <button
+                key={src}
+                type="button"
+                role="listitem"
+                className={`glowup-thumb${isHovered ? " is-hover" : ""}${isHero ? " is-hero" : ""}`}
+                aria-label={`Feature photo ${index + 1} of ${count}`}
+                aria-pressed={isHero}
+                onMouseEnter={() => setHovered(index)}
+                onMouseLeave={() => setHovered(null)}
+                onFocus={() => setHovered(index)}
+                onBlur={() => setHovered(null)}
+                onClick={() => setFeatured(index)}
+              >
+                <span className="glowup-dot" aria-hidden="true" />
+                <span className="glowup-frame">
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 18vw, 120px"
+                    className="glowup-thumb-image"
+                    priority={index < 4}
+                  />
                 </span>
-              </li>
-            ))}
-          </ol>
-        )}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </SectionTransition>
   );

@@ -127,7 +127,7 @@ export default function Home() {
       { id: "bonus-lineup", content: <StartingLineupChapter /> },
       {
         id: "bonus-timeline",
-        content: <GlowUpTimelineChapter status={wrapped.status} timeline={wrapped.data?.memoryTimeline} />,
+        content: <GlowUpTimelineChapter />,
       },
       { id: "bonus-achievements", content: <AchievementsChapter /> },
       { id: "bonus-screentime", content: <ScreenTimeChapter /> },

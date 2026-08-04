@@ -25,7 +25,7 @@ export default function AliOrElseQuizChapter() {
     if (!answered || !item) return null;
     const correct = picked === item.answer;
     const who = answerLabel(item);
-    return correct ? `correct — ${who}.` : `nope — ${who}.`;
+    return correct ? `correct — said by ${who}.` : `nope — said by ${who}.`;
   }, [answered, picked, item]);
 
   useEffect(() => {

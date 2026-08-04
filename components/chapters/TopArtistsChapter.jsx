@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import { Volume2, X } from "lucide-react";
 import SectionTransition from "../SectionTransition";
 import { topArtists } from "../../data/wrappedChapters";
@@ -148,7 +147,6 @@ function ArtistModal({ artist, onClose }) {
 
 /** Wrapped-style top artists — horizontal Spotify portrait row, purple accent. */
 export default function TopArtistsChapter() {
-  const reduceMotion = useReducedMotion();
   const [activeArtist, setActiveArtist] = useState(null);
 
   const openArtist = (artist) => {
@@ -175,17 +173,11 @@ export default function TopArtistsChapter() {
               const isHighlighted = activeArtist?.slug === artist.slug;
 
               return (
-                <motion.article
+                <article
                   key={artist.rank}
-                  className={`top-artists-card${isHighlighted ? " is-highlighted" : ""}${isInteractive ? " is-interactive" : ""}`}
+                  className={`top-artists-card stagger-in${isHighlighted ? " is-highlighted" : ""}${isInteractive ? " is-interactive" : ""}`}
                   role="listitem"
-                  initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.94 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{
-                    duration: reduceMotion ? 0.01 : 0.5,
-                    delay: reduceMotion ? 0 : 0.15 + index * 0.1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
+                  style={{ "--stagger-index": index, "--stagger-delay": "0.15s", "--stagger-step": "0.1s", "--stagger-duration": "0.5s" }}
                 >
                   <span
                     className={`top-artists-rank${isHighlighted ? " is-highlighted" : ""}`}
@@ -237,7 +229,7 @@ export default function TopArtistsChapter() {
                     <h3 className="top-artists-name">{artist.name}</h3>
                   )}
                   <span className="top-artists-label">{artist.label ?? "Artist"}</span>
-                </motion.article>
+                </article>
               );
             })}
           </div>

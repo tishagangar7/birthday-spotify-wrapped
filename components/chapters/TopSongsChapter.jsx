@@ -1,14 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
 import { topSongs } from "../../data/wrappedChapters";
 
 /** Wrapped-style top songs — click a row to play in the bottom bar. */
 export default function TopSongsChapter({ activeTrack, isPlaying, onSelectSong }) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <SectionTransition className="wrapped-card wrapped-accent-pink top-songs-chapter" variant="rise">
       <span className="wrapped-kicker">your top songs</span>
@@ -20,16 +17,10 @@ export default function TopSongsChapter({ activeTrack, isPlaying, onSelectSong }
             const rowPlaying = Boolean(isActive && isPlaying);
 
             return (
-              <motion.li
+              <li
                 key={song.rank}
-                className={`top-songs-row${isActive ? " is-active" : ""}${rowPlaying ? " is-playing" : ""}`}
-                initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: reduceMotion ? 0.01 : 0.45,
-                  delay: reduceMotion ? 0 : 0.2 + index * 0.12,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
+                className={`top-songs-row stagger-in${isActive ? " is-active" : ""}${rowPlaying ? " is-playing" : ""}`}
+                style={{ "--stagger-index": index }}
               >
                 <button
                   type="button"
@@ -59,7 +50,7 @@ export default function TopSongsChapter({ activeTrack, isPlaying, onSelectSong }
                     <span className="top-songs-artist">{song.artist}</span>
                   </span>
                 </button>
-              </motion.li>
+              </li>
             );
           })}
         </ol>

@@ -64,6 +64,7 @@ export default function RunnerMilesChapter() {
               value={progress}
               onChange={onSlide}
               onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
               aria-label="Drag Ali across the track"
             />
           </>

@@ -113,9 +113,9 @@ export const personalStats = [
     id: "chipotle",
     bigStat: true,
     kicker: "your stats · chipotle",
-    big: "∞",
+    big: "259,967",
     caption:
-      "spent these many minutes at chipotle this year. becoming chipotle's top customer is literally his personality.",
+      "the number of times ali ordered a brown rice double chicken pinto bean queso bowl with very little red salsa — with a side of the cashier's number",
     accent: "wrapped-accent-orange",
   },
   {
@@ -130,9 +130,10 @@ export const personalStats = [
   {
     id: "mo",
     bigStat: true,
-    kicker: "your stats · communications",
-    big: "2h+",
-    caption: "at least 2 hours every day trying to communicate to mo. a full-time unpaid internship.",
+    kicker: "your stats · youtube",
+    big: "12,472",
+    caption:
+      "number of hours the birthday boy listened to youtube videos to fall asleep to",
     accent: "wrapped-accent-pink",
   },
 ];
@@ -155,6 +156,12 @@ export const recurringStories = [
   { title: "the chipotle pilgrimage", quote: "\"i'm already in line\"", tellCount: 31 },
   { title: "the sauna disappearance", quote: "\"he's still in there\"", tellCount: 28 },
 ];
+
+/** Glow-up photo strip (childhood → now), left → right. */
+export const glowUpPhotos = Array.from({ length: 17 }, (_, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  return `/photos/glowup/${n}.png`;
+});
 
 export const heartMessages = [
   {

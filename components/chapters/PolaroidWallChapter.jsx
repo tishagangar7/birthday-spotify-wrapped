@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
 
 /**
@@ -31,8 +30,6 @@ const POLAROID_PHOTOS = [
 ];
 
 export default function PolaroidWallChapter() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <SectionTransition className="wrapped-card wrapped-accent-pink polaroid-wall-chapter" variant="fade">
       <header className="polaroid-wall-header">
@@ -43,16 +40,15 @@ export default function PolaroidWallChapter() {
       <div className="polaroid-wall-scroll story-no-nav">
         <div className="polaroid-wall-grid polaroid-wall-grid-nine">
           {POLAROID_PHOTOS.map((photo, index) => (
-            <motion.figure
+            <figure
               key={photo.src}
-              className="polaroid-frame"
-              style={{ "--polaroid-rotate": `${photo.rotate}deg` }}
-              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: reduceMotion ? 0 : index * 0.045,
-                duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
+              className="polaroid-frame stagger-in-fade"
+              style={{
+                "--polaroid-rotate": `${photo.rotate}deg`,
+                "--stagger-index": index,
+                "--stagger-delay": "0s",
+                "--stagger-step": "0.045s",
+                "--stagger-duration": "0.55s",
               }}
             >
               <div className="polaroid-image-wrap">
@@ -65,7 +61,7 @@ export default function PolaroidWallChapter() {
                   priority={index < 4}
                 />
               </div>
-            </motion.figure>
+            </figure>
           ))}
         </div>
       </div>

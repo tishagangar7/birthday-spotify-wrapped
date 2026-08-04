@@ -119,6 +119,125 @@ button {
   min-height: 100%;
 }
 
+/* Card entrance — CSS keyframes (avoids Framer Motion stuck at opacity 0). */
+@keyframes section-enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes section-enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.section-enter {
+  --section-enter-duration: 0.9s;
+  --section-enter-delay: 0s;
+  animation-duration: var(--section-enter-duration);
+  animation-delay: var(--section-enter-delay);
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.section-enter-rise {
+  animation-name: section-enter-rise;
+}
+
+.section-enter-fade {
+  animation-name: section-enter-fade;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-enter,
+  .section-enter-rise,
+  .section-enter-fade {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Staggered list/row entrances — CSS so items never stick at opacity 0. */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stagger-in-scale {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.stagger-in {
+  --stagger-delay: 0.2s;
+  --stagger-step: 0.12s;
+  --stagger-duration: 0.45s;
+  animation: stagger-in var(--stagger-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--stagger-delay) + (var(--stagger-index, 0) * var(--stagger-step)));
+}
+
+.stagger-in-scale {
+  --stagger-delay: 0.3s;
+  --stagger-step: 0.5s;
+  --stagger-duration: 0.45s;
+  animation: stagger-in-scale var(--stagger-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--stagger-delay) + (var(--stagger-index, 0) * var(--stagger-step)));
+}
+
+@keyframes stagger-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Opacity-only — use when the element already has its own transform (e.g. polaroids). */
+.stagger-in-fade {
+  --stagger-delay: 0s;
+  --stagger-step: 0.05s;
+  --stagger-duration: 0.55s;
+  animation: stagger-fade var(--stagger-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--stagger-delay) + (var(--stagger-index, 0) * var(--stagger-step)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-in,
+  .stagger-in-scale,
+  .stagger-in-fade {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .stagger-in,
+  .stagger-in-scale {
+    transform: none !important;
+  }
+}
+
 .scroll-progress {
   pointer-events: auto;
 }
@@ -1402,14 +1521,239 @@ button {
   font-size: 1rem;
 }
 
-/* ---- Glow Up Timeline (real /api/wrapped memoryTimeline data) ---- */
+/* ---- Glow Up Timeline — straight photo line + hero ---- */
 
-.timeline-chapter {
+.timeline-chapter.glowup-chapter {
   justify-content: flex-start;
-  overflow-y: auto;
-  padding-top: 12vh;
-  padding-bottom: 10vh;
-  -webkit-overflow-scrolling: touch;
+  align-items: stretch;
+  overflow: visible;
+  padding: 3.5vh 0 max(2.5vh, calc(env(safe-area-inset-bottom, 0px) + 4.5rem));
+  gap: 0;
+}
+
+.glowup-header {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 0 clamp(12px, 3vw, 28px);
+  text-align: center;
+}
+
+.glowup-hint {
+  margin: 0.35rem 0 0;
+  color: var(--text-secondary);
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(0.82rem, 2.6vw, 0.95rem);
+}
+
+.glowup-hero {
+  position: relative;
+  flex: 1 1 auto;
+  width: min(100% - 2rem, 380px);
+  max-height: min(42vh, 420px);
+  min-height: 180px;
+  margin: 1rem auto 0.25rem;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(23, 233, 206, 0.28);
+}
+
+.glowup-hero.is-empty {
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.glowup-hero-placeholder {
+  margin: 0;
+  padding: 1.25rem;
+  color: var(--text-secondary);
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+  text-align: center;
+}
+
+.glowup-hero-image {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.glowup-line-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+  padding: 3.75rem clamp(10px, 2.5vw, 28px) 2.5rem;
+  overflow: visible;
+}
+
+.glowup-line {
+  position: absolute;
+  left: clamp(10px, 2.5vw, 28px);
+  right: clamp(10px, 2.5vw, 28px);
+  top: 50%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.45),
+    rgba(23, 233, 206, 0.55),
+    rgba(255, 255, 255, 0.45),
+    rgba(255, 255, 255, 0.15)
+  );
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.glowup-rail {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(6px, 1.2vw, 14px);
+  width: 100%;
+}
+
+.glowup-thumb {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  max-width: 110px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.glowup-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: #0b0b0b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.glowup-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #141414;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  transform: translateY(calc(-50% - 10px));
+  transform-origin: center bottom;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease;
+}
+
+.glowup-thumb:nth-child(even) .glowup-frame {
+  transform: translateY(calc(50% + 10px));
+  transform-origin: center top;
+}
+
+.glowup-thumb.is-hover,
+.glowup-thumb.is-hero {
+  z-index: 12;
+}
+
+.glowup-thumb.is-hover .glowup-dot,
+.glowup-thumb.is-hero .glowup-dot {
+  background: var(--wrapped-teal);
+  transform: translate(-50%, -50%) scale(1.3);
+  box-shadow:
+    0 0 0 4px rgba(23, 233, 206, 0.3),
+    0 3px 10px rgba(0, 0, 0, 0.45);
+}
+
+.glowup-thumb.is-hero .glowup-frame {
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.45),
+    0 0 0 2px var(--wrapped-teal);
+}
+
+.glowup-thumb.is-hover .glowup-frame {
+  transform: translateY(calc(-50% - 10px)) scale(5.2);
+  box-shadow:
+    0 36px 80px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(23, 233, 206, 0.5);
+}
+
+.glowup-thumb:nth-child(even).is-hover .glowup-frame {
+  transform: translateY(calc(50% + 10px)) scale(5.2);
+}
+
+.glowup-thumb:focus-visible {
+  outline: none;
+}
+
+.glowup-thumb:focus-visible .glowup-frame {
+  outline: 2px solid var(--wrapped-teal);
+  outline-offset: 3px;
+}
+
+.glowup-thumb-image {
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .glowup-hero {
+    width: min(100% - 1.5rem, 300px);
+    max-height: min(36vh, 320px);
+  }
+
+  .glowup-line-wrap {
+    padding-block: 3rem 2rem;
+  }
+
+  .glowup-rail {
+    gap: 5px;
+  }
+
+  .glowup-thumb.is-hover .glowup-frame,
+  .glowup-thumb:active .glowup-frame {
+    transform: translateY(calc(-50% - 8px)) scale(4.4);
+  }
+
+  .glowup-thumb:nth-child(even).is-hover .glowup-frame,
+  .glowup-thumb:nth-child(even):active .glowup-frame {
+    transform: translateY(calc(50% + 8px)) scale(4.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowup-frame,
+  .glowup-dot {
+    transition: none;
+  }
 }
 
 .timeline-intro {
@@ -3460,12 +3804,125 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .runner-slider {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   max-width: none;
-  margin: 0.5rem 0 0;
+  height: 2.75rem;
+  margin: 0.65rem 0 0;
   display: block;
-  accent-color: #1ed760;
-  height: 1.75rem;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.runner-slider:focus {
+  outline: none;
+}
+
+.runner-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px rgba(30, 215, 96, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.runner-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.runner-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -10px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #1ed760;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  cursor: grab;
+}
+
+.runner-slider:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.08);
+}
+
+.runner-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.runner-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #1ed760;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  cursor: grab;
+}
+
+/* One-shot bottle rain when the cologne chapter first snaps into view. */
+.cologne-chapter {
+  position: relative;
+}
+
+.cologne-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cologne-rain-bottle {
+  position: absolute;
+  top: -18%;
+  width: var(--rain-size, 48px);
+  animation: cologne-bottle-fall var(--rain-duration, 3s) cubic-bezier(0.33, 0.05, 0.55, 1)
+    var(--rain-delay, 0s) both;
+  will-change: transform, opacity;
+}
+
+.cologne-rain-bottle img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  opacity: 0.62;
+  filter:
+    invert(1)
+    drop-shadow(0 6px 14px rgba(196, 140, 255, 0.35))
+    drop-shadow(0 0 10px rgba(30, 215, 96, 0.18));
+}
+
+@keyframes cologne-bottle-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(calc(var(--rain-rotate, 12deg) * -0.35)) scale(0.82);
+  }
+  10% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--rain-drift, 10px), 118vh, 0) rotate(var(--rain-rotate, 12deg))
+      scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cologne-rain {
+    display: none !important;
+  }
 }
 
 .cologne-round-label {
