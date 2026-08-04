@@ -4,24 +4,30 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
 
-/** Curated Ali camera roll — varied spread, ~16 shots so the wall breathes. */
+/**
+ * Exactly 9 group shots (4+ people in frame), all from public/photos/ali/.
+ *
+ * Curated files:
+ * - ali-02.jpg — 4 friends, kitchen party
+ * - ali-07.jpg — 5 people, indoor gathering
+ * - ali-10.jpg — 8 people, traditional dress (lime wall)
+ * - ali-13.jpg — 4 people, costume party (string lights)
+ * - ali-17.jpg — 4 friends, coastal cliff overlook
+ * - ali-19.jpg — 5 people, beach sunset
+ * - ali-22.jpg — 6 people, coastal sunset lineup
+ * - ali-30.jpg — 5 people, parking garage (festive wear)
+ * - ali-33.jpg — 4 people, outdoor night event (kurtas)
+ */
 const POLAROID_PHOTOS = [
-  { src: "/photos/ali/ali-01.jpg", rotate: -2.5 },
-  { src: "/photos/ali/ali-04.jpg", rotate: 2.8 },
-  { src: "/photos/ali/ali-07.jpg", rotate: -1.2 },
-  { src: "/photos/ali/ali-10.jpg", rotate: 3.2 },
-  { src: "/photos/ali/ali-13.jpg", rotate: -3.1 },
-  { src: "/photos/ali/ali-16.jpg", rotate: 1.6 },
-  { src: "/photos/ali/ali-19.jpg", rotate: -2.2 },
-  { src: "/photos/ali/ali-22.jpg", rotate: 2.4 },
-  { src: "/photos/ali/ali-26.jpg", rotate: -1.8 },
-  { src: "/photos/ali/ali-30.jpg", rotate: 3.5 },
-  { src: "/photos/ali/ali-34.jpg", rotate: -0.8 },
-  { src: "/photos/ali/ali-37.jpg", rotate: 2.1 },
-  { src: "/photos/ali/ali-40.jpg", rotate: -3.4 },
-  { src: "/photos/ali/ali-43.jpg", rotate: 1.3 },
-  { src: "/photos/ali/ali-47.jpg", rotate: -2.7 },
-  { src: "/photos/ali/ali-49.jpg", rotate: 0.9 },
+  { src: "/photos/ali/ali-02.jpg", rotate: -2.5 },
+  { src: "/photos/ali/ali-07.jpg", rotate: 2.4 },
+  { src: "/photos/ali/ali-10.jpg", rotate: -1.8 },
+  { src: "/photos/ali/ali-13.jpg", rotate: 3.1 },
+  { src: "/photos/ali/ali-17.jpg", rotate: -2.2 },
+  { src: "/photos/ali/ali-19.jpg", rotate: 1.7 },
+  { src: "/photos/ali/ali-22.jpg", rotate: -3.2 },
+  { src: "/photos/ali/ali-30.jpg", rotate: 2.8 },
+  { src: "/photos/ali/ali-33.jpg", rotate: -1.4 },
 ];
 
 export default function PolaroidWallChapter() {
@@ -35,7 +41,7 @@ export default function PolaroidWallChapter() {
       </header>
 
       <div className="polaroid-wall-scroll story-no-nav">
-        <div className="polaroid-wall-grid">
+        <div className="polaroid-wall-grid polaroid-wall-grid-nine">
           {POLAROID_PHOTOS.map((photo, index) => (
             <motion.figure
               key={photo.src}
@@ -44,7 +50,7 @@ export default function PolaroidWallChapter() {
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                delay: reduceMotion ? 0 : index * 0.035,
+                delay: reduceMotion ? 0 : index * 0.045,
                 duration: 0.55,
                 ease: [0.22, 1, 0.36, 1],
               }}
@@ -54,9 +60,9 @@ export default function PolaroidWallChapter() {
                   src={photo.src}
                   alt=""
                   fill
-                  sizes="(max-width: 768px) 42vw, 180px"
+                  sizes="(max-width: 768px) 30vw, 200px"
                   className="polaroid-image"
-                  priority={index < 6}
+                  priority={index < 4}
                 />
               </div>
             </motion.figure>
