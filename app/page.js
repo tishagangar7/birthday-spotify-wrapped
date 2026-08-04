@@ -18,7 +18,6 @@ import FratPerformanceReviewChapter from "../components/chapters/FratPerformance
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
 import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
 import HingeUnhingedChapter from "../components/chapters/HingeUnhingedChapter";
-import LoreIcebergChapter from "../components/chapters/LoreIcebergChapter";
 import MotivPlatinumChapter from "../components/chapters/MotivPlatinumChapter";
 import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
 import PokerChapter from "../components/chapters/PokerChapter";
@@ -39,8 +38,8 @@ import { getDisplayNames } from "../lib/anonymizeNames";
  * Order = Figma "Spotify Wrapped 2026" (L→R), plus New Ali Content after Ch.02.
  * Dropped the old actual-life black cover. First screen = Figma 01 Intro.
  *
- * Replaced: heart → iceberg, lineup → frat review, achievements → which ali,
- * screentime → hinge. Added: motiv, social podium, awards. Enhanced: top searches.
+ * Replaced: lineup → frat review, achievements → which ali, screentime → hinge.
+ * Added: motiv, social podium, awards. Enhanced: top searches.
  */
 function formatContributors(names) {
   if (!names || names.length === 0) return "his friends";
@@ -127,7 +126,6 @@ export default function Home() {
       { id: "chapter-5-talking", content: <TalkingMinutesChapter /> },
       { id: "bonus-quiz", content: <AliOrElseQuizChapter /> },
       { id: "bonus-loved-clips", content: <LovedClipsChapter /> },
-      { id: "bonus-lore-iceberg", content: <LoreIcebergChapter /> },
       { id: "bonus-frat-review", content: <FratPerformanceReviewChapter /> },
       {
         id: "bonus-timeline",

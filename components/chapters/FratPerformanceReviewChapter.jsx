@@ -94,10 +94,6 @@ export default function FratPerformanceReviewChapter() {
       <div className="wrapped-body frat-review-body">
         <header className="frat-review-header">
           <h2 className="lore-iceberg-headline frat-review-headline">{data.headline}</h2>
-          <p className="wrapped-caption">{data.subheading}</p>
-          <p className="frat-review-progress" aria-live="polite">
-            {stage + 1} / {STAGE_COUNT}
-          </p>
         </header>
 
         <AnimatePresence mode="wait">
@@ -106,11 +102,9 @@ export default function FratPerformanceReviewChapter() {
               <dl className="frat-review-record">
                 {[
                   ["Name", data.employee.name],
-                  ["Department", data.employee.department],
+                  ["Frat", data.employee.frat],
                   ["Position", data.employee.position],
-                  ["Employment type", data.employee.employmentType],
-                  ["Manager", data.employee.manager],
-                  ["Review status", data.employee.reviewStatus],
+                  ["Dues", data.employee.dues],
                 ].map(([label, value]) => (
                   <div key={label} className="frat-review-row">
                     <dt>{label}</dt>
@@ -132,13 +126,13 @@ export default function FratPerformanceReviewChapter() {
                     <div className="frat-comp-top">
                       <span className="frat-comp-title">{comp.title}</span>
                       <span className="frat-comp-score">
-                        {comp.score} / {data.maxScore}
+                        {comp.scoreLabel ?? `${comp.score} / ${data.maxScore}`}
                       </span>
                     </div>
                     <div
                       className="frat-comp-bars"
                       role="img"
-                      aria-label={`Score ${comp.score} out of ${data.maxScore}`}
+                      aria-label={`Score ${comp.scoreLabel ?? `${comp.score} out of ${data.maxScore}`}`}
                     >
                       {Array.from({ length: data.maxScore }, (_, i) => (
                         <span
@@ -186,7 +180,6 @@ export default function FratPerformanceReviewChapter() {
             <motion.div key="final" className="frat-review-panel" {...fade} transition={{ duration: 0.4 }}>
               <p className="frat-final-label">{data.finalRating.label}</p>
               <p className="frat-final-value">{data.finalRating.value}</p>
-              <p className="frat-final-footnote">{data.finalRating.footnote}</p>
               <p className="wrapped-caption frat-final-closing">{data.finalRating.closing}</p>
               <button
                 type="button"

@@ -207,12 +207,13 @@ export const screenTime = {
 };
 
 export const topSearches = [
-  "how to speak persian",
+  "How to make Noodle Time pho at home?",
   "10 ways to kill a bona",
-  "how to snort addy",
-  "what to do if the girl u like doesnt shave her armpits",
-  "is it normal to spend 2 hrs in the sauna",
-  "how to increase whoop recovery score",
+  "What is a speed limit?",
+  "How to patao hairy girl?",
+  "How to learn skydiving before my interview?",
+  "Why is my whoop recovery score always below 10?",
+  "How to becomes BFFs with Fredagain..",
 ];
 
 export const redFlags = [

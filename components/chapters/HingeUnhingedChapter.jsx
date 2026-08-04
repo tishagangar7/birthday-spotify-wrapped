@@ -233,9 +233,6 @@ export default function HingeUnhingedChapter() {
               <WrappedButton variant="ghost" onClick={goPrev} disabled={index === 0} ariaLabel="Previous card">
                 back
               </WrappedButton>
-              <span className="hinge-progress" aria-live="polite">
-                {index + 1} / {total}
-              </span>
               <WrappedButton variant="primary" onClick={goNext} ariaLabel="Next card">
                 {atEnd && (card.type !== "funnel" || funnelDone) ? "continue" : "next"}
               </WrappedButton>

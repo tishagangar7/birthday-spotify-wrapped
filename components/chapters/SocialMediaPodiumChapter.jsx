@@ -16,6 +16,15 @@ function placeByRank(rank) {
   return data.places.find((p) => p.place === rank);
 }
 
+function morphDisplay(digits, letters, step, fromEnd = false) {
+  return digits
+    .map((digit, i) => {
+      const order = fromEnd ? digits.length - 1 - i : i;
+      return step > order ? letters[i] ?? digit : digit;
+    })
+    .join("");
+}
+
 export default function SocialMediaPodiumChapter() {
   const reduceMotion = useReducedMotion();
   const rootRef = useRef(null);
@@ -27,7 +36,7 @@ export default function SocialMediaPodiumChapter() {
   const [counts, setCounts] = useState(() =>
     Object.fromEntries(data.places.map((p) => [p.id, 0]))
   );
-  const [twitterPunch, setTwitterPunch] = useState(false);
+  const [twitterMorphStep, setTwitterMorphStep] = useState(0);
   const [activePlace, setActivePlace] = useState(0);
 
   useEffect(() => {
@@ -68,15 +77,40 @@ export default function SocialMediaPodiumChapter() {
       rafRefs.current.push(id);
     }
 
+    function runTwitterMorph(place) {
+      const letters = place.punchlineMorph;
+      if (!letters?.length) {
+        settledRef.current = true;
+        return;
+      }
+
+      if (reduceMotion) {
+        setTwitterMorphStep(letters.length);
+        settledRef.current = true;
+        return;
+      }
+
+      const startDelay = place.punchlineDelayMs ?? 80;
+      const stepMs = place.punchlineStepMs ?? 90;
+
+      letters.forEach((_, i) => {
+        const id = window.setTimeout(() => {
+          setTwitterMorphStep(i + 1);
+          if (i === letters.length - 1) settledRef.current = true;
+        }, startDelay + i * stepMs);
+        timersRef.current.push(id);
+      });
+    }
+
     function runSequence() {
       clearAll();
       startedRef.current = true;
       settledRef.current = false;
-      setTwitterPunch(false);
+      setTwitterMorphStep(0);
       setActivePlace(0);
       setCounts(Object.fromEntries(data.places.map((p) => [p.id, 0])));
 
-      // Animate 3 → 2 → 1, then Twitter punchline.
+      // Animate 3 → 2 → 1, then Twitter punchline morph.
       const sequence = [3, 2, 1];
       let delay = reduceMotion ? 0 : 280;
 
@@ -87,13 +121,7 @@ export default function SocialMediaPodiumChapter() {
         const startId = window.setTimeout(() => {
           setActivePlace(rank);
           animateCount(place, () => {
-            if (place.punchline) {
-              const punchId = window.setTimeout(() => {
-                setTwitterPunch(true);
-                settledRef.current = true;
-              }, reduceMotion ? 0 : place.punchlineDelayMs ?? 600);
-              timersRef.current.push(punchId);
-            }
+            if (place.punchlineMorph) runTwitterMorph(place);
           });
         }, delay);
         timersRef.current.push(startId);
@@ -138,16 +166,25 @@ export default function SocialMediaPodiumChapter() {
           {PODIUM_ORDER.map((rank) => {
             const place = placeByRank(rank);
             if (!place) return null;
-            const showPunch = place.punchline && twitterPunch;
-            const value = showPunch
-              ? place.punchline
-              : counts[place.id].toLocaleString("en-US");
+
+            let value = counts[place.id].toLocaleString("en-US");
+            if (place.punchlineMorph && twitterMorphStep > 0) {
+              const digits = String(place.countTo).split("");
+              value = morphDisplay(
+                digits,
+                place.punchlineMorph,
+                twitterMorphStep,
+                place.punchlineFromEnd
+              );
+            }
+
             const isActive = activePlace === rank;
+            const isMorphing = place.punchlineMorph && twitterMorphStep > 0;
 
             return (
               <li
                 key={place.id}
-                className={`social-podium-slot social-podium-slot--${rank}${isActive ? " is-active" : ""}${showPunch ? " is-punchline" : ""}`}
+                className={`social-podium-slot social-podium-slot--${rank}${isActive ? " is-active" : ""}${isMorphing ? " is-punchline" : ""}`}
               >
                 <div className="social-podium-card">
                   <span className="social-podium-rank">{rank}</span>

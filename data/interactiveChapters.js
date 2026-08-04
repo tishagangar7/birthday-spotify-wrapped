@@ -4,87 +4,17 @@
  */
 
 /* ------------------------------------------------------------------ */
-/* 1. Ali’s Lore Iceberg                                              */
-/* ------------------------------------------------------------------ */
-
-export const loreIcebergChapter = {
-  kicker: "stats · deep lore",
-  headline: "how deep does your ali knowledge go?",
-  subheading: "the surface is public information. everything below requires clearance.",
-  abyssLine: "you made it. unfortunately, there is no way back.",
-  returnLabel: "return to surface",
-  deepenLabel: "go deeper",
-  /** Depth index (0-based) at which scroll/keyboard may leave the chapter. */
-  unlockNavAtIndex: 3,
-  levels: [
-    {
-      id: "surface",
-      label: "the surface",
-      depth: "0 m",
-      items: ["chipotle", "fred again..", "chronically late", "the sauna"],
-    },
-    {
-      id: "known-lore",
-      label: "known lore",
-      depth: "40 m",
-      items: [
-        "greek mythology lectures",
-        "whoop recovery below 10%",
-        "home poker confidence",
-        "refusing public transport",
-      ],
-    },
-    {
-      id: "group-chat-canon",
-      label: "group chat canon",
-      depth: "180 m",
-      items: [
-        "the mo communication protocol",
-        "noodle time replication attempts",
-        "motiv residency",
-        "larping at SNE",
-      ],
-    },
-    {
-      id: "restricted",
-      label: "restricted information",
-      depth: "700 m",
-      items: [
-        "[TODO: specific incident]",
-        "[TODO: specific nickname]",
-        "[TODO: specific person or place]",
-        "[TODO: specific unexplained phrase]",
-      ],
-    },
-    {
-      id: "abyss",
-      label: "the abyss",
-      depth: "2,100 m",
-      items: [
-        "[REDACTED]",
-        "the bona files",
-        "[TODO: deepest-cut joke]",
-        "only the founding members know",
-      ],
-    },
-  ],
-};
-
-/* ------------------------------------------------------------------ */
-/* 2. Frat Performance Review                                         */
+/* 1. Frat Performance Review                                         */
 /* ------------------------------------------------------------------ */
 
 export const fratReviewChapter = {
   kicker: "stats · annual review",
   headline: "frat performance review",
-  subheading: "review period: the year nobody was prepared for",
   employee: {
-    name: "Ali",
-    department: "Social Operations",
-    position: "[TODO: frat role or funny title]",
-    employmentType: "chronically present",
-    manager: "the group chat",
-    reviewStatus: "overdue, like ali",
+    name: "Ali Haryanawalla",
+    frat: "AEPi",
+    position: "Lieutenant Pledge Master",
+    dues: "Paid on time (by Rohaan)",
   },
   beginLabel: "begin evaluation",
   competencies: [
@@ -95,34 +25,17 @@ export const fratReviewChapter = {
       comment: "every four-minute incident receives a complete cinematic universe",
     },
     {
-      id: "social-stamina",
-      title: "social stamina",
-      score: 5,
-      comment: "shows no measurable signs of wanting to go home",
-    },
-    {
       id: "punctuality",
       title: "punctuality",
       score: 1,
       comment: "the event started at 8. ali started getting ready at 8.",
     },
     {
-      id: "sne-larping",
-      title: "SNE larping",
+      id: "afters-motiv",
+      title: "afters at motiv 24/7",
       score: 5,
-      comment: "[TODO: replace with the exact joke]",
-    },
-    {
-      id: "leaving",
-      title: "leaving when promised",
-      score: 0,
-      comment: "additional evidence was unavailable",
-    },
-    {
-      id: "showing-up",
-      title: "showing up when it matters",
-      score: 5,
-      comment: "late, but always there",
+      scoreLabel: "24/7",
+      comment: "the party shuts. ali does not.",
     },
   ],
   maxScore: 5,
@@ -133,11 +46,11 @@ export const fratReviewChapter = {
   stamps: [
     { id: "promo", label: "PROMOTION RECOMMENDED" },
     { id: "punctuality", label: "PUNCTUALITY PLAN REQUIRED" },
+    { id: "dayger", label: "10/10 DAYGER HOST" },
   ],
   finalRating: {
     label: "overall rating",
-    value: "EXCEEDS EXPECTATIONS*",
-    footnote: "*except expectations involving time",
+    value: "EXCEEDS EXPECTATIONS",
     closing: "the room is always better when he finally gets there.",
   },
   punctualityEasterEgg: "arriving soon...",
@@ -237,46 +150,38 @@ export const motivPlatinumChapter = {
     brand: "MOTIV",
     tier: "PLATINUM RESIDENT",
     memberName: "ALI",
-    memberSince: "[TODO]",
+    memberSince: "2023",
     memberNumber: "000021",
     status: "emotionally permanent",
   },
   stats: {
-    visits: "[TODO]",
-    hoursLogged: "[TODO]",
-    friendsBrought: "[TODO]",
-    averageStay: "[TODO]",
-    timesHeSaidQuickVisit: "[TODO]",
-    actualQuickVisits: "0",
+    visits: "170",
+    hoursLogged: "8,400",
+    bouncersDodged: "6",
+    conversations: "9,000",
   },
   statLines: [
     { key: "visits", suffix: "visits completed" },
     { key: "hoursLogged", suffix: "hours logged" },
-    { key: "friendsBrought", suffix: "friends involuntarily enrolled" },
+    { key: "bouncersDodged", suffix: "bouncers dodged" },
+    { key: "conversations", suffix: "minutes spent making conversations with random people" },
   ],
-  quickVisitLine: "“quick visit” success rate: 0%",
   tiers: ["Visitor", "Regular", "Gold", "Platinum", "Permanent Resident"],
   finalTier: "PERMANENT RESIDENT",
-  nextReward: "his own set of keys",
   perks: [
     {
       id: "priority",
       title: "Priority Entry",
-      detail: "mostly because everybody already knows him",
+      detail: "mostly because he is best friends with Amanda",
     },
     {
       id: "extended",
       title: "Extended Stay",
-      detail: "departure time not included",
-    },
-    {
-      id: "guest",
-      title: "Guest Privileges",
-      detail: "one friend dragged along per visit",
+      detail: "socialising outside for at least 30",
     },
   ],
-  closingLabel: "member status valid through",
-  closingValue: "forever, apparently",
+  closingLabel: "member status",
+  closingValue: "forever now because no more fake ids",
 };
 
 /* ------------------------------------------------------------------ */
@@ -286,8 +191,8 @@ export const motivPlatinumChapter = {
 
 export const whichAliChapter = {
   kicker: "stats · character select",
-  headline: "which ali are you?",
-  subheading: "choose your fighter.",
+  headline: "life skin for the day",
+  subheading: "choose your character for the day",
   pressStart: "PRESS START",
   chooseLabel: "choose this ali",
   chooseAgainLabel: "choose again",
@@ -643,10 +548,13 @@ export const socialMediaPodiumChapter = {
       place: 1,
       platform: "Twitter",
       metric: "scrolls",
-      countTo: 2100,
+      countTo: 210,
       durationMs: 2000,
-      punchline: "NVM",
-      punchlineDelayMs: 700,
+      /** Morph digits of the final count into letters, right → left (0→m, 1→v, 2→n). */
+      punchlineMorph: ["n", "v", "m"],
+      punchlineFromEnd: true,
+      punchlineStepMs: 90,
+      punchlineDelayMs: 80,
     },
   ],
 };

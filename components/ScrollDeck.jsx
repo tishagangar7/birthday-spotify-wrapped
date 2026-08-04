@@ -14,6 +14,7 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
   const scrollerRef = useRef(null);
   const sectionRefs = useRef({});
   const [index, setIndex] = useState(0);
+  const [reloadKeys, setReloadKeys] = useState({});
   const total = cards.length;
 
   const scrollToIndex = useCallback(
@@ -41,6 +42,12 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
     },
     [cards, scrollToIndex]
   );
+
+  const reloadCurrent = useCallback(() => {
+    const id = cards[index]?.id;
+    if (!id) return;
+    setReloadKeys((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  }, [cards, index]);
 
   const navContextValue = useMemo(
     () => ({ goTo, goToId, goNext, goPrev, index }),
@@ -113,6 +120,21 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
           ))}
         </div>
 
+        <button
+          type="button"
+          className="chapter-reload-btn"
+          onClick={reloadCurrent}
+          aria-label="Reload this chapter"
+          title="Reload this chapter"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M12 5V2L7 7l5 5V9c2.76 0 5 2.24 5 5a5 5 0 0 1-9.9 1H5.08A7 7 0 0 0 19 14c0-3.87-3.13-7-7-7z"
+            />
+          </svg>
+        </button>
+
         <div ref={scrollerRef} className="scroll-deck-scroller">
           {cards.map((card) => (
             <section
@@ -124,7 +146,9 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
               className="scroll-chapter"
               data-chapter={card.id}
             >
-              {card.content}
+              <div key={`${card.id}-${reloadKeys[card.id] ?? 0}`} className="scroll-chapter-inner">
+                {card.content}
+              </div>
             </section>
           ))}
         </div>
