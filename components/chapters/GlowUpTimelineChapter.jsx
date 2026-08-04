@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionTransition from "../SectionTransition";
 import { glowUpPhotos } from "../../data/wrappedChapters";
 
@@ -11,6 +12,9 @@ export default function GlowUpTimelineChapter() {
   const [featured, setFeatured] = useState(0);
   const count = glowUpPhotos.length;
   const featuredSrc = glowUpPhotos[featured];
+
+  const goPrev = () => setFeatured((i) => (i - 1 + count) % count);
+  const goNext = () => setFeatured((i) => (i + 1) % count);
 
   return (
     <SectionTransition
@@ -22,15 +26,46 @@ export default function GlowUpTimelineChapter() {
         <p className="glowup-hint">hover to peek · click to feature</p>
       </header>
 
-      <div className="glowup-hero" aria-live="polite">
-        <Image
-          src={featuredSrc}
-          alt=""
-          fill
-          sizes="(max-width: 768px) 90vw, 380px"
-          className="glowup-hero-image"
-          priority
-        />
+      <div
+        className="glowup-hero-stage"
+        onKeyDown={(e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            goPrev();
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            goNext();
+          }
+        }}
+      >
+        <button
+          type="button"
+          className="glowup-hero-nav glowup-hero-nav--prev"
+          aria-label="Previous photo"
+          onClick={goPrev}
+        >
+          <ChevronLeft size={22} strokeWidth={2.25} aria-hidden="true" />
+        </button>
+
+        <div className="glowup-hero" aria-live="polite">
+          <Image
+            src={featuredSrc}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 90vw, 380px"
+            className="glowup-hero-image"
+            priority
+          />
+        </div>
+
+        <button
+          type="button"
+          className="glowup-hero-nav glowup-hero-nav--next"
+          aria-label="Next photo"
+          onClick={goNext}
+        >
+          <ChevronRight size={22} strokeWidth={2.25} aria-hidden="true" />
+        </button>
       </div>
 
       <div className="glowup-line-wrap">

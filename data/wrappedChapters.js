@@ -145,10 +145,10 @@ export const milesChapter = {
 };
 
 export const talkingChapter = {
-  minutes: 444000000,
+  minutes: 444000,
+  minutesLabel: "444,000 K",
   comparison: "number of minutes we spent listening to our fav yapper",
   joke: "",
-  video: "/videos/talking/yapper.mp4",
 };
 
 export const recurringStories = [
@@ -352,7 +352,7 @@ export const lovedClips = [
  */
 export const aliOrElseQuiz = [
   {
-    prompt: "said by ali — or rohaan?",
+    prompt: "who said it",
     quote: "good boy, sit down",
     options: [
       { id: "ali", label: "ali" },
@@ -362,7 +362,7 @@ export const aliOrElseQuiz = [
     video: "/videos/quiz/good-boy-sit-down.mp4",
   },
   {
-    prompt: "said by ali — or rohaan?",
+    prompt: "who said it",
     quote: "TRENCHESSSS",
     options: [
       { id: "ali", label: "ali" },
@@ -372,17 +372,17 @@ export const aliOrElseQuiz = [
     video: "/videos/quiz/trenchessss.mp4",
   },
   {
-    prompt: "said by ali — or tim cook?",
+    prompt: "who said it",
     quote: "the third user bucket i would put.....",
     options: [
       { id: "ali", label: "ali" },
-      { id: "tim", label: "tim cook" },
+      { id: "michelle", label: "michelle" },
     ],
     answer: "ali",
     video: "/videos/quiz/third-user-bucket.mp4",
   },
   {
-    prompt: "said by ali — or rohaan?",
+    prompt: "who said it",
     quote: "you're good bro",
     options: [
       { id: "ali", label: "ali" },
