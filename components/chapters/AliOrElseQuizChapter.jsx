@@ -125,7 +125,7 @@ export default function AliOrElseQuizChapter() {
                 ) : item.image ? (
                   <div className="quiz-video-wrap">
                     <img
-                      className="quiz-video"
+                      className="quiz-video quiz-image"
                       src={item.image}
                       alt=""
                     />
