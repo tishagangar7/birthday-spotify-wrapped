@@ -72,9 +72,9 @@ export default function AliOrElseQuizChapter() {
   }
 
   return (
-    <SectionTransition className="wrapped-card wrapped-accent-green story-no-nav" variant="rise">
+    <SectionTransition className="wrapped-card wrapped-accent-green story-no-nav quiz-chapter" variant="rise">
       <span className="wrapped-kicker">bonus · how well do you know ali</span>
-      <div className="wrapped-body">
+      <div className="wrapped-body quiz-body">
         {done ? (
           <>
             <p className="wrapped-number">
@@ -90,7 +90,16 @@ export default function AliOrElseQuizChapter() {
           </>
         ) : (
           <>
-            <p className="wrapped-order-heading">{item.prompt}</p>
+            <div className="quiz-top">
+              <p className="wrapped-order-heading">{item.prompt}</p>
+              {answered ? (
+                <div className="quiz-next-slot">
+                  <WrappedButton variant="primary" onClick={goNext}>
+                    {index + 1 >= total ? "see score" : "next"}
+                  </WrappedButton>
+                </div>
+              ) : null}
+            </div>
             <p className="quiz-quote">“{item.quote}”</p>
             <p className="wrapped-caption" style={{ opacity: 0.6 }}>
               {index + 1} / {total}
@@ -131,11 +140,6 @@ export default function AliOrElseQuizChapter() {
                     />
                   </div>
                 ) : null}
-                <div className="wrapped-cta-row quiz-actions">
-                  <WrappedButton variant="primary" onClick={goNext}>
-                    {index + 1 >= total ? "see score" : "next"}
-                  </WrappedButton>
-                </div>
               </>
             )}
           </>

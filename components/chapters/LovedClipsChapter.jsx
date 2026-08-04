@@ -141,6 +141,26 @@ export default function LovedClipsChapter() {
     >
       <header className="loved-clips-header">
         <p className="loved-clips-heading">keep swiping</p>
+        {activeIsVideo && !reduceMotion ? (
+          <button
+            type="button"
+            className="loved-clips-mute"
+            onClick={handleMuteToggle}
+            aria-label={muted ? "Unmute clip" : "Mute clip"}
+          >
+            {muted ? (
+              <>
+                <Volume2 size={16} aria-hidden="true" />
+                unmute
+              </>
+            ) : (
+              <>
+                <VolumeX size={16} aria-hidden="true" />
+                mute
+              </>
+            )}
+          </button>
+        ) : null}
       </header>
 
       <div
@@ -223,27 +243,6 @@ export default function LovedClipsChapter() {
             />
           ))}
         </div>
-
-        {activeIsVideo && !reduceMotion ? (
-          <button
-            type="button"
-            className="loved-clips-mute"
-            onClick={handleMuteToggle}
-            aria-label={muted ? "Unmute clip" : "Mute clip"}
-          >
-            {muted ? (
-              <>
-                <Volume2 size={16} aria-hidden="true" />
-                unmute
-              </>
-            ) : (
-              <>
-                <VolumeX size={16} aria-hidden="true" />
-                mute
-              </>
-            )}
-          </button>
-        ) : null}
       </div>
     </SectionTransition>
   );
