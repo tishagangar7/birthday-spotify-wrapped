@@ -20,6 +20,40 @@ export const soundtrackChapter = {
   },
 };
 
+/** Page 2 — Wrapped-style top songs (replaces movie opening credits). */
+export const topSongs = [
+  {
+    rank: 1,
+    title: "5AM",
+    artist: "Lil Baby",
+    cover: "/photos/songs/5am.jpg",
+  },
+  {
+    rank: 2,
+    title: "Julia (deep diving)",
+    artist: "fred again..",
+    cover: "/photos/songs/julia.jpg",
+  },
+  {
+    rank: 3,
+    title: "American Pie",
+    artist: "Don McLean",
+    cover: "/photos/songs/american-pie.jpg",
+  },
+  {
+    rank: 4,
+    title: "GREECE (feat. Drake)",
+    artist: "DJ Khaled",
+    cover: "/photos/songs/greece.jpg",
+  },
+  {
+    rank: 5,
+    title: "Bachke Bachke - Unplugged",
+    artist: "Karan Aujla",
+    cover: "/photos/songs/bachke-bachke.jpg",
+  },
+];
+
 export const carChapter = {
   dreamCar: "porsche 911 (any year, he's not picky)",
   currentCar: "a very tired honda civic named steve",

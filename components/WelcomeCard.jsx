@@ -15,15 +15,13 @@ export default function WelcomeCard({ onStart }) {
         <span className="welcome-21st">21st</span>
         <span className="welcome-wrapped">wrapped</span>
       </h1>
-      <p className="welcome-sub">
-        not a recap of what he listened to — a cinematic recap of who he is.
-      </p>
+      <p className="welcome-sub">made w love by the rotation</p>
       <div className="wrapped-cta-row">
         <WrappedButton
           variant="primary"
           onClick={() => {
             onStart?.();
-            nav?.goToId("credits-opening");
+            nav?.goToId("top-songs");
           }}
         >
           start wrapped

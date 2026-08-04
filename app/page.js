@@ -17,7 +17,6 @@ import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
 import GlowUpTimelineChapter from "../components/chapters/GlowUpTimelineChapter";
 import GreenFlagsChapter from "../components/chapters/GreenFlagsChapter";
 import HeartSizeChapter from "../components/chapters/HeartSizeChapter";
-import OpeningCreditsChapter from "../components/chapters/OpeningCreditsChapter";
 import PersonalityOrderChapter from "../components/chapters/PersonalityOrderChapter";
 import PersonalStatsChapter from "../components/chapters/PersonalStatsChapter";
 import PokerChapter from "../components/chapters/PokerChapter";
@@ -29,6 +28,7 @@ import StartingLineupChapter from "../components/chapters/StartingLineupChapter"
 import StoriesChapter from "../components/chapters/StoriesChapter";
 import TalkingMinutesChapter from "../components/chapters/TalkingMinutesChapter";
 import TopSearchesChapter from "../components/chapters/TopSearchesChapter";
+import TopSongsChapter from "../components/chapters/TopSongsChapter";
 import Grain from "../components/Grain";
 import ScrollDeck from "../components/ScrollDeck";
 import WelcomeCard from "../components/WelcomeCard";
@@ -97,7 +97,7 @@ export default function Home() {
           />
         ),
       },
-      { id: "credits-opening", content: <OpeningCreditsChapter /> },
+      { id: "top-songs", content: <TopSongsChapter /> },
       { id: "chapter-menu", content: <ChapterMenu chapters={CHAPTER_TOC} /> },
       { id: "chapter-1-artist", content: <FavoriteArtistCard /> },
       { id: "chapter-2-car", content: <CarChapter /> },
