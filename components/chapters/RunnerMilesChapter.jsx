@@ -38,7 +38,7 @@ export default function RunnerMilesChapter() {
 
   return (
     <SectionTransition className="wrapped-card wrapped-accent-limegreen runner-miles-chapter" variant="rise">
-      <span className="wrapped-kicker">stats · miles</span>
+      <span className="wrapped-kicker">stats · miles ran this year</span>
       <div className="wrapped-body">
         <AnimatePresence mode="wait">
           {finished ? (

@@ -149,6 +149,7 @@ export const talkingChapter = {
   minutesLabel: "444,000 K",
   comparison: "number of minutes we spent listening to our fav yapper",
   joke: "",
+  video: "/videos/talking/yapper.mp4",
 };
 
 export const recurringStories = [
@@ -243,7 +244,7 @@ export const pokerChapter = {
 
 /** 3-round silhouette quiz — all three are Ali's; each round gets harder. */
 export const cologneChapter = {
-  kicker: "stats · cologne",
+  kicker: "guess the cologne",
   prompt: "identify the bottle from the silhouette.",
   options: [
     {
@@ -343,6 +344,11 @@ export const lovedClips = [
     id: "clip-8",
     type: "video",
     src: "/videos/loved-clips/clip-8.mp4",
+  },
+  {
+    id: "clip-9",
+    type: "video",
+    src: "/videos/loved-clips/clip-9.mp4",
   },
 ];
 

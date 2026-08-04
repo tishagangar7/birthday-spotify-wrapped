@@ -22,7 +22,7 @@ export default function GlowUpTimelineChapter() {
       variant="fade"
     >
       <header className="glowup-header">
-        <span className="wrapped-kicker">stats · glow up</span>
+        <span className="wrapped-kicker">timeline</span>
         <p className="glowup-hint">hover to peek · click to feature</p>
       </header>
 

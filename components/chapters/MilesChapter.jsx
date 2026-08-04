@@ -5,7 +5,7 @@ export default function MilesChapter() {
   return (
     <BigStatCard
       accent="wrapped-accent-limegreen"
-      kicker="stats · miles"
+      kicker="stats · miles ran this year"
       big={
         <span className="runner-miles-stat">
           <span>{milesChapter.miles.toLocaleString("en-US")}</span>

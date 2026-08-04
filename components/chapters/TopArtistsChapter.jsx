@@ -159,7 +159,7 @@ export default function TopArtistsChapter() {
         className="wrapped-card wrapped-accent-purple top-artists-chapter"
         variant="rise"
       >
-        <span className="wrapped-kicker">stats · top artists</span>
+        <span className="wrapped-kicker">top artists</span>
         <div className="wrapped-body top-artists-body">
           <p className="wrapped-order-heading top-artists-subheading">
             you heard them all year. we&apos;ve heard you singing them everywhere. (rip

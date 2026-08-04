@@ -8,7 +8,7 @@ import { topSongs } from "../../data/wrappedChapters";
 export default function TopSongsChapter({ activeTrack, isPlaying, onSelectSong }) {
   return (
     <SectionTransition className="wrapped-card wrapped-accent-pink top-songs-chapter" variant="rise">
-      <span className="wrapped-kicker">stats · top songs</span>
+      <span className="wrapped-kicker">top songs</span>
       <div className="wrapped-body top-songs-body">
         <p className="wrapped-order-heading">the ones on repeat</p>
         <ol className="wrapped-list top-songs-list">
