@@ -7,7 +7,7 @@ export default function TopSearchesChapter() {
   return (
     <StaggeredList
       accent="wrapped-accent-pink"
-      kicker="bonus · top searches"
+      kicker="stats · top searches"
       heading="his search history, allegedly:"
       items={items}
     />

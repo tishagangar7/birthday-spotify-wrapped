@@ -10,7 +10,7 @@ export default function AlbumTeaserCard() {
 
   return (
     <SectionTransition className="welcome-card album-teaser wrapped-accent-pink" variant="rise">
-      <span className="wrapped-kicker">one more thing</span>
+      <span className="wrapped-kicker">stats · one more thing</span>
       <h2 className="welcome-title album-teaser-title">
         we curated a special playlist for you.
       </h2>

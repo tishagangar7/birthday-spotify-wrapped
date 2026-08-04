@@ -73,7 +73,7 @@ export default function AliOrElseQuizChapter() {
 
   return (
     <SectionTransition className="wrapped-card wrapped-accent-green story-no-nav quiz-chapter" variant="rise">
-      <span className="wrapped-kicker">bonus · how well do you know ali</span>
+      <span className="wrapped-kicker">stats · quiz</span>
       <div className="wrapped-body quiz-body">
         {done ? (
           <>

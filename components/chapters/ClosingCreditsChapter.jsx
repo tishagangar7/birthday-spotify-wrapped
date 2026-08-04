@@ -4,7 +4,7 @@ import SectionTransition from "../SectionTransition";
 export default function ClosingCreditsChapter({ directedBy = "his friends" }) {
   return (
     <SectionTransition className="wrapped-card wrapped-accent-green credits-stack" variant="fade" duration={1.1}>
-      <span className="wrapped-kicker">closing credits</span>
+      <span className="wrapped-kicker">stats · closing credits</span>
 
       <div className="credits-stack-block">
         <span className="wrapped-kicker">directed by</span>

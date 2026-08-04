@@ -107,12 +107,12 @@ export const personalityTraits = [
   { label: "side", detail: "chronically late (small)" },
 ];
 
-/** Standalone "your stats" cards — not Spotify minutes. */
+/** Standalone stats cards — not Spotify minutes. */
 export const personalStats = [
   {
     id: "chipotle",
     bigStat: true,
-    kicker: "your stats · chipotle",
+    kicker: "stats · chipotle",
     big: "259,967",
     caption:
       "the number of times ali ordered a brown rice double chicken pinto bean queso bowl with very little red salsa — with a side of the cashier's number",
@@ -120,7 +120,7 @@ export const personalStats = [
   },
   {
     id: "mythology",
-    kicker: "your stats · greek mythology",
+    kicker: "stats · greek mythology",
     big: "12h",
     isNumber: false,
     caption:
@@ -130,7 +130,7 @@ export const personalStats = [
   {
     id: "mo",
     bigStat: true,
-    kicker: "your stats · youtube",
+    kicker: "stats · youtube",
     big: "12,472",
     caption:
       "number of hours the birthday boy listened to youtube videos to fall asleep to",
@@ -139,15 +139,16 @@ export const personalStats = [
 ];
 
 export const milesChapter = {
-  miles: 2847,
+  miles: 6.7,
   comparison: "drag ali to the finish — then we reveal how far he's actually gone.",
   motivationalNote: "and somehow still late to everything.",
 };
 
 export const talkingChapter = {
-  minutes: 12 * 60 * 365,
-  comparison: "[some subtext here]",
+  minutes: 444000000,
+  comparison: "number of minutes we spent listening to our fav yapper",
   joke: "",
+  video: "/videos/talking/yapper.mp4",
 };
 
 export const recurringStories = [
@@ -234,17 +235,15 @@ export const predictions = [
 
 /** Poker / casino money vibes. */
 export const pokerChapter = {
-  kicker: "your stats · the tables",
-  lostAt: "morongo",
-  lostNote: "lost quite a bit at morongo.",
-  wonAt: "home poker",
-  wonNote: "made quite a bit at home poker games.",
-  punchline: "[some subtext]",
+  kicker: "stats · poker",
+  setupLine: "number of times he pushed all in while playing poker",
+  punchline: "number of times we called his bluff",
+  countTo: 720,
 };
 
 /** 3-round silhouette quiz — all three are Ali's; each round gets harder. */
 export const cologneChapter = {
-  kicker: "bonus · guess the cologne",
+  kicker: "stats · cologne",
   prompt: "identify the bottle from the silhouette.",
   options: [
     {
@@ -400,7 +399,7 @@ export const aliOrElseQuiz = [
  */
 export const chipotleBowl = {
   status: "ready",
-  kicker: "bonus · build his bowl",
+  kicker: "build his bowl",
   heading: "make your own chipotle bowl",
   note: "tap each line to cycle options, then lock it in.",
   defaults: [

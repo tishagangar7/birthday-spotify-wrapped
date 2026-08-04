@@ -11,7 +11,7 @@ export default function StartingLineupChapter() {
   return (
     <StaggeredList
       accent="wrapped-accent-green"
-      kicker="bonus · your starting lineup"
+      kicker="stats · starting lineup"
       heading="the starting five, suited up:"
       items={items}
     />

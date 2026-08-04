@@ -139,6 +139,7 @@ export default function LovedClipsChapter() {
       className="wrapped-card wrapped-accent-teal loved-clips-chapter story-no-nav"
       variant="fade"
     >
+      <span className="wrapped-kicker">stats · loved clips</span>
       <header className="loved-clips-header">
         <p className="loved-clips-heading">keep swiping</p>
         {activeIsVideo && !reduceMotion ? (

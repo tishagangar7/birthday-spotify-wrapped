@@ -4,7 +4,7 @@ import { recurringStories } from "../../data/wrappedChapters";
 export default function StoriesChapter() {
   return (
     <SectionTransition className="wrapped-card wrapped-accent-teal" variant="rise">
-      <span className="wrapped-kicker">chapter six · stories told more than once</span>
+      <span className="wrapped-kicker">stories told more than once</span>
       <div className="wrapped-body">
         <ol className="wrapped-list wrapped-list-stories">
           {recurringStories.map((story, index) => (

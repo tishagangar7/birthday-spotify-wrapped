@@ -754,6 +754,117 @@ button {
   letter-spacing: -0.02em;
 }
 
+/* Long digit strings (e.g. 444,000,000) need a smaller fluid size so they
+   stay fully visible inside the card padding on narrow phones. */
+.talking-minutes-chapter .wrapped-number,
+.talking-stats-number {
+  font-size: clamp(1.95rem, 10.8vw, 4.85rem);
+  letter-spacing: -0.03em;
+  max-width: 100%;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Talking minutes — video card → dissolve → big-stat reveal              */
+/* Sized to match .poker-reveal / .poker-photo-card (22rem panel).        */
+/* ---------------------------------------------------------------------- */
+
+.talking-reveal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 22rem);
+  min-height: clamp(20rem, 52vh, 28rem);
+  margin-inline: auto;
+}
+
+/* Same footprint as .poker-photo-card — rounded portrait panel, not full-bleed. */
+.talking-video-card {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.3s ease;
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.talking-video-card.is-dissolving {
+  opacity: 0;
+}
+
+.talking-video-card-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+.talking-video-card-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 12, 18, 0.22) 0%,
+      rgba(20, 12, 18, 0.06) 45%,
+      rgba(20, 12, 18, 0.28) 100%
+    );
+}
+
+.talking-stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1.6rem 1.25rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 1.3s ease,
+    transform 1.3s ease;
+  pointer-events: none;
+}
+
+.talking-stats.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.talking-stats.is-hidden {
+  visibility: hidden;
+}
+
+.talking-stats-caption {
+  margin-top: 1.1rem;
+  max-width: 20rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .talking-video-card,
+  .talking-stats {
+    transition: none;
+  }
+
+  .talking-stats.is-visible {
+    transform: none;
+  }
+}
+
 .wrapped-title {
   margin: 0;
   font-family: var(--font-archivo), sans-serif;
@@ -3247,6 +3358,105 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 /* ---------------------------------------------------------------------- */
+/* Poker — all-in → bluff count-up reveal                                 */
+/* ---------------------------------------------------------------------- */
+
+.poker-reveal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 22rem);
+  min-height: clamp(20rem, 52vh, 28rem);
+  margin-inline: auto;
+}
+
+/* Rounded photo panel behind the big-stat stack — Ali (right) framed. */
+.poker-photo-card {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  pointer-events: none;
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.poker-photo-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Bias toward Ali on the right (bearded, phone). */
+  object-position: 78% 22%;
+  opacity: 0.65;
+  filter: brightness(1.05) contrast(1.04);
+}
+
+/* Light scrim only — B&W photo stays readable under type. */
+.poker-photo-card-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25, 20, 20, 0.28) 0%,
+      rgba(25, 20, 20, 0.08) 42%,
+      rgba(25, 20, 20, 0.12) 62%,
+      rgba(25, 20, 20, 0.38) 100%
+    );
+}
+
+.poker-reveal-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1.6rem 1.25rem;
+  text-align: center;
+}
+
+.poker-reveal-number {
+  color: var(--card-accent, var(--spotify-green));
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.75),
+    0 0 28px color-mix(in srgb, var(--card-accent, var(--spotify-green)) 30%, transparent);
+}
+
+.poker-reveal-label {
+  margin-top: 1.1rem;
+  max-width: 18rem;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+  animation: poker-label-in 0.45s ease both;
+}
+
+@keyframes poker-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poker-reveal-label,
+  .poker-reveal-number {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
 /* Polaroid wall — Ali photo strip after poker                            */
 /* ---------------------------------------------------------------------- */
 
@@ -3673,6 +3883,13 @@ input[type="range"]::-webkit-slider-thumb {
 .runner-miles-chapter .wrapped-body {
   width: 100%;
   max-width: none;
+  align-self: stretch;
+}
+
+.runner-drag,
+.runner-reveal {
+  width: 100%;
+  max-width: none;
 }
 
 .runner-stage {
@@ -3808,7 +4025,7 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 100%;
   max-width: none;
-  height: 2.75rem;
+  height: 3.5rem;
   margin: 0.65rem 0 0;
   display: block;
   background: transparent;
@@ -3822,12 +4039,12 @@ input[type="range"]::-webkit-slider-thumb {
 
 .runner-slider:focus-visible::-webkit-slider-thumb {
   box-shadow:
-    0 0 0 4px rgba(30, 215, 96, 0.35),
-    0 4px 12px rgba(0, 0, 0, 0.45);
+    0 0 0 5px rgba(30, 215, 96, 0.35),
+    0 5px 16px rgba(0, 0, 0, 0.45);
 }
 
 .runner-slider::-webkit-slider-runnable-track {
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.22);
 }
@@ -3835,35 +4052,67 @@ input[type="range"]::-webkit-slider-thumb {
 .runner-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 28px;
-  height: 28px;
-  margin-top: -10px;
-  border: 3px solid #fff;
+  width: 48px;
+  height: 48px;
+  margin-top: -19px;
+  border: 4px solid #fff;
   border-radius: 50%;
   background: #1ed760;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.45);
   cursor: grab;
 }
 
 .runner-slider:active::-webkit-slider-thumb {
   cursor: grabbing;
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .runner-slider::-moz-range-track {
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.22);
 }
 
 .runner-slider::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
-  border: 3px solid #fff;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #fff;
   border-radius: 50%;
   background: #1ed760;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.45);
   cursor: grab;
+}
+
+.runner-reveal {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.runner-miles-stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2em 0.28em;
+  max-width: 100%;
+}
+
+.runner-miles-unit {
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.38em;
+  font-weight: inherit;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-transform: lowercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runner-ali {
+    transition: none;
+  }
 }
 
 /* One-shot bottle rain when the cologne chapter first snaps into view. */

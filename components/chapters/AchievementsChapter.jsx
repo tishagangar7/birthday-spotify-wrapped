@@ -7,7 +7,7 @@ export default function AchievementsChapter() {
   return (
     <StaggeredList
       accent="wrapped-accent-purple"
-      kicker="bonus · achievements unlocked"
+      kicker="stats · achievements"
       heading="unlocking now:"
       items={items}
       footer="achievement rate: 100%."

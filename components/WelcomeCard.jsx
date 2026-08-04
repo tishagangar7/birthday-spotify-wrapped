@@ -10,7 +10,7 @@ export default function WelcomeCard({ onStart }) {
 
   return (
     <SectionTransition className="welcome-card wrapped-accent-green" variant="rise">
-      <span className="wrapped-kicker">ali’s</span>
+      <span className="wrapped-kicker">stats · ali</span>
       <h1 className="welcome-title welcome-title-figma">
         <span className="welcome-21st">21st</span>
         <span className="welcome-wrapped">wrapped</span>

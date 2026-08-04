@@ -6,7 +6,7 @@ export default function CarChapter() {
 
   return (
     <SectionTransition className="wrapped-card wrapped-accent-orange" variant="rise">
-      <span className="wrapped-kicker">chapter two · main character vehicle</span>
+      <span className="wrapped-kicker">main character vehicle</span>
       <div className="wrapped-body">
         <p className="wrapped-title">{dreamCar}</p>
         <ul className="wrapped-facts">

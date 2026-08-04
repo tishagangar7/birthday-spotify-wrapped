@@ -12,7 +12,7 @@ export default function AlbumPlaylistChapter() {
   return (
     <SectionTransition className="album-playlist-chapter wrapped-card wrapped-accent-pink" variant="rise">
       <header className="album-playlist-hero">
-        <span className="wrapped-kicker">playlist · actual life</span>
+        <span className="wrapped-kicker">stats · playlist</span>
         <h2 className="album-playlist-title">
           actual life
           <br />

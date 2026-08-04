@@ -7,9 +7,16 @@ import SectionTransition from "../SectionTransition";
  * stat screens this replaces, just fed with curated chapter content instead
  * of API data.
  */
-export default function BigStatCard({ accent = "wrapped-accent-green", kicker, big, isNumber = true, children }) {
+export default function BigStatCard({
+  accent = "wrapped-accent-green",
+  className = "",
+  kicker,
+  big,
+  isNumber = true,
+  children,
+}) {
   return (
-    <SectionTransition className={`wrapped-card ${accent}`} variant="rise">
+    <SectionTransition className={`wrapped-card ${accent} ${className}`.trim()} variant="rise">
       <span className="wrapped-kicker">{kicker}</span>
       <div className="wrapped-body">
         <p className={isNumber ? "wrapped-number" : "wrapped-title"}>{big}</p>

@@ -15,7 +15,7 @@ export default function HeartSizeChapter({ topMemory }) {
 
   return (
     <SectionTransition className="wrapped-card wrapped-accent-pink heart-chapter" variant="fade" duration={1.4}>
-      <span className="wrapped-kicker">chapter seven · heart size: off the charts</span>
+      <span className="wrapped-kicker">stats · heart</span>
       <div className="wrapped-body">
         <div className="heart-messages">
           {messages.map((entry, index) => (

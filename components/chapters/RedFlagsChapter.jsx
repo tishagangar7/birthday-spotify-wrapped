@@ -5,7 +5,7 @@ export default function RedFlagsChapter() {
   return (
     <FlagsChapter
       accent="wrapped-accent-orange"
-      kicker="bonus · red flags (but we love him anyway)"
+      kicker="stats · red flags"
       heading="okay, fine, a few:"
       items={redFlags}
     />

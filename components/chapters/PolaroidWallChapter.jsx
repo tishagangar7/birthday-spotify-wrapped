@@ -33,7 +33,7 @@ export default function PolaroidWallChapter() {
   return (
     <SectionTransition className="wrapped-card wrapped-accent-pink polaroid-wall-chapter" variant="fade">
       <header className="polaroid-wall-header">
-        <span className="wrapped-kicker">the wall · your photos</span>
+        <span className="wrapped-kicker">stats · photos</span>
         <p className="polaroid-wall-subtext">the year, on film.</p>
       </header>
 

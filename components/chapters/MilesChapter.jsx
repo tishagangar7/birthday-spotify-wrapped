@@ -3,10 +3,17 @@ import { milesChapter } from "../../data/wrappedChapters";
 
 export default function MilesChapter() {
   return (
-    <BigStatCard accent="wrapped-accent-limegreen" kicker="chapter four · miles this year" big={milesChapter.miles.toLocaleString("en-US")}>
-      <p className="wrapped-caption">
-        {milesChapter.comparison} {milesChapter.motivationalNote}
-      </p>
+    <BigStatCard
+      accent="wrapped-accent-limegreen"
+      kicker="stats · miles"
+      big={
+        <span className="runner-miles-stat">
+          <span>{milesChapter.miles.toLocaleString("en-US")}</span>
+          <span className="runner-miles-unit">miles covered</span>
+        </span>
+      }
+    >
+      <p className="wrapped-caption">{milesChapter.motivationalNote}</p>
     </BigStatCard>
   );
 }

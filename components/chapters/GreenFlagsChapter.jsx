@@ -5,7 +5,7 @@ export default function GreenFlagsChapter() {
   return (
     <FlagsChapter
       accent="wrapped-accent-green"
-      kicker="bonus · green flags"
+      kicker="stats · green flags"
       heading="and the real reasons why:"
       items={greenFlags}
     />
