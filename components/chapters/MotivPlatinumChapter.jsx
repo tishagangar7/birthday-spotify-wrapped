@@ -91,11 +91,10 @@ export default function MotivPlatinumChapter() {
       className={`wrapped-card wrapped-accent-purple story-no-nav motiv-chapter${verified ? " is-verified" : ""}`}
       variant="rise"
     >
-      {!verified ? <span className="wrapped-kicker">{data.kicker}</span> : null}
-
       <div className="wrapped-body motiv-body">
         {!verified ? (
           <>
+            <span className="wrapped-kicker">{data.kicker}</span>
             <header className="motiv-header">
               <h2 className="lore-iceberg-headline motiv-headline">{data.headline}</h2>
               <p className="wrapped-caption">{data.subheading}</p>
@@ -138,7 +137,7 @@ export default function MotivPlatinumChapter() {
               </dl>
             </button>
 
-            <div className="wrapped-cta-row">
+            <div className="wrapped-cta-row motiv-cta">
               <WrappedButton variant="primary" onClick={verify} ariaLabel={data.tapHint}>
                 verify status
               </WrappedButton>
@@ -187,6 +186,8 @@ export default function MotivPlatinumChapter() {
 
               {showDetails ? (
                 <div className="motiv-details">
+                  <p className="motiv-stat-quiet">{data.quickVisitLine}</p>
+                  <p className="motiv-next-reward">next reward · {data.nextReward}</p>
                   <ul className="motiv-perks">
                     {data.perks.map((perk) => (
                       <li key={perk.id} className="motiv-perk">

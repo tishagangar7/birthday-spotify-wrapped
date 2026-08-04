@@ -166,8 +166,10 @@ export const motivPlatinumChapter = {
     { key: "bouncersDodged", suffix: "bouncers dodged" },
     { key: "conversations", suffix: "minutes spent making conversations with random people" },
   ],
+  quickVisitLine: "“quick visit” success rate: 0%",
   tiers: ["Visitor", "Regular", "Gold", "Platinum", "Permanent Resident"],
   finalTier: "PERMANENT RESIDENT",
+  nextReward: "his own set of keys",
   perks: [
     {
       id: "priority",
