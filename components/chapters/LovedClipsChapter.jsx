@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import SectionTransition from "../SectionTransition";
@@ -143,6 +144,8 @@ export default function LovedClipsChapter() {
     });
   };
 
+  const activeIsVideo = lovedClips[activeIndex]?.type === "video";
+
   return (
     <SectionTransition
       ref={chapterRef}
@@ -182,20 +185,31 @@ export default function LovedClipsChapter() {
                       : `Focus clip ${index + 1}`
                   }
                 >
-                  <video
-                    ref={(el) => {
-                      if (el) videoRefs.current[clip.id] = el;
-                      else delete videoRefs.current[clip.id];
-                    }}
-                    className="loved-clips-media"
-                    src={clip.src}
-                    poster={clip.poster}
-                    playsInline
-                    muted
-                    loop
-                    preload={index === 0 || isActive ? "auto" : "metadata"}
-                    aria-hidden={!isActive}
-                  />
+                  {clip.type === "video" ? (
+                    <video
+                      ref={(el) => {
+                        if (el) videoRefs.current[clip.id] = el;
+                        else delete videoRefs.current[clip.id];
+                      }}
+                      className="loved-clips-media"
+                      src={clip.src}
+                      poster={clip.poster}
+                      playsInline
+                      muted
+                      loop
+                      preload={index === 0 || isActive ? "auto" : "metadata"}
+                      aria-hidden={!isActive}
+                    />
+                  ) : (
+                    <Image
+                      src={clip.src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 480px) 72vw, 320px"
+                      className="loved-clips-media"
+                      priority={index < 2}
+                    />
+                  )}
                 </button>
                 {clip.caption ? (
                   <p className={`loved-clips-caption${isActive ? " is-visible" : ""}`}>
@@ -225,7 +239,7 @@ export default function LovedClipsChapter() {
           ))}
         </div>
 
-        {!reduceMotion ? (
+        {activeIsVideo && !reduceMotion ? (
           <button
             type="button"
             className="loved-clips-mute"

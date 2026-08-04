@@ -294,7 +294,8 @@ export const cologneChapter = {
 
 /**
  * Bonus filmstrip — clips we love.
- * dance.mp4 is cover / first; remaining clips follow in order.
+ * Media in public/videos/loved-clips/ (dance first). Optional poster/caption TBD.
+ * Schema: { id, src, type: 'video'|'image', caption?, poster? }
  */
 export const lovedClips = [
   {
@@ -307,16 +308,19 @@ export const lovedClips = [
     id: "clip-2",
     type: "video",
     src: "/videos/loved-clips/clip-2.mp4",
+    caption: "that one",
   },
   {
     id: "clip-3",
     type: "video",
     src: "/videos/loved-clips/clip-3.mp4",
+    caption: "core memory",
   },
   {
     id: "clip-4",
     type: "video",
     src: "/videos/loved-clips/clip-4.mp4",
+    caption: "don't skip",
   },
 ];
 
