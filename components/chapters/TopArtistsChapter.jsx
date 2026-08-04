@@ -172,9 +172,7 @@ export default function TopArtistsChapter() {
               const hasVideo = Boolean(artist.video);
               const isComingSoon = Boolean(artist.comingSoon);
               const isInteractive = hasVideo || isComingSoon;
-              const isHighlighted = activeArtist
-                ? activeArtist.slug === artist.slug
-                : artist.rank === 1;
+              const isHighlighted = activeArtist?.slug === artist.slug;
 
               return (
                 <motion.article

@@ -1013,11 +1013,18 @@ button {
     inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.top-artists-card.is-highlighted .top-artists-avatar {
+.top-artists-card.is-highlighted .top-artists-avatar,
+.top-artists-card.is-interactive:hover .top-artists-avatar,
+.top-artists-card.is-interactive:focus-within .top-artists-avatar {
   box-shadow:
     0 0 0 3px var(--spotify-green),
     0 12px 32px rgba(29, 185, 84, 0.22),
     0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.top-artists-card.is-interactive:hover .top-artists-rank,
+.top-artists-card.is-interactive:focus-within .top-artists-rank {
+  color: var(--spotify-green);
 }
 
 .top-artists-avatar-image {
@@ -3314,60 +3321,151 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* ---- Interactive Wrapped chapters: runner, cologne, quiz ---- */
 
+.runner-miles-chapter.wrapped-card {
+  padding-left: clamp(10px, 2vw, 20px);
+  padding-right: clamp(10px, 2vw, 20px);
+}
+
+.runner-miles-chapter .wrapped-body {
+  width: 100%;
+  max-width: none;
+}
+
+.runner-stage {
+  position: relative;
+  width: 100%;
+  margin: 1.25rem 0 0.75rem;
+  padding-top: 7.5rem;
+  overflow: visible;
+}
+
 .runner-track {
   position: relative;
-  width: min(100%, 420px);
-  height: 72px;
-  margin: 1.5rem auto 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  height: clamp(140px, 22vw, 200px);
+  margin: 0;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, #c45a3a 0%, #a8432c 45%, #8f3624 100%);
+  border: 3px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 0 0 4px rgba(168, 67, 44, 0.9),
+    0 10px 28px rgba(0, 0, 0, 0.35);
   overflow: hidden;
+}
+
+.runner-lanes {
+  position: absolute;
+  inset: 18px 52px 18px 40px;
+  border-radius: 0.65rem;
+  background-image:
+    linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(33.33% - 1px),
+      rgba(255, 255, 255, 0.55) calc(33.33% - 1px),
+      rgba(255, 255, 255, 0.55) calc(33.33% + 1px),
+      transparent calc(33.33% + 1px),
+      transparent calc(66.66% - 1px),
+      rgba(255, 255, 255, 0.55) calc(66.66% - 1px),
+      rgba(255, 255, 255, 0.55) calc(66.66% + 1px),
+      transparent calc(66.66% + 1px)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.22) 0 14px,
+      transparent 14px 34px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.runner-start {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.runner-finish {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.runner-finish-flag {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, #111 25%, transparent 25%),
+    linear-gradient(-45deg, #111 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #111 75%),
+    linear-gradient(-45deg, transparent 75%, #111 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+  background-color: #f4f4f4;
+  border-left: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 0 1rem 1rem 0;
+  opacity: 0.95;
+}
+
+.runner-finish-label {
+  position: relative;
+  z-index: 1;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
 }
 
 .runner-ali {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: #1ed760;
-  color: #191414;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  top: 0;
+  bottom: auto;
+  z-index: 5;
+  width: 7rem;
+  height: 11rem;
   display: grid;
-  place-items: center;
-  z-index: 2;
+  place-items: end center;
   transition: left 40ms linear;
+  pointer-events: none;
 }
 
-.runner-obstacle {
-  position: absolute;
-  top: 8px;
-  transform: translateX(-50%);
-  max-width: 4.5rem;
-  padding: 0.15rem 0.35rem;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.45);
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.55rem;
-  text-align: center;
-  line-height: 1.2;
-  z-index: 1;
-}
-
-.runner-obstacle.is-hit {
-  background: rgba(30, 215, 96, 0.35);
-  color: #fff;
+.runner-ali-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: none;
 }
 
 .runner-slider {
-  width: min(100%, 420px);
-  margin: 0.5rem auto 0;
+  width: 100%;
+  max-width: none;
+  margin: 0.5rem 0 0;
   display: block;
   accent-color: #1ed760;
+  height: 1.75rem;
 }
 
 .cologne-round-label {
@@ -3480,6 +3578,29 @@ input[type="range"]::-webkit-slider-thumb {
   gap: 0.75rem;
   margin-top: 1.25rem;
   justify-content: center;
+}
+
+.quiz-video-wrap {
+  width: min(100%, 420px);
+  margin: 1rem auto 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.quiz-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(42vh, 360px);
+  object-fit: contain;
+  background: #000;
+}
+
+.quiz-image {
+  max-height: min(48vh, 420px);
 }
 
 .quiz-btn {

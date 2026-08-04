@@ -1,56 +1,58 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import SectionTransition from "../SectionTransition";
-import { milesChapter, runnerObstacles } from "../../data/wrappedChapters";
+import { milesChapter } from "../../data/wrappedChapters";
 
-/**
- * Slide ALI past obstacles; release near the end to reveal miles covered.
- */
+/** Funny slider — drag cartoon Ali across to unlock miles. */
 export default function RunnerMilesChapter() {
   const [progress, setProgress] = useState(0);
   const [finished, setFinished] = useState(false);
-
-  const hitLabels = useMemo(
-    () => runnerObstacles.filter((o) => progress >= o.at).map((o) => o.label),
-    [progress],
-  );
 
   function onSlide(e) {
     e.stopPropagation();
     const next = Number(e.target.value);
     setProgress(next);
-    if (next >= 95) setFinished(true);
+    if (next >= 97) setFinished(true);
   }
 
   return (
-    <SectionTransition className="wrapped-card wrapped-accent-limegreen" variant="rise">
+    <SectionTransition className="wrapped-card wrapped-accent-limegreen runner-miles-chapter" variant="rise">
       <span className="wrapped-kicker">chapter four · miles this year</span>
       <div className="wrapped-body">
         {finished ? (
           <>
             <p className="wrapped-number">{milesChapter.miles.toLocaleString("en-US")}</p>
             <p className="wrapped-caption">
-              miles covered. {milesChapter.comparison} {milesChapter.motivationalNote}
+              miles covered. {milesChapter.motivationalNote}
             </p>
           </>
         ) : (
           <>
-            <p className="wrapped-order-heading">run ali through the year</p>
-            <p className="wrapped-caption">slide him past the obstacles. miles unlock at the finish.</p>
+            <p className="wrapped-order-heading">drag him across</p>
 
-            <div className="runner-track" aria-hidden>
-              {runnerObstacles.map((o) => (
-                <span
-                  key={o.id}
-                  className={`runner-obstacle${progress >= o.at ? " is-hit" : ""}`}
-                  style={{ left: `${o.at}%` }}
-                >
-                  {o.label}
-                </span>
-              ))}
-              <span className="runner-ali" style={{ left: `calc(${progress}% - 1.1rem)` }}>
-                ALI
+            <div className="runner-stage">
+              <div className="runner-track" aria-hidden>
+                <div className="runner-lanes" />
+                <span className="runner-start">start</span>
+                <div className="runner-finish">
+                  <span className="runner-finish-flag" />
+                  <span className="runner-finish-label">finish</span>
+                </div>
+              </div>
+              <span
+                className="runner-ali"
+                style={{ left: `calc(${progress}% - 3.5rem)` }}
+                aria-hidden
+              >
+                <img
+                  src="/photos/runner/ali-run-0.png?v=2"
+                  alt=""
+                  className="runner-ali-image"
+                  width={140}
+                  height={224}
+                  draggable={false}
+                />
               </span>
             </div>
 
@@ -62,14 +64,8 @@ export default function RunnerMilesChapter() {
               value={progress}
               onChange={onSlide}
               onPointerDown={(e) => e.stopPropagation()}
-              aria-label="Slide Ali along the track"
+              aria-label="Drag Ali across the track"
             />
-
-            {hitLabels.length > 0 && (
-              <p className="wrapped-caption" style={{ opacity: 0.75 }}>
-                cleared: {hitLabels.join(" · ")}
-              </p>
-            )}
           </>
         )}
       </div>

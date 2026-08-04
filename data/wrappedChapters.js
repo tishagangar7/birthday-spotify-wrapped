@@ -138,23 +138,15 @@ export const personalStats = [
 ];
 
 export const milesChapter = {
-  miles: 412,
-  comparison: "drag ALI through the obstacles — then we reveal how far he's actually gone.",
-  motivationalNote: "whoop recovery score pending. sauna time does not count as cardio (he disagrees).",
+  miles: 2847,
+  comparison: "drag ali to the finish — then we reveal how far he's actually gone.",
+  motivationalNote: "and somehow still late to everything.",
 };
-
-/** Mini-runner: obstacles Ali dodges / hits while sliding. */
-export const runnerObstacles = [
-  { id: "sauna", label: "sauna", at: 18 },
-  { id: "chipotle", label: "chipotle line", at: 38 },
-  { id: "morongo", label: "morongo", at: 58 },
-  { id: "mo", label: "texting mo", at: 78 },
-];
 
 export const talkingChapter = {
   minutes: 12 * 60 * 365,
-  comparison: "twelve hours a night of mythology, times three captive friends who did not ask for this lecture series.",
-  joke: "and he'll still say \"ok but hermes is underrated\" before starting another hour.",
+  comparison: "[some subtext here]",
+  joke: "",
 };
 
 export const recurringStories = [
@@ -301,33 +293,49 @@ export const cologneChapter = {
 };
 
 /**
- * How well do you know Ali — "said by Ali" vs "someone else".
- * `saidByAli: true` means Ali said it.
+ * How well do you know Ali — who said each quote.
+ * After answering: feedback + optional video + Next (no auto-advance).
  */
 export const aliOrElseQuiz = [
   {
-    quote: "ok but let me just finish this one thought about hermes",
-    saidByAli: true,
+    prompt: "said by ali — or rohaan?",
+    quote: "good boy, sit down",
+    options: [
+      { id: "ali", label: "ali" },
+      { id: "rohaan", label: "rohaan" },
+    ],
+    answer: "ali",
+    video: "/videos/quiz/good-boy-sit-down.mp4",
   },
   {
-    quote: "he's still in the sauna",
-    saidByAli: false,
+    prompt: "said by ali — or rohaan?",
+    quote: "TRENCHESSSS",
+    options: [
+      { id: "ali", label: "ali" },
+      { id: "rohaan", label: "rohaan" },
+    ],
+    answer: "rohaan",
+    video: "/videos/quiz/trenchessss.mp4",
   },
   {
-    quote: "i'm already in the chipotle line",
-    saidByAli: true,
+    prompt: "said by ali — or tim cook?",
+    quote: "the third user bucket i would put.....",
+    options: [
+      { id: "ali", label: "ali" },
+      { id: "tim", label: "tim cook" },
+    ],
+    answer: "ali",
+    video: "/videos/quiz/third-user-bucket.mp4",
   },
   {
-    quote: "has mo responded yet",
-    saidByAli: true,
-  },
-  {
-    quote: "never again at morongo",
-    saidByAli: true,
-  },
-  {
-    quote: "he makes the best ground beef and potato",
-    saidByAli: false,
+    prompt: "said by ali — or rohaan?",
+    quote: "you're good bro",
+    options: [
+      { id: "ali", label: "ali" },
+      { id: "rohaan", label: "rohaan" },
+    ],
+    answer: "ali",
+    image: "/photos/quiz/youre-good.png",
   },
 ];
 

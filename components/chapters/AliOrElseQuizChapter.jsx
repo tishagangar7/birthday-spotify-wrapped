@@ -1,11 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SectionTransition from "../SectionTransition";
 import WrappedButton from "../WrappedButton";
 import { aliOrElseQuiz } from "../../data/wrappedChapters";
 
+function answerLabel(item) {
+  const match = item.options.find((o) => o.id === item.answer);
+  return match?.label ?? item.answer;
+}
+
 export default function AliOrElseQuizChapter() {
+  const videoRef = useRef(null);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [picked, setPicked] = useState(null);
@@ -13,27 +19,56 @@ export default function AliOrElseQuizChapter() {
 
   const item = aliOrElseQuiz[index];
   const total = aliOrElseQuiz.length;
+  const answered = picked !== null;
 
   const feedback = useMemo(() => {
-    if (picked === null || !item) return null;
-    const correct = picked === (item.saidByAli ? "ali" : "else");
-    return correct ? "correct." : `nope — ${item.saidByAli ? "ali" : "someone else"}.`;
-  }, [picked, item]);
+    if (!answered || !item) return null;
+    const correct = picked === item.answer;
+    const who = answerLabel(item);
+    return correct ? `correct — ${who}.` : `nope — ${who}.`;
+  }, [answered, picked, item]);
+
+  useEffect(() => {
+    if (!answered || !item?.video) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    let cancelled = false;
+    const play = async () => {
+      video.currentTime = 0;
+      try {
+        await video.play();
+      } catch {
+        if (!cancelled) {
+          /* autoplay blocked — controls still available */
+        }
+      }
+    };
+    play();
+    return () => {
+      cancelled = true;
+      video.pause();
+    };
+  }, [answered, item?.video, index]);
 
   function choose(choice) {
-    if (picked !== null || done) return;
-    const correct = choice === (item.saidByAli ? "ali" : "else");
+    if (answered || done) return;
+    const correct = choice === item.answer;
     setPicked(choice);
     if (correct) setScore((s) => s + 1);
+  }
 
-    window.setTimeout(() => {
-      if (index + 1 >= total) {
-        setDone(true);
-      } else {
-        setIndex((i) => i + 1);
-        setPicked(null);
-      }
-    }, 900);
+  function goNext() {
+    if (!answered) return;
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+    if (index + 1 >= total) {
+      setDone(true);
+    } else {
+      setIndex((i) => i + 1);
+      setPicked(null);
+    }
   }
 
   return (
@@ -55,20 +90,54 @@ export default function AliOrElseQuizChapter() {
           </>
         ) : (
           <>
-            <p className="wrapped-order-heading">said by ali — or someone else?</p>
+            <p className="wrapped-order-heading">{item.prompt}</p>
             <p className="quiz-quote">“{item.quote}”</p>
             <p className="wrapped-caption" style={{ opacity: 0.6 }}>
               {index + 1} / {total}
             </p>
-            <div className="wrapped-cta-row quiz-actions">
-              <WrappedButton variant="primary" onClick={() => choose("ali")} disabled={picked !== null}>
-                ali
-              </WrappedButton>
-              <WrappedButton variant="ghost" onClick={() => choose("else")} disabled={picked !== null}>
-                someone else
-              </WrappedButton>
-            </div>
-            {feedback ? <p className="wrapped-caption">{feedback}</p> : null}
+
+            {!answered ? (
+              <div className="wrapped-cta-row quiz-actions">
+                {item.options.map((opt, i) => (
+                  <WrappedButton
+                    key={opt.id}
+                    variant={i === 0 ? "primary" : "ghost"}
+                    onClick={() => choose(opt.id)}
+                  >
+                    {opt.label}
+                  </WrappedButton>
+                ))}
+              </div>
+            ) : (
+              <>
+                {feedback ? <p className="wrapped-caption">{feedback}</p> : null}
+                {item.video ? (
+                  <div className="quiz-video-wrap">
+                    <video
+                      ref={videoRef}
+                      className="quiz-video"
+                      src={item.video}
+                      playsInline
+                      controls
+                      preload="auto"
+                    />
+                  </div>
+                ) : item.image ? (
+                  <div className="quiz-video-wrap">
+                    <img
+                      className="quiz-video"
+                      src={item.image}
+                      alt=""
+                    />
+                  </div>
+                ) : null}
+                <div className="wrapped-cta-row quiz-actions">
+                  <WrappedButton variant="primary" onClick={goNext}>
+                    {index + 1 >= total ? "see score" : "next"}
+                  </WrappedButton>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
