@@ -20,6 +20,32 @@ export const soundtrackChapter = {
   },
 };
 
+/** Page 3 — Wrapped-style top artists (static list, no audio). */
+export const topArtists = [
+  {
+    rank: 1,
+    name: "fred again..",
+    slug: "fred-again",
+    image: "/photos/artists/fred-again.jpg",
+    label: "Artist",
+  },
+  {
+    rank: 2,
+    name: "Subtronics",
+    slug: "subtronics",
+    image: "/photos/artists/subtronics.jpg",
+    label: "Artist",
+    video: "/videos/artists/subtronics.mp4",
+  },
+  {
+    rank: 3,
+    name: "Karan Aujla",
+    slug: "karan-aujla",
+    image: "/photos/artists/karan-aujla.jpg",
+    label: "Artist",
+  },
+];
+
 /** Page 2 — Wrapped-style top songs (replaces movie opening credits). */
 export const topSongs = [
   {
@@ -27,30 +53,35 @@ export const topSongs = [
     title: "5AM",
     artist: "Lil Baby",
     cover: "/photos/songs/5am.jpg",
+    src: "/audio/top-songs/5am.mp3",
   },
   {
     rank: 2,
     title: "Julia (deep diving)",
     artist: "fred again..",
     cover: "/photos/songs/julia.jpg",
+    src: "/audio/top-songs/julia.mp3",
   },
   {
     rank: 3,
     title: "American Pie",
     artist: "Don McLean",
     cover: "/photos/songs/american-pie.jpg",
+    src: "/audio/top-songs/american-pie.mp3",
   },
   {
     rank: 4,
     title: "GREECE (feat. Drake)",
     artist: "DJ Khaled",
     cover: "/photos/songs/greece.jpg",
+    src: "/audio/top-songs/greece.mp3",
   },
   {
     rank: 5,
     title: "Bachke Bachke - Unplugged",
     artist: "Karan Aujla",
     cover: "/photos/songs/bachke-bachke.jpg",
+    src: "/audio/top-songs/bachke-bachke.mp3",
   },
 ];
 
