@@ -25,14 +25,14 @@ const FRIENDS = [
   ["shayan", "your blue era"],
   ["anjora", "the long way home"],
   ["kangna", "no context survived"],
+  ["nehchal", "one very ordinary perfect day"],
   ["chaavan", "somewhere after midnight"],
   ["rajshree", "the year everything moved"],
-  ["nehchal", "one very ordinary perfect day"],
   ["naavya", "the disposable camera"],
 ];
 
 /** Tracks that open as a coming-soon page until their message lands. */
-const COMING_SOON = new Set(["chaavan", "rajshree", "nehchal", "naavya"]);
+const COMING_SOON = new Set(["chaavan", "rajshree", "naavya"]);
 
 /** Per-friend cover art (Actual Life filtered on the album page). */
 const FRIEND_COVERS = {
@@ -107,8 +107,8 @@ const FRIEND_COVERS = {
 /** Per-friend audio — real tracks for the now-playing bar. */
 const FRIEND_SONGS = {
   luke: {
-    src: "/audio/friends/luke-carlos-make-it-thru.mp3",
-    title: "Carlos (Make It Thru)",
+    src: "/audio/friends/luke-message.mp3",
+    title: "a message from luke",
   },
   rohaan: {
     src: "/audio/friends/rohaan-hannah-the-sun.mp3",
@@ -122,19 +122,33 @@ const FRIEND_SONGS = {
     src: "/audio/friends/tisha-ten.mp3",
     title: "ten",
   },
+  shayan: {
+    src: "/audio/friends/shayan-big-hen-steal-my-joy.mp3",
+    title: "Big Hen (Steal My Joy)",
+  },
   anjora: {
     src: "/audio/friends/anjora-danielle-smile-on-my-face.mp3",
     title: "Danielle (smile on my face)",
+  },
+  kangna: {
+    src: "/audio/friends/kangna-marea-weve-lost-dancing.mp3",
+    title: "Marea (we've lost dancing)",
+  },
+  nehchal: {
+    src: "/audio/friends/nehchal-carlos-make-it-thru.mp3",
+    title: "Carlos (Make It Thru)",
   },
 };
 
 /** Per-friend lyric / message copy. */
 const FRIEND_MESSAGES = {
-  luke: "[placeholder for now replace w lukes message]",
+  luke: "PLAY THE AUDIO MESSAGE",
   rohaan:
     "Happy birthday brother, hope you have the best day. Still so grateful that I got to meet you as I entered college, found a friend who is so much more than just a friend, someone who I learn so much from, have so many memories with, some of the most interesting conversations I've had with anyone and someone who I love and respect so much. Couldn't thank you enough with words for everything you've done for me. Here's to an amazing birthday and an amazing year ahead, and many many more memories to come.\n\nHappy 21st twin, more life🙏🏻",
-  madhav: "[placeholder for now replace w madhav's message]",
-  tisha: "[placeholder for now replace w tisha's message]",
+  madhav:
+    "Happy Janamdin Mubarak, can’t believe you’re 21 have the best day week month year ahead i don’t have to say much for me to appreciate what bond we’ve made in the last couple years but I jist want you to know that you mean everything and more and to much more life cakes and candles you nonchalant monkey pig cow",
+  tisha:
+    "In your words: Actual Life (2005-2026) is the lock in set for this dedicated note I have been so ecstatic to write (make?) same thing, making this website was genuinely the most fun thing I have done this week, and I hope you had half the fun I did, I really wish we all could be there in person to celebrate the BIG 2 1, but we will celebrate even more once we all are back. Our brother sister bond has been roller coaster in the best way, and I cannot imagine a life without you now, ur the big brother I never asked for but am really grateful for , you rohaan madhu are family and I think ill never be able to express how grateful I am, im not great at writing these things, but I love you, keep smiling, keep spreading your energy, and I hope you like this little gift we all made, HAPPY BIRTHDAY SNOOP DAWGIE - with love scoop dawgie",
   chaavan: "[placeholder for now replace w chaavan's message]",
   naavya: "[placeholder for now replace w naavya's message]",
   shayan:
@@ -143,7 +157,8 @@ const FRIEND_MESSAGES = {
     "Hi ali,\n\nWhen I think about our friendship, I get hit with a whirlwind of emotions. You are genuinely one of the realest, most insightful, funniest, and caring people I know. One thing I'll always admire about you is how fiercely you stand by the people you care about. There have been so many moments where you've said things that others might misunderstand, but after knowing you for so long, I've come to realize that it always comes from a place of wanting to protect and guide your friends. That's something I've grown to respect so much about you. It reminds me that you always have your friends' best interests at heart, even when it's not the easiest thing to say. I also admire how you're unapologetically yourself. You never change who you are based on who's in the room, and I hope you never lose that. I know for a fact that everyone in our group loves you for exactly who you are. I hope your 21st brings you so much growth, and new adventures. Happy 21st, Ali!!!",
   kangna:
     "happy birthday aliii! hope you have an amazing one, looking forward to many more accidental chef collabs😁",
-  nehchal: "[placeholder for now replace w nehchal's message]",
+  nehchal:
+    "Happy Birthday you monkey!! I hope you have the most amazing day and year ahead, 21 is gonna be so much fun and we cant wait to make so so many more memories with you! I genuinely love how easy you are to talk to and joke with and I cant wait to be coming back to visit SC and try bullying and annoying you even more than last year - Nonch",
   rajshree: "[placeholder for now replace w rajshree's message]",
 };
 
