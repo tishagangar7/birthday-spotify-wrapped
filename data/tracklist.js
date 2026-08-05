@@ -22,14 +22,17 @@ const FRIENDS = [
   ["rohaan", "same street, every summer"],
   ["madhav", "we don't talk about this one"],
   ["tisha", "three songs on repeat"],
-  ["chaavan", "somewhere after midnight"],
-  ["naavya", "the disposable camera"],
   ["shayan", "your blue era"],
   ["anjora", "the long way home"],
   ["kangna", "no context survived"],
-  ["nehchal", "one very ordinary perfect day"],
+  ["chaavan", "somewhere after midnight"],
   ["rajshree", "the year everything moved"],
+  ["nehchal", "one very ordinary perfect day"],
+  ["naavya", "the disposable camera"],
 ];
+
+/** Tracks that open as a coming-soon page until their message lands. */
+const COMING_SOON = new Set(["chaavan", "rajshree", "nehchal", "naavya"]);
 
 /** Per-friend cover art (Actual Life filtered on the album page). */
 const FRIEND_COVERS = {
@@ -75,6 +78,12 @@ const FRIEND_COVERS = {
     alt: "shayan",
     filename: "SHAYAN.JPG",
   },
+  anjora: {
+    src: "/photos/friends/anjora.png",
+    color: "blue",
+    alt: "anjora",
+    filename: "ANJORA.JPG",
+  },
   kangna: {
     src: "/photos/friends/kangna.png",
     color: "yellow",
@@ -113,18 +122,27 @@ const FRIEND_SONGS = {
     src: "/audio/friends/tisha-ten.mp3",
     title: "ten",
   },
+  anjora: {
+    src: "/audio/friends/anjora-danielle-smile-on-my-face.mp3",
+    title: "Danielle (smile on my face)",
+  },
 };
 
 /** Per-friend lyric / message copy. */
 const FRIEND_MESSAGES = {
   luke: "[placeholder for now replace w lukes message]",
-  rohaan: "[placeholder for now replace w rohaan's message]",
+  rohaan:
+    "Happy birthday brother, hope you have the best day. Still so grateful that I got to meet you as I entered college, found a friend who is so much more than just a friend, someone who I learn so much from, have so many memories with, some of the most interesting conversations I've had with anyone and someone who I love and respect so much. Couldn't thank you enough with words for everything you've done for me. Here's to an amazing birthday and an amazing year ahead, and many many more memories to come.\n\nHappy 21st twin, more life🙏🏻",
   madhav: "[placeholder for now replace w madhav's message]",
   tisha: "[placeholder for now replace w tisha's message]",
   chaavan: "[placeholder for now replace w chaavan's message]",
   naavya: "[placeholder for now replace w naavya's message]",
-  shayan: "[placeholder for now replace w shayan's message]",
-  kangna: "[placeholder for now replace w kangna's message]",
+  shayan:
+    "Happy birthday Ali!! You have been a very supportive friend people are very lucky to have you as a friend and ur smile oho mere Ap Dhillon!! Keep being great I love you and hope the moving years bring great joy and adventures.☺️",
+  anjora:
+    "Hi ali,\n\nWhen I think about our friendship, I get hit with a whirlwind of emotions. You are genuinely one of the realest, most insightful, funniest, and caring people I know. One thing I'll always admire about you is how fiercely you stand by the people you care about. There have been so many moments where you've said things that others might misunderstand, but after knowing you for so long, I've come to realize that it always comes from a place of wanting to protect and guide your friends. That's something I've grown to respect so much about you. It reminds me that you always have your friends' best interests at heart, even when it's not the easiest thing to say. I also admire how you're unapologetically yourself. You never change who you are based on who's in the room, and I hope you never lose that. I know for a fact that everyone in our group loves you for exactly who you are. I hope your 21st brings you so much growth, and new adventures. Happy 21st, Ali!!!",
+  kangna:
+    "happy birthday aliii! hope you have an amazing one, looking forward to many more accidental chef collabs😁",
   nehchal: "[placeholder for now replace w nehchal's message]",
   rajshree: "[placeholder for now replace w rajshree's message]",
 };
@@ -196,6 +214,7 @@ export const tracklist = FRIENDS.map(([person, subtitle], index) => {
     trackNumber: index + 1,
     duration: mockDuration(index + 1),
     nowPlaying: song?.title || FRED_AGAIN_TRACKS[index % FRED_AGAIN_TRACKS.length],
+    comingSoon: COMING_SOON.has(person),
   };
 });
 

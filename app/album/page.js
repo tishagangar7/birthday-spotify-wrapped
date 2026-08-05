@@ -139,8 +139,13 @@ export default function AlbumPage() {
                 </span>
                 <span className="track-row-text">
                   <span className="track-row-title">{track.person}</span>
+                  {track.comingSoon ? (
+                    <span className="track-row-soon">coming soon</span>
+                  ) : null}
                 </span>
-                <span className="track-row-duration">{track.duration}</span>
+                <span className="track-row-duration">
+                  {track.comingSoon ? "—" : track.duration}
+                </span>
               </Link>
             </li>
           ))}

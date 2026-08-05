@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Spotify-lyrics style memory display — one phrase per line, active line bright.
+ * Spotify-lyrics style memory display — one short line at a time, active line bright.
  */
 export default function MemoryLyrics({ lines = [], activeIndex = 0, credit }) {
   const safeLines = lines.filter(Boolean);
@@ -25,9 +25,31 @@ export default function MemoryLyrics({ lines = [], activeIndex = 0, credit }) {
   );
 }
 
+/** Soft lyric line length — short rows, not whole sentences. */
+const WORDS_PER_LINE = 6;
+
+/**
+ * Prefer explicit newlines. Otherwise wrap prose into short lyric lines
+ * by word count — never by sentence endings.
+ */
 export function splitLyricLines(text) {
-  return String(text || "")
+  const blocks = String(text || "")
     .split(/\n+/)
-    .map((line) => line.trim())
+    .map((block) => block.trim())
     .filter(Boolean);
+
+  const lines = [];
+
+  for (const block of blocks) {
+    const words = block.split(/\s+/).filter(Boolean);
+    if (words.length <= WORDS_PER_LINE) {
+      lines.push(block);
+      continue;
+    }
+    for (let i = 0; i < words.length; i += WORDS_PER_LINE) {
+      lines.push(words.slice(i, i + WORDS_PER_LINE).join(" "));
+    }
+  }
+
+  return lines;
 }

@@ -7,6 +7,15 @@ import { familyWishesChapter as data } from "../../data/familyWishes";
 
 const CLIPS = data.clips;
 const SPROCKET_COUNT = 28;
+const TEXT_HOLD_BASE_MS = 7000;
+const TEXT_HOLD_PER_CHAR_MS = 28;
+const TEXT_HOLD_MAX_MS = 22000;
+const EMPTY_HOLD_MS = 1800;
+
+function textHoldMs(text) {
+  const len = String(text || "").length;
+  return Math.min(TEXT_HOLD_MAX_MS, TEXT_HOLD_BASE_MS + len * TEXT_HOLD_PER_CHAR_MS);
+}
 
 function wrapIndex(i) {
   const len = CLIPS.length;
@@ -26,36 +35,66 @@ function SprocketRow({ side }) {
 function FilmFrame({ clip, variant, emptyLabel, videoRef, muted, onEnded, onError, onSelect }) {
   const isActive = variant === "active";
   const hasVideo = Boolean(clip?.video);
+  const hasText = Boolean(clip?.text);
+  const hasAudioOnly = Boolean(clip?.audio) && !hasVideo && !hasText;
+  const hasImage = Boolean(clip?.image);
 
-  const matte = (
-    <div className="family-film-matte">
-      {hasVideo ? (
-        <video
-          ref={isActive ? videoRef : undefined}
-          className="family-film-video"
-          src={clip.video}
-          playsInline
-          muted={isActive ? muted : true}
-          preload="metadata"
-          onEnded={isActive ? onEnded : undefined}
-          onError={isActive ? onError : undefined}
-        />
-      ) : (
-        <p className="family-film-empty">{emptyLabel}</p>
-      )}
-    </div>
-  );
+  let body;
+  if (hasVideo) {
+    body = (
+      <video
+        ref={isActive ? videoRef : undefined}
+        className="family-film-video"
+        src={clip.video}
+        playsInline
+        muted={isActive ? muted : true}
+        preload="metadata"
+        onEnded={isActive ? onEnded : undefined}
+        onError={isActive ? onError : undefined}
+      />
+    );
+  } else if (hasText) {
+    body = (
+      <div className={`family-film-text${hasImage ? " family-film-text--with-image" : ""}`}>
+        {hasImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="family-film-text-image" src={clip.image} alt="" />
+        ) : null}
+        <p className="family-film-text-body">{clip.text}</p>
+      </div>
+    );
+  } else if (hasAudioOnly) {
+    body = (
+      <div className="family-film-audio" aria-hidden="true">
+        <span className="family-film-audio-wave" />
+        <span className="family-film-audio-label">voice note</span>
+      </div>
+    );
+  } else {
+    body = <p className="family-film-empty">{emptyLabel}</p>;
+  }
+
+  const frameClass = [
+    "family-film-frame",
+    `family-film-frame--${variant}`,
+    hasText ? "family-film-frame--text" : "",
+    hasAudioOnly ? "family-film-frame--audio" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const matte = <div className="family-film-matte">{body}</div>;
 
   if (isActive) {
-    return <div className="family-film-frame family-film-frame--active">{matte}</div>;
+    return <div className={frameClass}>{matte}</div>;
   }
 
   return (
     <button
       type="button"
-      className={`family-film-frame family-film-frame--${variant}`}
+      className={frameClass}
       onClick={onSelect}
-      aria-label={`Go to ${clip.name}`}
+      aria-label={`Go to ${clip.name || "message"}`}
       tabIndex={-1}
     >
       {matte}
@@ -78,6 +117,8 @@ export default function FamilyWishesChapter() {
   const nextClip = CLIPS[wrapIndex(index + 1)];
   const hasVideo = Boolean(clip?.video) && !videoMissing;
   const hasExternalAudio = Boolean(clip?.audio);
+  const hasText = Boolean(clip?.text);
+  const audioOnly = hasExternalAudio && !hasVideo && !hasText;
   // Huzi (and any clip with separate audio): always mute the video track.
   const videoMuted = hasExternalAudio;
   const hideSubheading = clip.id === "haider" || clip.id === "didi";
@@ -114,7 +155,9 @@ export default function FamilyWishesChapter() {
   }, []);
 
   // Pause when chapter leaves view; play when visible.
-  // Empty / missing clips auto-advance so the reel doesn't stall on mom/dad placeholders.
+  // Empty / missing clips auto-advance so the reel doesn't stall on placeholders.
+  // Text clips hold for a read, then advance.
+  // Audio-only (neil): play audio, advance when audio ends.
   // Clips with separate audio (huzi): mute video, play audio, advance when audio ends.
   useEffect(() => {
     const video = videoRef.current;
@@ -126,9 +169,31 @@ export default function FamilyWishesChapter() {
       return undefined;
     }
 
+    const onAudioEnded = () => {
+      if (!reduceMotion) goNext();
+    };
+
+    if (hasText) {
+      if (reduceMotion) return undefined;
+      const timer = window.setTimeout(() => goNext(), textHoldMs(clip.text));
+      return () => window.clearTimeout(timer);
+    }
+
+    if (audioOnly && audio) {
+      audio.currentTime = 0;
+      audio.muted = false;
+      const aPlay = audio.play();
+      if (aPlay?.catch) aPlay.catch(() => {});
+      audio.addEventListener("ended", onAudioEnded);
+      return () => {
+        audio.pause();
+        audio.removeEventListener("ended", onAudioEnded);
+      };
+    }
+
     if (!hasVideo) {
       if (reduceMotion) return undefined;
-      const timer = window.setTimeout(() => goNext(), 1800);
+      const timer = window.setTimeout(() => goNext(), EMPTY_HOLD_MS);
       return () => window.clearTimeout(timer);
     }
 
@@ -139,10 +204,6 @@ export default function FamilyWishesChapter() {
     video.loop = hasExternalAudio;
     const play = video.play();
     if (play?.catch) play.catch(() => {});
-
-    const onAudioEnded = () => {
-      if (!reduceMotion) goNext();
-    };
 
     if (audio && hasExternalAudio) {
       audio.currentTime = 0;
@@ -160,7 +221,7 @@ export default function FamilyWishesChapter() {
         audio.removeEventListener("ended", onAudioEnded);
       }
     };
-  }, [visible, index, hasVideo, hasExternalAudio, reduceMotion, goNext]);
+  }, [visible, index, hasVideo, hasExternalAudio, hasText, audioOnly, reduceMotion, goNext]);
 
   useEffect(() => {
     if (!visible) return undefined;
@@ -274,7 +335,7 @@ export default function FamilyWishesChapter() {
 
       <div className="family-wishes-footer">
         <p className="family-reel-name" aria-live="polite">
-          {clip.name}
+          {clip.name || "\u00a0"}
         </p>
 
         <div className="family-reel-dots" role="tablist" aria-label="Wish position">
@@ -284,7 +345,7 @@ export default function FamilyWishesChapter() {
               type="button"
               role="tab"
               aria-selected={i === index}
-              aria-label={`${c.name}${i === index ? ", now playing" : ""}`}
+              aria-label={`${c.name || "message"}${i === index ? ", now playing" : ""}`}
               className={`family-reel-dot${i === index ? " is-active" : ""}`}
               onClick={() => goTo(i)}
             />

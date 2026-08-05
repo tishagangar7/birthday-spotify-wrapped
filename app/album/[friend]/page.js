@@ -18,8 +18,12 @@ export default function FriendPage() {
 
   const displayName = track?.person || "";
   const cover = track?.media?.[0];
+  const comingSoon = Boolean(track?.comingSoon);
 
-  const trackLines = useMemo(() => splitLyricLines(track?.message), [track?.message]);
+  const trackLines = useMemo(
+    () => (comingSoon ? [] : splitLyricLines(track?.message)),
+    [comingSoon, track?.message]
+  );
 
   useEffect(() => {
     if (!trackLines.length) return undefined;
@@ -67,22 +71,30 @@ export default function FriendPage() {
           </div>
         </header>
 
-        <MemoryLyrics
-          credit={`lyrics · a message from ${displayName}`}
-          lines={trackLines}
-          activeIndex={activeLine}
-        />
+        {comingSoon ? (
+          <p className="friend-coming-soon">coming soon</p>
+        ) : (
+          <MemoryLyrics
+            credit={`lyrics · a message from ${displayName}`}
+            lines={trackLines}
+            activeIndex={activeLine}
+          />
+        )}
 
-        {track.voiceNote ? <VoiceNote src={track.voiceNote} person={displayName} /> : null}
+        {!comingSoon && track.voiceNote ? (
+          <VoiceNote src={track.voiceNote} person={displayName} />
+        ) : null}
       </div>
 
       <div className="friend-side">
-        <NowPlayingBar
-          trackTitle={track.nowPlaying}
-          duration={track.duration}
-          src={track.song}
-          autoPlay
-        />
+        {!comingSoon ? (
+          <NowPlayingBar
+            trackTitle={track.nowPlaying}
+            duration={track.duration}
+            src={track.song}
+            autoPlay
+          />
+        ) : null}
 
         <section className="friend-form-section">
           <h2 className="friend-form-heading">add your verse</h2>
