@@ -59,6 +59,36 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
+  // Deep-link from /album "back to wrapped" only — ignore stale hashes on reload.
+  useEffect(() => {
+    const jumpFromHash = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      if (!hash) return;
+
+      const allowed = sessionStorage.getItem("wrappedHashJump") === "1";
+      if (!allowed) {
+        history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+        return;
+      }
+      sessionStorage.removeItem("wrappedHashJump");
+
+      const targetIndex = cards.findIndex((card) => card.id === hash);
+      if (targetIndex < 0) return;
+
+      const run = () => {
+        scrollToIndex(targetIndex, "auto");
+        setIndex(targetIndex);
+        history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      };
+
+      requestAnimationFrame(() => requestAnimationFrame(run));
+    };
+
+    jumpFromHash();
+    window.addEventListener("hashchange", jumpFromHash);
+    return () => window.removeEventListener("hashchange", jumpFromHash);
+  }, [cards, scrollToIndex]);
+
   useEffect(() => {
     const root = scrollerRef.current;
     if (!root) return;
@@ -154,7 +184,7 @@ export default function ScrollDeck({ cards, onIndexChange, className = "" }) {
         </div>
 
         <span className="story-position" aria-hidden="true">
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          {String(index).padStart(2, "0")} / {String(Math.max(0, total - 1)).padStart(2, "0")}
         </span>
       </div>
     </StoryDeckContext.Provider>

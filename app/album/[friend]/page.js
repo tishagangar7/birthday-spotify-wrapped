@@ -1,36 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Grain from "../../../components/Grain";
-import MediaFrame from "../../../components/MediaFrame";
 import MemoryForm from "../../../components/MemoryForm";
 import MemoryLyrics, { splitLyricLines } from "../../../components/MemoryLyrics";
 import NowPlayingBar from "../../../components/NowPlayingBar";
 import VoiceNote from "../../../components/VoiceNote";
-import useMemoriesData from "../../../components/useMemoriesData";
 import { findTrackBySlug } from "../../../data/tracklist";
-import { getDisplayName } from "../../../lib/anonymizeNames";
 
 export default function FriendPage() {
   const params = useParams();
   const track = findTrackBySlug(params?.friend);
-  const submitted = useMemoriesData();
   const [activeLine, setActiveLine] = useState(0);
-  const [localMemories, setLocalMemories] = useState([]);
 
-  const displayName = track ? getDisplayName(track.person) : "";
+  const displayName = track?.person || "";
+  const cover = track?.media?.[0];
 
   const trackLines = useMemo(() => splitLyricLines(track?.message), [track?.message]);
-
-  const friendMemories = useMemo(() => {
-    const fromApi = (submitted.memories || []).filter((memory) => {
-      const name = String(memory.friendName || "").toLowerCase();
-      return name.includes(String(track?.person || "").toLowerCase()) || name.length > 0;
-    });
-    return [...localMemories, ...fromApi];
-  }, [submitted.memories, localMemories, track?.person]);
 
   useEffect(() => {
     if (!trackLines.length) return undefined;
@@ -60,54 +49,43 @@ export default function FriendPage() {
           ‹ Track {trackNumber} · actual life (2005–2026)
         </Link>
 
-        <h1 className="friend-title">{displayName}</h1>
-        <p className="friend-subtitle">{track.subtitle}</p>
-
-        {track.media?.length ? (
-          <div className="friend-media">
-            <MediaFrame
-              media={track.media[0]}
-              color={track.color}
-              date={track.date}
-              time={track.time}
-              location={track.location}
-              index={0}
-            />
+        <header className="friend-header">
+          {cover ? (
+            <div className={`friend-cover actual-image actual-${track.color}`}>
+              <Image
+                src={cover.src}
+                alt={cover.alt || displayName}
+                fill
+                sizes="96px"
+                className="media-image"
+                priority
+              />
+            </div>
+          ) : null}
+          <div className="friend-header-text">
+            <h1 className="friend-title">{displayName}</h1>
           </div>
-        ) : null}
+        </header>
 
         <MemoryLyrics
-          credit={`lyrics · ${displayName}`}
+          credit={`lyrics · a message from ${displayName}`}
           lines={trackLines}
           activeIndex={activeLine}
         />
-
-        {friendMemories.slice(0, 4).map((memory) => (
-          <MemoryLyrics
-            key={memory.id || `${memory.friendName}-${memory.message?.slice(0, 12)}`}
-            credit={`lyrics by ${memory.friendName}`}
-            lines={splitLyricLines(memory.message)}
-            activeIndex={0}
-          />
-        ))}
 
         {track.voiceNote ? <VoiceNote src={track.voiceNote} person={displayName} /> : null}
       </div>
 
       <div className="friend-side">
-        <NowPlayingBar trackTitle={track.nowPlaying} duration={track.duration} />
+        <NowPlayingBar
+          trackTitle={track.nowPlaying}
+          duration={track.duration}
+          src={track.song}
+        />
 
         <section className="friend-form-section">
           <h2 className="friend-form-heading">add your verse</h2>
-          <MemoryForm
-            friendName=""
-            onSubmitted={(entry) => {
-              setLocalMemories((prev) => [
-                { id: `local-${Date.now()}`, friendName: entry.friendName, message: entry.message },
-                ...prev,
-              ]);
-            }}
-          />
+          <MemoryForm friendName="" />
         </section>
       </div>
 

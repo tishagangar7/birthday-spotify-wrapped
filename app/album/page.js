@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import Grain from "../../components/Grain";
 import { tracklist } from "../../data/tracklist";
-import { getDisplayName } from "../../lib/anonymizeNames";
 
 /** Gradient thumbs — Figma album art placeholders, not photos. */
 const THUMB_GRADIENTS = [
@@ -19,10 +19,26 @@ const THUMB_GRADIENTS = [
   "linear-gradient(135deg, #6b38ad 14%, #1ed760 86%)",
 ];
 
-const COVER_GRADIENT =
-  "linear-gradient(135deg, rgb(217, 89, 140) 14%, rgb(102, 51, 128) 50%, rgb(30, 215, 96) 86%)";
+const ALBUM_COVER = "/photos/ali/album-cover.png";
 
-function ThumbArt({ index }) {
+function ThumbArt({ track, index }) {
+  const cover = track.media?.[0];
+  const hasFriendCover = cover?.src?.startsWith("/photos/friends/");
+
+  if (hasFriendCover) {
+    return (
+      <span className={`track-row-art-tile track-row-art-photo actual-image actual-${track.color}`}>
+        <Image
+          src={cover.src}
+          alt=""
+          fill
+          sizes="60px"
+          className="media-image"
+        />
+      </span>
+    );
+  }
+
   return (
     <span
       className="track-row-art-tile"
@@ -39,16 +55,33 @@ export default function AlbumPage() {
 
   return (
     <div className="page-scroll album-page">
-      <Link href="/" className="album-back">
+      <Link
+        href="/#album-teaser"
+        className="album-back"
+        onClick={() => {
+          try {
+            sessionStorage.setItem("wrappedHashJump", "1");
+          } catch {
+            /* ignore */
+          }
+        }}
+      >
         ← back to wrapped
       </Link>
 
       <header className="album-hero">
-        <div
-          className="album-cover album-cover-hero album-cover-gradient"
-          style={{ backgroundImage: COVER_GRADIENT }}
-          aria-hidden="true"
-        />
+        <div className="album-cover album-cover-hero album-cover-photo">
+          <div className="actual-image actual-blue">
+            <Image
+              src={ALBUM_COVER}
+              alt="actual life album cover"
+              fill
+              sizes="(max-width: 1024px) 26vw, 380px"
+              className="media-image album-cover-image"
+              priority
+            />
+          </div>
+        </div>
         <div className="album-meta">
           <span className="album-tag">album · ali remix</span>
           <h1 className="album-title">
@@ -73,11 +106,10 @@ export default function AlbumPage() {
               <Link href={`/album/${track.slug}`} className="track-row">
                 <span className="track-row-number">{track.trackNumber}</span>
                 <span className="track-row-art">
-                  <ThumbArt index={index} />
+                  <ThumbArt track={track} index={index} />
                 </span>
                 <span className="track-row-text">
-                  <span className="track-row-title">{getDisplayName(track.person)}</span>
-                  <span className="track-row-subtitle">{track.subtitle}</span>
+                  <span className="track-row-title">{track.person}</span>
                 </span>
                 <span className="track-row-duration">{track.duration}</span>
               </Link>

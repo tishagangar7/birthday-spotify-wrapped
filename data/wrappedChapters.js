@@ -181,8 +181,8 @@ export const heartMessages = [
 ];
 
 export const finalSlide = {
-  headline: "made because of him",
-  body: "every chapter in this archive exists because he's the kind of person people want to remember things about. happy 21st.",
+  headline: "HAPPY BIRTHDAY ALI,\nWE LOVE YOU ❤️",
+  body: "",
 };
 
 export const startingLineup = [

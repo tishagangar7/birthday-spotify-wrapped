@@ -108,9 +108,9 @@ export default function Home() {
       { id: "bonus-motiv", content: <MotivPlatinumChapter /> },
       { id: "bonus-topsearches", content: <TopSearchesChapter /> },
       { id: "bonus-awards", content: <AliWrappedAwardsChapter /> },
-      { id: "chapter-8-final", content: <FinalSlideChapter /> },
       { id: "album-teaser", content: <AlbumTeaserCard /> },
       { id: "bonus-family-wishes", content: <FamilyWishesChapter /> },
+      { id: "chapter-8-final", content: <FinalSlideChapter /> },
     ];
   }, [activeTrack, isPlaying, selectSong]);
 

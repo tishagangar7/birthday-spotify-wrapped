@@ -1,7 +1,11 @@
-import { listGlowUpPhotos } from "../../../lib/listGlowUpPhotos";
+import { listGlowUpPhotoSets } from "../../../lib/listGlowUpPhotos";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  return Response.json({ photos: listGlowUpPhotos() });
+  const sets = listGlowUpPhotoSets();
+  return Response.json({
+    sets,
+    photos: sets[0] ?? [],
+  });
 }

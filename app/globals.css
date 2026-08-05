@@ -6,7 +6,11 @@
   --muted: #8e8c87;
   --red: #ef1919;
   --yellow: #f5a900;
-  --blue: #064cff;
+  /* Fred again.. Actual Life cobalt — not electric cyan */
+  --blue: #1a44d8;
+  --actual-life-fade: #1543d6;
+  /* Fred again.. Ten Days — soft light blue */
+  --light-blue: #6eb8e8;
 
   /* Wrapped design system — matches the Figma "Ali's 21st Wrapped" file */
   --wrapped-black: #191414;
@@ -1640,7 +1644,11 @@ button {
 }
 
 .final-headline {
-  font-size: clamp(2.4rem, 11vw, 5rem);
+  font-size: clamp(2rem, 9.5vw, 5rem);
+}
+
+.final-headline-line {
+  white-space: nowrap;
 }
 
 .final-body {
@@ -1759,6 +1767,62 @@ button {
   color: var(--text-secondary);
   font-family: var(--font-inter), sans-serif;
   font-size: clamp(0.82rem, 2.6vw, 0.95rem);
+}
+
+.glowup-set-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.glowup-set-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-shrink: 0;
+  margin: 0.35rem 0 0.15rem;
+}
+
+.glowup-set-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.glowup-set-btn:hover:not(:disabled),
+.glowup-set-btn:focus-visible:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.glowup-set-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.glowup-set-count {
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-inter), sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.glowup-hero-nav:disabled {
+  opacity: 0.28;
+  cursor: default;
+  pointer-events: none;
 }
 
 .glowup-hero-stage {
@@ -2199,6 +2263,13 @@ button {
   background: #181818;
 }
 
+.actual-image > img,
+.actual-image .media-image {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
 .actual-image::after {
   position: absolute;
   z-index: 2;
@@ -2211,14 +2282,42 @@ button {
 
 .actual-red::after {
   background: var(--red);
+  opacity: 1;
+  mix-blend-mode: color;
+}
+
+.actual-red .media-image {
+  filter: grayscale(1) contrast(1.28) brightness(0.9) saturate(0);
 }
 
 .actual-yellow::after {
   background: var(--yellow);
+  opacity: 1;
+  mix-blend-mode: color;
+}
+
+.actual-yellow .media-image {
+  filter: grayscale(1) contrast(1.28) brightness(0.9) saturate(0);
 }
 
 .actual-blue::after {
   background: var(--blue);
+  opacity: 1;
+  mix-blend-mode: color;
+}
+
+.actual-blue .media-image {
+  filter: grayscale(1) contrast(1.28) brightness(0.9) saturate(0);
+}
+
+.actual-light-blue::after {
+  background: var(--light-blue);
+  opacity: 1;
+  mix-blend-mode: color;
+}
+
+.actual-light-blue .media-image {
+  filter: grayscale(1) contrast(1.22) brightness(0.95) saturate(0);
 }
 
 .media-image {
@@ -2878,8 +2977,8 @@ input[type="range"]::-webkit-slider-thumb {
   top: 0;
   z-index: 20;
   padding: 16px 18px;
-  color: var(--text-secondary);
-  background: linear-gradient(var(--wrapped-black) 55%, transparent);
+  color: rgba(255, 255, 255, 0.78);
+  background: transparent;
   font-family: var(--font-inter), sans-serif;
   font-weight: 600;
   font-size: 12px;
@@ -2888,13 +2987,26 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .album-page {
+  min-height: 100%;
   padding-bottom: 8vh;
+  /* Spotify Actual Life fade: cobalt → charcoal → black */
+  background:
+    linear-gradient(
+      180deg,
+      var(--actual-life-fade) 0%,
+      #1236b0 12%,
+      #0c1f6a 28%,
+      #12141f 48%,
+      var(--wrapped-black) 62%,
+      var(--wrapped-black) 100%
+    );
+  background-color: var(--wrapped-black);
 }
 
 /* Figma "Album Page" (fileKey 3MPOLutTIDGqGWxnl7V7Db): cover art tile beside
-   the ALBUM · ALI REMIX eyebrow / title / artist credit, one soft glow blob
-   top-left, then a clean numbered tracklist. Row layout holds at mobile
-   widths too — only the desktop frame stacks cover-then-text vertically. */
+   the ALBUM · ALI REMIX eyebrow / title / artist credit, then a clean
+   numbered tracklist. Row layout holds at mobile widths too — only the
+   desktop frame stacks cover-then-text vertically. */
 .album-hero {
   position: relative;
   display: flex;
@@ -2906,19 +3018,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .album-hero::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -22%;
-  left: -30%;
-  width: 80vw;
-  height: 80vw;
-  max-width: 560px;
-  max-height: 560px;
-  border-radius: 50%;
-  background: var(--wrapped-pink);
-  filter: blur(170px);
-  opacity: 0.3;
+  display: none;
 }
 
 .album-cover {
@@ -2933,12 +3033,18 @@ input[type="range"]::-webkit-slider-thumb {
   background: #1a1a1a;
 }
 
+.album-cover-photo .actual-image {
+  width: 100%;
+  height: 100%;
+}
+
 .album-cover-gradient {
   background-color: #1a1a1a;
 }
 
 .album-cover-image {
   object-fit: cover;
+  object-position: center 18%;
 }
 
 .album-cover-hero {
@@ -3093,6 +3199,16 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
+.track-row-art-photo {
+  isolation: isolate;
+  background: #181818;
+}
+
+.track-row-art-photo .media-image {
+  object-fit: cover;
+  object-position: center;
+}
+
 .track-row-art-icon {
   position: absolute;
   inset: 28%;
@@ -3211,6 +3327,37 @@ input[type="range"]::-webkit-slider-thumb {
   background: rgba(25, 20, 20, 0.92);
 }
 
+.friend-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.friend-cover {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(72px, 18vw, 96px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: #181818;
+}
+
+.friend-cover .media-image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.friend-header-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .friend-title {
   margin: 0;
   font-family: var(--font-archivo), sans-serif;
@@ -3225,16 +3372,6 @@ input[type="range"]::-webkit-slider-thumb {
   color: var(--spotify-green);
   font-family: var(--font-inter), sans-serif;
   font-size: clamp(0.95rem, 4vw, 1.2rem);
-}
-
-.friend-media {
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.friend-media .media-frame {
-  height: 62vw;
-  max-height: 420px;
 }
 
 .friend-message {
@@ -3272,6 +3409,22 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--spotify-green);
 }
 
+.now-playing-dot.is-playing {
+  animation: now-playing-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes now-playing-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+}
+
 .now-playing-kicker {
   color: var(--spotify-green);
   font-family: var(--font-inter), sans-serif;
@@ -3279,6 +3432,23 @@ input[type="range"]::-webkit-slider-thumb {
   font-size: 0.78rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.now-playing-toggle {
+  margin-left: auto;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--paper);
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.now-playing-toggle:hover,
+.now-playing-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .now-playing-title {
@@ -3298,11 +3468,17 @@ input[type="range"]::-webkit-slider-thumb {
   overflow: hidden;
 }
 
+.now-playing-bar.is-seekable {
+  height: 8px;
+  cursor: pointer;
+}
+
 .now-playing-fill {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: 3px;
   background: var(--spotify-green);
+  pointer-events: none;
 }
 
 .now-playing-times {
@@ -3313,6 +3489,59 @@ input[type="range"]::-webkit-slider-thumb {
   font-family: var(--font-inter), sans-serif;
   font-variant-numeric: tabular-nums;
   font-size: 0.82rem;
+}
+
+.now-playing-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.now-playing-control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.now-playing-control:hover,
+.now-playing-control:focus-visible {
+  color: var(--paper);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.now-playing-play {
+  width: 58px;
+  height: 58px;
+  background: var(--paper);
+  color: #121212;
+}
+
+.now-playing-play:hover,
+.now-playing-play:focus-visible {
+  background: #fff;
+  color: #121212;
+  transform: scale(1.04);
+}
+
+.now-playing-skip-label {
+  position: absolute;
+  bottom: 7px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  pointer-events: none;
 }
 
 .friend-form-section {
@@ -3947,6 +4176,14 @@ input[type="range"]::-webkit-slider-thumb {
     padding-right: 4vw;
   }
 
+  /* Full-bleed Actual Life fade — content stays capped via grid padding */
+  .page-scroll.album-page {
+    max-width: none;
+    width: 100vw;
+    padding-left: max(4vw, calc((100vw - 1280px) / 2));
+    padding-right: max(4vw, calc((100vw - 1280px) / 2));
+  }
+
   /* Desktop "Album Page" / "Friend Detail" frames (fileKey 3MPOLutTIDGqGWxnl7V7Db):
      a sticky left column (cover + meta, or name/media/message) alongside a
      right column (tracklist, or now-playing + form) — a real two-column
@@ -3976,11 +4213,6 @@ input[type="range"]::-webkit-slider-thumb {
   .album-tracklist-col {
     grid-column: 2;
     grid-row: 2;
-  }
-
-  .album-hero::before {
-    top: -18%;
-    left: -35%;
   }
 
   .album-cover-hero {
@@ -4066,9 +4298,9 @@ input[type="range"]::-webkit-slider-thumb {
     font-size: clamp(2.4rem, 4.2vw, 3.4rem);
   }
 
-  .friend-media .media-frame {
-    height: 300px;
-    max-height: none;
+  .friend-cover {
+    width: 112px;
+    border-radius: 14px;
   }
 
   .friend-side {

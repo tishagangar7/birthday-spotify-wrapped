@@ -11,19 +11,29 @@ const AUTO_MS = 2800;
 /** Same visible count as the original strip — layout/spacing stay identical. */
 const VISIBLE_SLOTS = 17;
 
-/** Straight glow-up line — hover enlarges; click features a large hero. */
+const FALLBACK_SETS = [fallbackPhotos];
+
+/** Straight glow-up line — hover enlarges; click features a large hero.
+ *  Multiple sets of ~17 photos; prev/next set arrows between batches. */
 export default function GlowUpTimelineChapter() {
   const reduceMotion = useReducedMotion();
   const rootRef = useRef(null);
   const pauseUntilRef = useRef(0);
 
-  const [photos, setPhotos] = useState(fallbackPhotos);
+  const [sets, setSets] = useState(FALLBACK_SETS);
+  const [setIndex, setSetIndex] = useState(0);
   const [hovered, setHovered] = useState(null);
   const [featured, setFeatured] = useState(0);
   const [visible, setVisible] = useState(false);
 
+  const photos = sets[setIndex] ?? [];
   const count = photos.length;
   const featuredSrc = photos[featured] ?? photos[0];
+  const setCount = sets.length;
+  const canPrevSet = setIndex > 0;
+  const canNextSet = setIndex < setCount - 1;
+  const atLastPhoto = count > 0 && featured >= count - 1;
+  const atFirstPhoto = featured <= 0;
 
   // Fixed-width window: as you advance past the end, left drops off and a new
   // photo enters on the right — same size/spacing as the original 17-up strip.
@@ -41,25 +51,67 @@ export default function GlowUpTimelineChapter() {
     pauseUntilRef.current = Date.now() + AUTO_MS * 1.5;
   }, []);
 
-  const goTo = useCallback(
+  const goToPhoto = useCallback(
     (next, { user = false } = {}) => {
       if (!count) return;
       if (user) bumpPause();
-      setFeatured(((next % count) + count) % count);
+      setFeatured(Math.max(0, Math.min(count - 1, next)));
     },
     [count, bumpPause]
   );
 
-  const goPrev = useCallback(() => goTo(featured - 1, { user: true }), [featured, goTo]);
-  const goNext = useCallback(() => goTo(featured + 1, { user: true }), [featured, goTo]);
+  const goPrevSet = useCallback(() => {
+    if (!canPrevSet) return;
+    bumpPause();
+    setSetIndex((i) => i - 1);
+    setFeatured(0);
+    setHovered(null);
+  }, [canPrevSet, bumpPause]);
+
+  const goNextSet = useCallback(() => {
+    if (!canNextSet) return;
+    bumpPause();
+    setSetIndex((i) => i + 1);
+    setFeatured(0);
+    setHovered(null);
+  }, [canNextSet, bumpPause]);
+
+  const goPrev = useCallback(() => {
+    if (!atFirstPhoto) {
+      goToPhoto(featured - 1, { user: true });
+      return;
+    }
+    if (canPrevSet) {
+      bumpPause();
+      setSetIndex((i) => i - 1);
+      setFeatured((sets[setIndex - 1]?.length ?? 1) - 1);
+      setHovered(null);
+    }
+  }, [atFirstPhoto, featured, goToPhoto, canPrevSet, bumpPause, sets, setIndex]);
+
+  const goNext = useCallback(() => {
+    if (!atLastPhoto) {
+      goToPhoto(featured + 1, { user: true });
+      return;
+    }
+    goNextSet();
+  }, [atLastPhoto, featured, goToPhoto, goNextSet]);
 
   useEffect(() => {
     let cancelled = false;
     fetch("/api/glowup")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (cancelled || !data?.photos?.length) return;
-        setPhotos(data.photos);
+        if (cancelled) return;
+        const nextSets =
+          Array.isArray(data?.sets) && data.sets.length
+            ? data.sets.filter((s) => Array.isArray(s) && s.length)
+            : data?.photos?.length
+              ? [data.photos]
+              : null;
+        if (!nextSets?.length) return;
+        setSets(nextSets);
+        setSetIndex(0);
         setFeatured(0);
       })
       .catch(() => {});
@@ -83,10 +135,10 @@ export default function GlowUpTimelineChapter() {
     if (!visible || reduceMotion || count < 2) return undefined;
     const id = window.setInterval(() => {
       if (Date.now() < pauseUntilRef.current) return;
-      setFeatured((i) => (i + 1) % count);
+      setFeatured((i) => (i < count - 1 ? i + 1 : i));
     }, AUTO_MS);
     return () => window.clearInterval(id);
-  }, [visible, reduceMotion, count]);
+  }, [visible, reduceMotion, count, setIndex]);
 
   return (
     <SectionTransition
@@ -96,7 +148,15 @@ export default function GlowUpTimelineChapter() {
     >
       <header className="glowup-header">
         <span className="wrapped-kicker">timeline</span>
-        <p className="glowup-hint">hover to peek · click to feature</p>
+        <p className="glowup-hint">
+          hover to peek · click to feature
+          {setCount > 1 ? (
+            <span className="glowup-set-label">
+              {" "}
+              · set {setIndex + 1} / {setCount}
+            </span>
+          ) : null}
+        </p>
       </header>
 
       <div
@@ -114,8 +174,9 @@ export default function GlowUpTimelineChapter() {
         <button
           type="button"
           className="glowup-hero-nav glowup-hero-nav--prev"
-          aria-label="Previous photo"
+          aria-label={atFirstPhoto && canPrevSet ? "Previous photo set" : "Previous photo"}
           onClick={goPrev}
+          disabled={atFirstPhoto && !canPrevSet}
         >
           <ChevronLeft size={22} strokeWidth={2.25} aria-hidden="true" />
         </button>
@@ -137,24 +198,53 @@ export default function GlowUpTimelineChapter() {
         <button
           type="button"
           className="glowup-hero-nav glowup-hero-nav--next"
-          aria-label="Next photo"
+          aria-label={atLastPhoto && canNextSet ? "Next photo set" : "Next photo"}
           onClick={goNext}
+          disabled={atLastPhoto && !canNextSet}
         >
           <ChevronRight size={22} strokeWidth={2.25} aria-hidden="true" />
         </button>
       </div>
 
+      {setCount > 1 ? (
+        <div className="glowup-set-nav">
+          <button
+            type="button"
+            className="glowup-set-btn"
+            onClick={goPrevSet}
+            disabled={!canPrevSet}
+            aria-label="Previous timeline set"
+          >
+            <ChevronLeft size={18} strokeWidth={2.25} aria-hidden="true" />
+            prev
+          </button>
+          <span className="glowup-set-count">
+            {setIndex + 1} / {setCount}
+          </span>
+          <button
+            type="button"
+            className="glowup-set-btn"
+            onClick={goNextSet}
+            disabled={!canNextSet}
+            aria-label="Next timeline set"
+          >
+            next
+            <ChevronRight size={18} strokeWidth={2.25} aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
+
       <div className="glowup-line-wrap" onPointerDown={bumpPause}>
         <div className="glowup-line" aria-hidden="true" />
 
-        <div className="glowup-rail" role="list" aria-label="Glow up timeline">
+        <div className="glowup-rail" role="list" aria-label={`Glow up timeline set ${setIndex + 1}`}>
           {railPhotos.map((src, railIndex) => {
             const index = windowStart + railIndex;
             const isHovered = hovered === index;
             const isHero = featured === index;
             return (
               <button
-                key={src}
+                key={`${setIndex}-${src}`}
                 type="button"
                 role="listitem"
                 className={`glowup-thumb${isHovered ? " is-hover" : ""}${isHero ? " is-hero" : ""}`}
@@ -164,7 +254,7 @@ export default function GlowUpTimelineChapter() {
                 onMouseLeave={() => setHovered(null)}
                 onFocus={() => setHovered(index)}
                 onBlur={() => setHovered(null)}
-                onClick={() => goTo(index, { user: true })}
+                onClick={() => goToPhoto(index, { user: true })}
               >
                 <span className="glowup-dot" aria-hidden="true" />
                 <span className="glowup-frame">
