@@ -81,6 +81,7 @@ export default function FriendPage() {
           trackTitle={track.nowPlaying}
           duration={track.duration}
           src={track.song}
+          autoPlay
         />
 
         <section className="friend-form-section">

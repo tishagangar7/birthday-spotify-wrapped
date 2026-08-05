@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import Grain from "../../components/Grain";
+import { AUTOPLAY_KEY } from "../../components/NowPlayingBar";
+import { playAlbumSong } from "../../lib/albumAudio";
 import { tracklist } from "../../data/tracklist";
 
 /** Gradient thumbs — Figma album art placeholders, not photos. */
@@ -50,6 +52,21 @@ function ThumbArt({ track, index }) {
   );
 }
 
+function markAutoplay(src) {
+  if (!src) return;
+  try {
+    sessionStorage.setItem(AUTOPLAY_KEY, src);
+  } catch {
+    /* ignore */
+  }
+}
+
+async function startTrack(track) {
+  if (!track?.song) return;
+  markAutoplay(track.song);
+  await playAlbumSong(track.song);
+}
+
 export default function AlbumPage() {
   const firstTrack = tracklist[0];
 
@@ -91,7 +108,13 @@ export default function AlbumPage() {
           </h1>
           <p className="album-artist">fred again..</p>
           {firstTrack ? (
-            <Link href={`/album/${firstTrack.slug}`} className="album-play-btn">
+            <Link
+              href={`/album/${firstTrack.slug}`}
+              className="album-play-btn"
+              onClick={() => {
+                void startTrack(firstTrack);
+              }}
+            >
               ▶ Play Album
             </Link>
           ) : null}
@@ -103,7 +126,13 @@ export default function AlbumPage() {
         <ol className="track-list">
           {tracklist.map((track, index) => (
             <li key={track.slug}>
-              <Link href={`/album/${track.slug}`} className="track-row">
+              <Link
+                href={`/album/${track.slug}`}
+                className="track-row"
+                onClick={() => {
+                  void startTrack(track);
+                }}
+              >
                 <span className="track-row-number">{track.trackNumber}</span>
                 <span className="track-row-art">
                   <ThumbArt track={track} index={index} />

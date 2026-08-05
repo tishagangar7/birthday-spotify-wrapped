@@ -3,8 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pause, Play, RotateCcw, RotateCw } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { getAlbumAudio, playAlbumSong } from "../lib/albumAudio";
 
 const SKIP_SECONDS = 10;
+const AUTOPLAY_KEY = "albumAutoplaySrc";
 
 const parseDuration = (value) => {
   const [minutes, seconds] = String(value || "3:30").split(":").map(Number);
@@ -20,12 +22,11 @@ const formatTime = (totalSeconds) => {
 
 /**
  * Now-playing card. When `src` is provided, plays real audio with play/pause,
- * ±10s skip, and a seekable progress bar. Without `src`, keeps the fake
- * looping progress flourish for placeholder tracks.
+ * ±10s skip, and a seekable progress bar. Uses the shared album audio element
+ * so a tracklist click can start playback before navigating here.
  */
-export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "" }) {
+export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "", autoPlay = false }) {
   const reduceMotion = useReducedMotion();
-  const audioRef = useRef(null);
   const barRef = useRef(null);
   const fallbackSeconds = useMemo(() => parseDuration(duration), [duration]);
   const [progress, setProgress] = useState(src ? 0 : 0.32);
@@ -44,12 +45,23 @@ export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "" 
 
   useEffect(() => {
     if (!src) return undefined;
-    const audio = audioRef.current;
+    const audio = getAlbumAudio();
     if (!audio) return undefined;
 
-    setProgress(0);
-    setElapsed(0);
-    setPlaying(false);
+    const absolute = new URL(src, window.location.origin).href;
+    if (audio.dataset.trackSrc !== src) {
+      audio.dataset.trackSrc = src;
+      audio.src = absolute;
+      setProgress(0);
+      setElapsed(0);
+    }
+
+    setPlaying(!audio.paused);
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      setTotal(audio.duration);
+      setElapsed(audio.currentTime || 0);
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
+    }
 
     const onTime = () => {
       const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : fallbackSeconds;
@@ -74,39 +86,48 @@ export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "" 
     audio.addEventListener("pause", onPause);
     audio.addEventListener("ended", onEnded);
 
+    let wantAutoplay = autoPlay;
+    try {
+      if (sessionStorage.getItem(AUTOPLAY_KEY) === src) {
+        wantAutoplay = true;
+        sessionStorage.removeItem(AUTOPLAY_KEY);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    if (wantAutoplay && audio.paused) {
+      playAlbumSong(src).catch(() => {});
+    }
+
     return () => {
-      audio.pause();
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("loadedmetadata", onMeta);
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
       audio.removeEventListener("ended", onEnded);
     };
-  }, [src, fallbackSeconds]);
+  }, [src, fallbackSeconds, autoPlay]);
 
   const togglePlay = async () => {
-    const audio = audioRef.current;
+    const audio = getAlbumAudio();
     if (!audio || !src) return;
     if (audio.paused) {
-      try {
-        await audio.play();
-      } catch {
-        /* ignore */
-      }
+      await playAlbumSong(src);
     } else {
       audio.pause();
     }
   };
 
   const skipBy = (delta) => {
-    const audio = audioRef.current;
+    const audio = getAlbumAudio();
     if (!audio || !src) return;
     const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : total;
     audio.currentTime = Math.min(Math.max(0, (audio.currentTime || 0) + delta), dur || 0);
   };
 
   const seekTo = (clientX) => {
-    const audio = audioRef.current;
+    const audio = getAlbumAudio();
     const bar = barRef.current;
     if (!audio || !bar || !src) return;
     const rect = bar.getBoundingClientRect();
@@ -120,7 +141,6 @@ export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "" 
 
   return (
     <div className="now-playing">
-      {src ? <audio ref={audioRef} src={src} preload="auto" /> : null}
       <div className="now-playing-kicker-row">
         <span className={`now-playing-dot${playing ? " is-playing" : ""}`} />
         <span className="now-playing-kicker">now playing</span>
@@ -190,3 +210,5 @@ export default function NowPlayingBar({ trackTitle, duration = "3:30", src = "" 
     </div>
   );
 }
+
+export { AUTOPLAY_KEY };
