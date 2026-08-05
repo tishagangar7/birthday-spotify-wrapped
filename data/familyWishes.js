@@ -39,6 +39,11 @@ export const familyWishesChapter = {
       video: "/videos/family-wishes/brian/brian.mp4",
     },
     {
+      id: "wish-6",
+      name: "",
+      video: "/videos/family-wishes/wish-6/clip.mp4",
+    },
+    {
       id: "wish-1",
       name: "",
       video: "/videos/family-wishes/wish-1/clip.mp4",
