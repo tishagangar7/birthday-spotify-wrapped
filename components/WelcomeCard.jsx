@@ -4,7 +4,7 @@ import SectionTransition from "./SectionTransition";
 import WrappedButton from "./WrappedButton";
 import { useStoryDeckNav } from "./StoryDeckContext";
 
-/** Figma frame: 01 Intro — ALI'S 21ST WRAPPED (replaces old actual-life cover) */
+/** Figma frame: 01 Intro — ALI ITS WRAPPED (replaces old actual-life cover) */
 export default function WelcomeCard({ onStart }) {
   const nav = useStoryDeckNav();
 
@@ -12,8 +12,8 @@ export default function WelcomeCard({ onStart }) {
     <SectionTransition className="welcome-card wrapped-accent-green" variant="rise">
       <span className="wrapped-kicker">ali</span>
       <h1 className="welcome-title welcome-title-figma">
-        <span className="welcome-21st">21st</span>
-        <span className="welcome-wrapped">wrapped</span>
+        <span className="welcome-21st">ali its</span>
+        <span className="welcome-wrapped">wrapps</span>
       </h1>
       <p className="welcome-sub">made w love by the rotation</p>
       <div className="wrapped-cta-row">
@@ -24,7 +24,7 @@ export default function WelcomeCard({ onStart }) {
             nav?.goToId("top-songs");
           }}
         >
-          start wrapped
+          click here for ur 21st wrapped
         </WrappedButton>
       </div>
       <span className="spotify-wordmark welcome-wordmark">
