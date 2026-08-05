@@ -1,23 +1,96 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
-import { glowUpPhotos } from "../../data/wrappedChapters";
+import { glowUpPhotos as fallbackPhotos } from "../../data/wrappedChapters";
+
+const AUTO_MS = 2800;
+/** Same visible count as the original strip — layout/spacing stay identical. */
+const VISIBLE_SLOTS = 17;
 
 /** Straight glow-up line — hover enlarges; click features a large hero. */
 export default function GlowUpTimelineChapter() {
+  const reduceMotion = useReducedMotion();
+  const rootRef = useRef(null);
+  const pauseUntilRef = useRef(0);
+
+  const [photos, setPhotos] = useState(fallbackPhotos);
   const [hovered, setHovered] = useState(null);
   const [featured, setFeatured] = useState(0);
-  const count = glowUpPhotos.length;
-  const featuredSrc = glowUpPhotos[featured];
+  const [visible, setVisible] = useState(false);
 
-  const goPrev = () => setFeatured((i) => (i - 1 + count) % count);
-  const goNext = () => setFeatured((i) => (i + 1) % count);
+  const count = photos.length;
+  const featuredSrc = photos[featured] ?? photos[0];
+
+  // Fixed-width window: as you advance past the end, left drops off and a new
+  // photo enters on the right — same size/spacing as the original 17-up strip.
+  const windowStart = useMemo(() => {
+    if (count <= VISIBLE_SLOTS) return 0;
+    return Math.max(0, Math.min(featured - VISIBLE_SLOTS + 1, count - VISIBLE_SLOTS));
+  }, [count, featured]);
+
+  const railPhotos = useMemo(
+    () => photos.slice(windowStart, windowStart + Math.min(VISIBLE_SLOTS, count)),
+    [photos, windowStart, count]
+  );
+
+  const bumpPause = useCallback(() => {
+    pauseUntilRef.current = Date.now() + AUTO_MS * 1.5;
+  }, []);
+
+  const goTo = useCallback(
+    (next, { user = false } = {}) => {
+      if (!count) return;
+      if (user) bumpPause();
+      setFeatured(((next % count) + count) % count);
+    },
+    [count, bumpPause]
+  );
+
+  const goPrev = useCallback(() => goTo(featured - 1, { user: true }), [featured, goTo]);
+  const goNext = useCallback(() => goTo(featured + 1, { user: true }), [featured, goTo]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/glowup")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.photos?.length) return;
+        setPhotos(data.photos);
+        setFeatured(0);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting && entry.intersectionRatio >= 0.4),
+      { threshold: [0.35, 0.5, 0.7] }
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible || reduceMotion || count < 2) return undefined;
+    const id = window.setInterval(() => {
+      if (Date.now() < pauseUntilRef.current) return;
+      setFeatured((i) => (i + 1) % count);
+    }, AUTO_MS);
+    return () => window.clearInterval(id);
+  }, [visible, reduceMotion, count]);
 
   return (
     <SectionTransition
+      ref={rootRef}
       className="wrapped-card timeline-chapter glowup-chapter wrapped-accent-teal story-no-nav"
       variant="fade"
     >
@@ -48,14 +121,17 @@ export default function GlowUpTimelineChapter() {
         </button>
 
         <div className="glowup-hero" aria-live="polite">
-          <Image
-            src={featuredSrc}
-            alt=""
-            fill
-            sizes="(max-width: 768px) 90vw, 380px"
-            className="glowup-hero-image"
-            priority
-          />
+          {featuredSrc ? (
+            <Image
+              key={featuredSrc}
+              src={featuredSrc}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 90vw, 380px"
+              className="glowup-hero-image"
+              priority
+            />
+          ) : null}
         </div>
 
         <button
@@ -68,11 +144,12 @@ export default function GlowUpTimelineChapter() {
         </button>
       </div>
 
-      <div className="glowup-line-wrap">
+      <div className="glowup-line-wrap" onPointerDown={bumpPause}>
         <div className="glowup-line" aria-hidden="true" />
 
         <div className="glowup-rail" role="list" aria-label="Glow up timeline">
-          {glowUpPhotos.map((src, index) => {
+          {railPhotos.map((src, railIndex) => {
+            const index = windowStart + railIndex;
             const isHovered = hovered === index;
             const isHero = featured === index;
             return (
@@ -87,7 +164,7 @@ export default function GlowUpTimelineChapter() {
                 onMouseLeave={() => setHovered(null)}
                 onFocus={() => setHovered(index)}
                 onBlur={() => setHovered(null)}
-                onClick={() => setFeatured(index)}
+                onClick={() => goTo(index, { user: true })}
               >
                 <span className="glowup-dot" aria-hidden="true" />
                 <span className="glowup-frame">
@@ -97,7 +174,7 @@ export default function GlowUpTimelineChapter() {
                     fill
                     sizes="(max-width: 768px) 18vw, 120px"
                     className="glowup-thumb-image"
-                    priority={index < 4}
+                    priority={railIndex < 4}
                   />
                 </span>
               </button>

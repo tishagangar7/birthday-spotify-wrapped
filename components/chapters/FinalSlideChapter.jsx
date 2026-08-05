@@ -15,8 +15,8 @@ export default function FinalSlideChapter() {
         <p className="wrapped-title final-headline">{finalSlide.headline}</p>
         <p className="wrapped-caption final-body">{finalSlide.body}</p>
         <div className="wrapped-cta-row">
-          <WrappedButton variant="primary" onClick={() => nav?.goToId("credits-closing")}>
-            see credits
+          <WrappedButton variant="primary" onClick={() => nav?.goToId("album-teaser")}>
+            continue
           </WrappedButton>
         </div>
       </div>

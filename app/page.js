@@ -4,13 +4,12 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import AlbumTeaserCard from "../components/AlbumTeaserCard";
 import AudioPlayer from "../components/AudioPlayer";
 import { topSongs } from "../data/wrappedChapters";
-import AlbumPlaylistChapter from "../components/chapters/AlbumPlaylistChapter";
 import AliOrElseQuizChapter from "../components/chapters/AliOrElseQuizChapter";
 import AliWrappedAwardsChapter from "../components/chapters/AliWrappedAwardsChapter";
 import LovedClipsChapter from "../components/chapters/LovedClipsChapter";
 import WhichAliAreYouChapter from "../components/chapters/WhichAliAreYouChapter";
 import PolaroidWallChapter from "../components/chapters/PolaroidWallChapter";
-import ClosingCreditsChapter from "../components/chapters/ClosingCreditsChapter";
+import FamilyWishesChapter from "../components/chapters/FamilyWishesChapter";
 import CologneChapter from "../components/chapters/CologneChapter";
 import TopArtistsChapter from "../components/chapters/TopArtistsChapter";
 import FinalSlideChapter from "../components/chapters/FinalSlideChapter";
@@ -27,30 +26,12 @@ import TopSongsChapter from "../components/chapters/TopSongsChapter";
 import Grain from "../components/Grain";
 import ScrollDeck from "../components/ScrollDeck";
 import WelcomeCard from "../components/WelcomeCard";
-import useMemoriesData from "../components/useMemoriesData";
-import { getDisplayNames } from "../lib/anonymizeNames";
-
-/**
- * Order = Figma "Spotify Wrapped 2026" (L→R), plus New Ali Content after Ch.02.
- * Dropped the old actual-life black cover. First screen = Figma 01 Intro.
- *
- * Replaced: lineup → frat review, achievements → which ali.
- * Added: motiv, social podium, awards. Enhanced: top searches.
- */
-function formatContributors(names) {
-  if (!names || names.length === 0) return "his friends";
-  const MAX = 6;
-  if (names.length === 1) return names[0];
-  if (names.length <= MAX) return `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}`;
-  return `${names.slice(0, MAX).join(", ")} & ${names.length - MAX} more`;
-}
 
 export default function Home() {
   const [audioReady, setAudioReady] = useState(false);
   const [activeTrack, setActiveTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioPlayerRef = useRef(null);
-  const submittedMemories = useMemoriesData();
 
   const playTrack = useCallback(async (song) => {
     if (!song?.src) return;
@@ -86,11 +67,6 @@ export default function Home() {
   );
 
   const cards = useMemo(() => {
-    const directedBy =
-      submittedMemories.status === "loading"
-        ? "…"
-        : formatContributors(getDisplayNames(submittedMemories.contributors));
-
     return [
       {
         id: "intro-wrapped",
@@ -133,17 +109,10 @@ export default function Home() {
       { id: "bonus-topsearches", content: <TopSearchesChapter /> },
       { id: "bonus-awards", content: <AliWrappedAwardsChapter /> },
       { id: "chapter-8-final", content: <FinalSlideChapter /> },
-      { id: "credits-closing", content: <ClosingCreditsChapter directedBy={directedBy} /> },
       { id: "album-teaser", content: <AlbumTeaserCard /> },
-      { id: "album-playlist", content: <AlbumPlaylistChapter /> },
+      { id: "bonus-family-wishes", content: <FamilyWishesChapter /> },
     ];
-  }, [
-    submittedMemories.status,
-    submittedMemories.contributors,
-    activeTrack,
-    isPlaying,
-    selectSong,
-  ]);
+  }, [activeTrack, isPlaying, selectSong]);
 
   return (
     <main className="actual-life">

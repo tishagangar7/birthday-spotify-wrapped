@@ -1,19 +1,18 @@
 # Ali archetype sprites
 
-Drop 8-bit (or stylized) character art here. Paths are configured in
-`data/interactiveChapters.js` → `whichAliChapter.archetypes[].sprite`.
+Transparent PNGs for the “Which Ali Are You?” arcade carousel.
+Paths are configured in `data/interactiveChapters.js` → `whichAliChapter.archetypes[].image`.
 
 ## Naming convention
 
 | File | Archetype id |
 |---|---|
-| `mythology-professor.png` | mythology-professor |
-| `chipotle-loyalist.png` | chipotle-loyalist |
-| `sauna-final-boss.png` | sauna-final-boss |
-| `home-game-hero.png` | home-game-hero |
-| `fred-disciple.png` | fred-disciple |
-| `big-hearted-driver.png` | designated-driver |
-| `actual-ali.png` | actual-ali (easter egg) |
+| `certified-lover-boy.png` | certified-lover-boy |
+| `racer-ali.png` | racer-ali |
+| `bedrot-ali.png` | bedrot-ali |
+| `sauna-ali.png` | sauna-ali |
+| `rave-ali.png` | rave-ali |
+| `table-tennis-champ.png` | table-tennis-champ |
 
-Recommended: transparent PNG, roughly square, 256–512px.
-Until files exist, the chapter shows CSS pixel placeholders automatically.
+Recommended: transparent PNG, roughly 512–1024px on the long edge.
+Until a file exists, the chapter shows a CSS pixel placeholder automatically.

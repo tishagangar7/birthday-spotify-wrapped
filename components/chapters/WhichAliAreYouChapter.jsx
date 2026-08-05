@@ -1,74 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import SectionTransition from "../SectionTransition";
 import WrappedButton from "../WrappedButton";
 import { whichAliChapter as data } from "../../data/interactiveChapters";
+import CharacterCarousel from "../which-ali/CharacterCarousel";
+import CharacterStats from "../which-ali/CharacterStats";
+import CharacterSprite from "../which-ali/CharacterSprite";
 
-function SpritePlaceholder({ archetype }) {
-  return (
-    <div
-      className="which-ali-sprite-fallback"
-      style={{ "--arch-accent": archetype.accent }}
-      aria-hidden="true"
-    >
-      <span className="which-ali-sprite-block" />
-      <span className="which-ali-sprite-block which-ali-sprite-block--mid" />
-      <span className="which-ali-sprite-initials">{archetype.initials}</span>
-    </div>
-  );
-}
-
-function Sprite({ archetype }) {
-  const [failed, setFailed] = useState(false);
-  if (failed || !archetype.sprite) {
-    return <SpritePlaceholder archetype={archetype} />;
-  }
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      className="which-ali-sprite-img"
-      src={archetype.sprite}
-      alt=""
-      draggable={false}
-      onError={() => setFailed(true)}
-    />
-  );
-}
+const CONFIRM_MS = 480;
 
 export default function WhichAliAreYouChapter() {
   const reduceMotion = useReducedMotion();
   const rootRef = useRef(null);
-  const seqRef = useRef([]);
-  const [phase, setPhase] = useState("intro"); // intro | select | profile
+  const confirmTimer = useRef(null);
+  const [phase, setPhase] = useState("select"); // select | profile
   const [cursor, setCursor] = useState(0);
-  const [locked, setLocked] = useState(false);
-  const [hiddenUnlocked, setHiddenUnlocked] = useState(false);
   const [visible, setVisible] = useState(false);
-  const touchX = useRef(null);
+  const [confirming, setConfirming] = useState(false);
+  const [locked, setLocked] = useState(false);
 
-  const roster = useMemo(() => {
-    const list = [...data.archetypes];
-    if (hiddenUnlocked) list.push(data.hiddenArchetype);
-    return list;
-  }, [hiddenUnlocked]);
-
+  const roster = data.archetypes;
   const selected = roster[Math.min(cursor, roster.length - 1)];
 
-  const start = useCallback(() => setPhase("select"), []);
-
-  const confirm = useCallback(() => {
-    setPhase("profile");
-  }, []);
-
-  const chooseAgain = useCallback(() => {
-    setPhase("select");
-    setLocked(false);
-  }, []);
-
-  const lockIn = useCallback(() => {
-    setLocked(true);
+  useEffect(() => {
+    return () => {
+      if (confirmTimer.current) clearTimeout(confirmTimer.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -82,177 +41,151 @@ export default function WhichAliAreYouChapter() {
     return () => observer.disconnect();
   }, []);
 
+  const showProfile = useCallback(() => {
+    setConfirming(false);
+    setPhase("profile");
+  }, []);
+
+  const selectFighter = useCallback(() => {
+    if (confirming || phase !== "select" || !selected) return;
+    setConfirming(true);
+    if (confirmTimer.current) clearTimeout(confirmTimer.current);
+    confirmTimer.current = setTimeout(
+      showProfile,
+      reduceMotion ? 120 : CONFIRM_MS
+    );
+  }, [confirming, phase, selected, reduceMotion, showProfile]);
+
+  const chooseAgain = useCallback(() => {
+    setPhase("select");
+    setLocked(false);
+    setConfirming(false);
+  }, []);
+
+  const lockIn = useCallback(() => {
+    setLocked(true);
+  }, []);
+
   useEffect(() => {
-    if (!visible) return undefined;
-
+    if (!visible || phase !== "profile" || locked) return undefined;
     const onKey = (e) => {
-      const key = e.key.toLowerCase();
-
-      if (phase === "intro" && (e.key === "Enter" || e.key === " ")) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        start();
-        return;
-      }
-
-      if (phase === "select") {
-        if (e.key === "ArrowRight") {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          setCursor((c) => (c + 1) % roster.length);
-        } else if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          setCursor((c) => (c - 1 + roster.length) % roster.length);
-        } else if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          confirm();
-        }
-
-        if (key.length === 1 && /[a-z]/.test(key)) {
-          const next = [...seqRef.current, key].slice(-data.konamiSequence.length);
-          seqRef.current = next;
-          if (next.join("") === data.konamiSequence.join("")) {
-            setHiddenUnlocked(true);
-            setCursor(data.archetypes.length);
-          }
-        }
-      }
-
-      if (phase === "profile" && e.key === "Enter" && !locked) {
+      if (e.key === "Enter") {
         e.preventDefault();
         e.stopImmediatePropagation();
         lockIn();
       }
     };
-
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [visible, phase, roster.length, start, confirm, lockIn, locked]);
-
-  function onTouchStart(e) {
-    touchX.current = e.touches[0]?.clientX ?? null;
-  }
-  function onTouchEnd(e) {
-    if (touchX.current == null || phase !== "select") return;
-    const x = e.changedTouches[0]?.clientX;
-    if (x == null) return;
-    const dx = x - touchX.current;
-    if (dx < -40) setCursor((c) => (c + 1) % roster.length);
-    else if (dx > 40) setCursor((c) => (c - 1 + roster.length) % roster.length);
-    touchX.current = null;
-  }
+  }, [visible, phase, locked, lockIn]);
 
   return (
     <SectionTransition
       ref={rootRef}
-      className={`wrapped-card wrapped-accent-limegreen story-no-nav which-ali-chapter${locked ? " is-locked" : ""}`}
+      className={`wrapped-card wrapped-accent-limegreen story-no-nav which-ali-chapter${locked ? " is-locked" : ""}${confirming ? " is-confirming" : ""}`}
       variant="rise"
+      data-selected={phase === "profile" ? selected?.id : undefined}
     >
       <span className="wrapped-kicker">{data.kicker}</span>
       <div className="wrapped-body which-ali-body">
-        <h2 className="lore-iceberg-headline">{data.headline}</h2>
-        <p className="wrapped-caption">{data.subheading}</p>
+        <header className="which-ali-header">
+          <h2 className="lore-iceberg-headline which-ali-headline">{data.headline}</h2>
+          <p className="wrapped-caption which-ali-sub">{data.subheading}</p>
+        </header>
 
         <AnimatePresence mode="wait">
-          {phase === "intro" ? (
-            <motion.div
-              key="intro"
-              className="which-ali-intro"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <button type="button" className="which-ali-press-start" onClick={start}>
-                {data.pressStart}
-              </button>
-            </motion.div>
-          ) : null}
-
           {phase === "select" ? (
             <motion.div
               key="select"
-              className="which-ali-select"
-              initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+              className="which-ali-select-phase"
+              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
+              exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+              transition={{ duration: reduceMotion ? 0 : 0.28 }}
             >
-              <div
-                className="which-ali-roster"
-                role="listbox"
-                aria-label="Ali archetypes"
-                aria-activedescendant={`ali-arch-${selected.id}`}
+              <div className="which-ali-layout">
+                <CharacterStats key={selected?.id} archetype={selected} />
+                <CharacterCarousel
+                  archetypes={roster}
+                  index={cursor}
+                  onIndexChange={setCursor}
+                  onSelect={selectFighter}
+                  locked={confirming}
+                  confirming={confirming}
+                  keyboardActive={visible && phase === "select"}
+                />
+              </div>
+
+              <WrappedButton
+                variant="primary"
+                className="which-ali-select-btn"
+                onClick={selectFighter}
+                disabled={confirming}
+                ariaLabel={data.selectLabel}
               >
-                {roster.map((arch, i) => (
-                  <button
-                    key={arch.id}
-                    id={`ali-arch-${arch.id}`}
-                    type="button"
-                    role="option"
-                    aria-selected={i === cursor}
-                    className={`which-ali-slot${i === cursor ? " is-selected" : ""}`}
-                    onClick={() => setCursor(i)}
-                    onDoubleClick={confirm}
-                  >
-                    <span className="which-ali-sprite-wrap">
-                      <Sprite archetype={arch} />
-                    </span>
-                    <span className="which-ali-slot-name">{arch.name}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="which-ali-preview" aria-live="polite">
-                <p className="which-ali-preview-name">{selected.name}</p>
-                <p className="which-ali-preview-tag">{selected.tagline}</p>
-              </div>
-
-              <WrappedButton variant="primary" onClick={confirm} ariaLabel={data.chooseLabel}>
-                {data.chooseLabel}
+                {data.selectLabel}
               </WrappedButton>
             </motion.div>
           ) : null}
 
-          {phase === "profile" ? (
+          {phase === "profile" && selected ? (
             <motion.div
-              key="profile"
+              key={`profile-${selected.id}`}
               className="which-ali-profile"
-              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 14, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduceMotion ? undefined : { opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.35 }}
             >
-              <div className="which-ali-profile-sprite">
-                <Sprite archetype={selected} />
+              <div
+                className="which-ali-profile-card"
+                style={{ "--arch-accent": selected.accent }}
+              >
+                <div className="which-ali-profile-sprite">
+                  <CharacterSprite
+                    archetype={selected}
+                    alt={`${selected.name} character`}
+                  />
+                </div>
+                <p className="which-ali-you-got">{selected.name}</p>
+                {selected.tagline ? (
+                  <p className="which-ali-preview-tag">{selected.tagline}</p>
+                ) : null}
+                <ul className="which-ali-stats">
+                  {Object.entries(selected.stats).map(([label, value]) => (
+                    <li key={label} className="which-ali-stat">
+                      <span className="which-ali-stat-label">{label}</span>
+                      <span className="which-ali-stat-track" aria-hidden="true">
+                        <span
+                          className="which-ali-stat-fill"
+                          style={{
+                            width: `${Math.min(100, Number(value) || 0)}%`,
+                            background: selected.accent,
+                          }}
+                        />
+                      </span>
+                      <span className="which-ali-stat-value">{value}</span>
+                    </li>
+                  ))}
+                </ul>
+                {selected.specialMove ? (
+                  <p className="which-ali-move">special · {selected.specialMove}</p>
+                ) : null}
+                {selected.weakness ? (
+                  <p className="which-ali-weak">weakness · {selected.weakness}</p>
+                ) : null}
               </div>
-              <p className="which-ali-you-got">you got: {selected.name}</p>
-              <p className="which-ali-preview-tag">{selected.tagline}</p>
-              <ul className="which-ali-stats">
-                {Object.entries(selected.stats).map(([label, value]) => (
-                  <li key={label} className="which-ali-stat">
-                    <span className="which-ali-stat-label">{label}</span>
-                    <span className="which-ali-stat-track" aria-hidden="true">
-                      <span
-                        className="which-ali-stat-fill"
-                        style={{ width: `${Math.min(100, value)}%` }}
-                      />
-                    </span>
-                    <span className="which-ali-stat-value">{value}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="which-ali-move">
-                special · {selected.specialMove}
-              </p>
-              <p className="which-ali-weak">weakness · {selected.weakness}</p>
-              <p className="wrapped-caption">{selected.resultLine}</p>
-              <div className="wrapped-cta-row">
-                <WrappedButton variant="ghost" onClick={chooseAgain}>
+
+              <div className="wrapped-cta-row which-ali-profile-ctas">
+                <WrappedButton variant="ghost" onClick={chooseAgain} disabled={locked}>
                   {data.chooseAgainLabel}
                 </WrappedButton>
-                <WrappedButton variant="primary" onClick={lockIn} disabled={locked}>
+                <WrappedButton
+                  variant="primary"
+                  onClick={lockIn}
+                  disabled={locked}
+                  ariaLabel={locked ? "locked in" : data.lockInLabel}
+                >
                   {locked ? "locked in" : data.lockInLabel}
                 </WrappedButton>
               </div>

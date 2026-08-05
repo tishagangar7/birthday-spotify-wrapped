@@ -6,6 +6,15 @@ import SectionTransition from "../SectionTransition";
 import WrappedButton from "../WrappedButton";
 import { motivPlatinumChapter as data } from "../../data/interactiveChapters";
 
+/** Tier ladder pace — each step must be readable. */
+const TIER_INTERVAL_MS = 650;
+/** Pause on Permanent Resident before stats start dripping. */
+const TIER_HOLD_MS = 1100;
+/** Gap between each revealed stat line. */
+const STAT_STEP_MS = 700;
+/** Hold on the completed stats list before the final platinum panel. */
+const DETAILS_HOLD_MS = 1400;
+
 export default function MotivPlatinumChapter() {
   const reduceMotion = useReducedMotion();
   const rootRef = useRef(null);
@@ -13,6 +22,7 @@ export default function MotivPlatinumChapter() {
   const [verified, setVerified] = useState(false);
   const [tierIndex, setTierIndex] = useState(0);
   const [statStep, setStatStep] = useState(0);
+  const [detailsReady, setDetailsReady] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [visible, setVisible] = useState(false);
 
@@ -34,6 +44,10 @@ export default function MotivPlatinumChapter() {
 
   useEffect(() => {
     if (!verified) return undefined;
+    if (reduceMotion) {
+      setTierIndex(data.tiers.length - 1);
+      return undefined;
+    }
     let i = 0;
     const id = window.setInterval(() => {
       i += 1;
@@ -43,17 +57,33 @@ export default function MotivPlatinumChapter() {
         return;
       }
       setTierIndex(i);
-    }, reduceMotion ? 40 : 160);
+    }, TIER_INTERVAL_MS);
     return () => window.clearInterval(id);
   }, [verified, reduceMotion]);
 
+  const tiersDone = verified && tierIndex >= data.tiers.length - 1;
+
   useEffect(() => {
-    if (!verified) return undefined;
+    if (!tiersDone) return undefined;
+    if (reduceMotion) {
+      setStatStep(data.statLines.length);
+      return undefined;
+    }
     const timers = data.statLines.map((_, i) =>
-      window.setTimeout(() => setStatStep(i + 1), reduceMotion ? 0 : 360 + i * 260)
+      window.setTimeout(() => setStatStep(i + 1), TIER_HOLD_MS + i * STAT_STEP_MS)
     );
     return () => timers.forEach(clearTimeout);
-  }, [verified, reduceMotion]);
+  }, [tiersDone, reduceMotion]);
+
+  useEffect(() => {
+    if (statStep < data.statLines.length) return undefined;
+    if (reduceMotion) {
+      setDetailsReady(true);
+      return undefined;
+    }
+    const timer = window.setTimeout(() => setDetailsReady(true), DETAILS_HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [statStep, reduceMotion]);
 
   useEffect(() => {
     if (!visible) return undefined;
@@ -82,8 +112,7 @@ export default function MotivPlatinumChapter() {
     setTilt({ x: 0, y: 0 });
   }
 
-  const tiersDone = verified && tierIndex >= data.tiers.length - 1;
-  const showDetails = tiersDone && statStep >= data.statLines.length;
+  const showDetails = tiersDone && detailsReady;
 
   return (
     <SectionTransition

@@ -2,15 +2,12 @@
 
 import SectionTransition from "./SectionTransition";
 import WrappedButton from "./WrappedButton";
-import { useStoryDeckNav } from "./StoryDeckContext";
 
 /** End-of-Wrapped curtain before the Actual Life album. */
 export default function AlbumTeaserCard() {
-  const nav = useStoryDeckNav();
-
   return (
     <SectionTransition className="welcome-card album-teaser wrapped-accent-pink" variant="rise">
-      <span className="wrapped-kicker">stats · one more thing</span>
+      <span className="wrapped-kicker">stats · the playlist</span>
       <h2 className="welcome-title album-teaser-title">
         we curated a special playlist for you.
       </h2>
@@ -18,7 +15,7 @@ export default function AlbumTeaserCard() {
         actual life (2005–2026) — every friend gets a track.
       </p>
       <div className="wrapped-cta-row">
-        <WrappedButton variant="primary" onClick={() => nav?.goToId("album-playlist")}>
+        <WrappedButton variant="primary" href="/album">
           play the playlist
         </WrappedButton>
       </div>

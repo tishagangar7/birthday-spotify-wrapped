@@ -13,8 +13,7 @@ export default function AliWrappedAwardsChapter() {
   const [index, setIndex] = useState(0);
   const [opened, setOpened] = useState(false);
   const [revealStep, setRevealStep] = useState(0);
-  const [accepted, setAccepted] = useState(false);
-  const [preamble, setPreamble] = useState(false);
+  const [showTrophy, setShowTrophy] = useState(false);
   const [visible, setVisible] = useState(false);
   const [maxOpened, setMaxOpened] = useState(-1);
 
@@ -37,7 +36,7 @@ export default function AliWrappedAwardsChapter() {
   }, [started, opened]);
 
   useEffect(() => {
-    if (!opened) return undefined;
+    if (!opened || showTrophy) return undefined;
     const delays = reduceMotion ? [0, 0, 0, 0] : [0, 280, 520, 780];
     const timers = delays.map((d, step) =>
       window.setTimeout(() => {
@@ -48,32 +47,32 @@ export default function AliWrappedAwardsChapter() {
       }, d)
     );
     return () => timers.forEach(clearTimeout);
-  }, [opened, index, reduceMotion]);
+  }, [opened, index, reduceMotion, showTrophy]);
 
   const goNextAward = useCallback(() => {
-    if (revealStep < 4) return;
-    if (index === awards.length - 2 && !preamble) {
-      setPreamble(true);
-      setOpened(false);
-      setRevealStep(0);
+    if (revealStep < 4 || showTrophy) return;
+    if (isLast) {
+      setShowTrophy(true);
       return;
     }
-    if (isLast) return;
-    setPreamble(false);
     setIndex((i) => i + 1);
     setOpened(false);
     setRevealStep(0);
-  }, [revealStep, index, awards.length, preamble, isLast]);
+  }, [revealStep, isLast, showTrophy]);
 
   const goPrevAward = useCallback(() => {
+    if (showTrophy) {
+      setShowTrophy(false);
+      setOpened(true);
+      setRevealStep(4);
+      return;
+    }
     if (index <= 0) return;
     if (index - 1 > maxOpened) return;
-    setPreamble(false);
-    setAccepted(false);
     setIndex((i) => i - 1);
     setOpened(true);
     setRevealStep(4);
-  }, [index, maxOpened]);
+  }, [index, maxOpened, showTrophy]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -92,19 +91,14 @@ export default function AliWrappedAwardsChapter() {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         e.stopImmediatePropagation();
+        if (showTrophy) return;
         if (!started || !opened) openEnvelope();
-        else if (preamble) {
-          setPreamble(false);
-          setIndex(awards.length - 1);
-          setOpened(true);
-          setRevealStep(0);
-        } else if (isLast && revealStep >= 4 && !accepted) setAccepted(true);
         else if (revealStep >= 4) goNextAward();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         e.stopImmediatePropagation();
         goPrevAward();
-      } else if (e.key === "ArrowRight" && revealStep >= 4) {
+      } else if (e.key === "ArrowRight" && revealStep >= 4 && !showTrophy) {
         e.preventDefault();
         e.stopImmediatePropagation();
         goNextAward();
@@ -120,16 +114,13 @@ export default function AliWrappedAwardsChapter() {
     goNextAward,
     goPrevAward,
     revealStep,
-    isLast,
-    accepted,
-    preamble,
-    awards.length,
+    showTrophy,
   ]);
 
   return (
     <SectionTransition
       ref={rootRef}
-      className={`wrapped-card wrapped-accent-purple story-no-nav awards-chapter${isHeart && opened ? " is-heart" : ""}`}
+      className={`wrapped-card wrapped-accent-purple story-no-nav awards-chapter${isHeart && opened && !showTrophy ? " is-heart" : ""}${showTrophy ? " is-trophy" : ""}`}
       variant="fade"
       duration={1.1}
     >
@@ -138,59 +129,37 @@ export default function AliWrappedAwardsChapter() {
         <h2 className="lore-iceberg-headline">{data.headline}</h2>
         <p className="wrapped-caption">{data.subheading}</p>
 
-        {started ? (
+        {started && !showTrophy ? (
           <p className="awards-progress" aria-live="polite">
             award {index + 1} of {awards.length}
           </p>
         ) : null}
 
-        <div className="awards-dots" role="tablist" aria-label="Opened awards">
-          {awards.map((a, i) => (
-            <button
-              key={a.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={`Award ${i + 1}${i <= maxOpened ? "" : " (locked)"}`}
-              className={`awards-dot${i === index ? " is-current" : ""}${i <= maxOpened ? " is-opened" : ""}`}
-              disabled={i > maxOpened}
-              onClick={() => {
-                if (i > maxOpened) return;
-                setIndex(i);
-                setOpened(true);
-                setRevealStep(4);
-                setPreamble(false);
-                setAccepted(false);
-              }}
-            />
-          ))}
-        </div>
+        {!showTrophy ? (
+          <div className="awards-dots" role="tablist" aria-label="Opened awards">
+            {awards.map((a, i) => (
+              <button
+                key={a.id}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={`Award ${i + 1}${i <= maxOpened ? "" : " (locked)"}`}
+                className={`awards-dot${i === index ? " is-current" : ""}${i <= maxOpened ? " is-opened" : ""}`}
+                disabled={i > maxOpened}
+                onClick={() => {
+                  if (i > maxOpened) return;
+                  setShowTrophy(false);
+                  setIndex(i);
+                  setOpened(true);
+                  setRevealStep(4);
+                }}
+              />
+            ))}
+          </div>
+        ) : null}
 
         <AnimatePresence mode="wait">
-          {preamble ? (
-            <motion.div
-              key="preamble"
-              className="awards-preamble"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <p className="awards-preamble-text">{data.finalPreamble}</p>
-              <WrappedButton
-                variant="primary"
-                onClick={() => {
-                  setPreamble(false);
-                  setIndex(awards.length - 1);
-                  setOpened(true);
-                  setRevealStep(0);
-                }}
-              >
-                open final envelope
-              </WrappedButton>
-            </motion.div>
-          ) : null}
-
-          {!preamble && !started ? (
+          {!started ? (
             <motion.div key="start" className="awards-start" initial={false} animate={{ opacity: 1 }}>
               <button type="button" className="awards-envelope" onClick={openEnvelope} aria-label={data.openFirstLabel}>
                 <span className="awards-envelope-flap" aria-hidden="true" />
@@ -202,7 +171,7 @@ export default function AliWrappedAwardsChapter() {
             </motion.div>
           ) : null}
 
-          {!preamble && started ? (
+          {started && !showTrophy ? (
             <motion.div
               key={`award-${index}-${opened}`}
               className="awards-reveal"
@@ -254,19 +223,52 @@ export default function AliWrappedAwardsChapter() {
 
               {opened && revealStep >= 4 ? (
                 <div className="wrapped-cta-row">
-                  {!isLast ? (
-                    <WrappedButton variant="primary" onClick={goNextAward}>
-                      {data.nextAwardLabel}
-                    </WrappedButton>
-                  ) : !accepted ? (
-                    <WrappedButton variant="primary" onClick={() => setAccepted(true)}>
-                      {data.acceptLabel}
-                    </WrappedButton>
-                  ) : (
-                    <p className="awards-birthday">{data.birthdayLine}</p>
-                  )}
+                  <WrappedButton variant="primary" onClick={goNextAward}>
+                    {isLast ? data.acceptLabel : data.nextAwardLabel}
+                  </WrappedButton>
                 </div>
               ) : null}
+            </motion.div>
+          ) : null}
+
+          {showTrophy ? (
+            <motion.div
+              key="trophy"
+              className="awards-trophy"
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.86, y: 18 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={reduceMotion ? undefined : { opacity: 0, scale: 0.96 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { type: "spring", stiffness: 160, damping: 18 }
+              }
+            >
+              <div className="awards-trophy-stage">
+                <span className="awards-trophy-glow" aria-hidden="true" />
+                <span className="awards-trophy-rays" aria-hidden="true" />
+                <div className="awards-trophy-frame">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="awards-trophy-img"
+                    src={data.trophyImage}
+                    alt={data.trophyAlt}
+                    draggable={false}
+                  />
+                  {!reduceMotion ? (
+                    <span className="awards-trophy-shine" aria-hidden="true" />
+                  ) : null}
+                </div>
+                {!reduceMotion ? (
+                  <div className="awards-trophy-sparkles" aria-hidden="true">
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <span key={i} className={`awards-trophy-sparkle awards-trophy-sparkle--${i}`} />
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              <p className="awards-trophy-caption">{data.trophyCaption}</p>
+              <p className="awards-birthday">{data.birthdayLine}</p>
             </motion.div>
           ) : null}
         </AnimatePresence>
